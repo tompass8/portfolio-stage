@@ -1,9 +1,23 @@
 ---
-import "../styles/global.css";
+import Layout from "../layouts/Layout.astro";
+import SectionShell from "../components/timeline/SectionShell.astro";
 ---
-<html lang="fr">
-  <head><meta charset="utf-8" /><title>Test</title></head>
-  <body class="grid min-h-screen place-items-center">
-    <h1 class="text-5xl font-bold text-neon-blue">Setup OK ⚡</h1>
-  </body>
-</html>
+<Layout title="Portfolio | Architecte Web & Gouvernance">
+  <SectionShell id="hero" hash="a1b2c3d" message="init: hello world">
+    <div class="flex min-h-[70vh] items-center">
+      <h1 class="text-5xl font-bold text-white">Hero (placeholder)</h1>
+    </div>
+  </SectionShell>
+
+  <SectionShell id="dev" hash="e4f5a6b" message="feat: core engineering">
+    <div class="min-h-[120vh] py-12 text-slate-300">Section Dev (placeholder)</div>
+  </SectionShell>
+
+  <SectionShell id="governance" hash="c7d8e9f" message="feat: data governance" zone="gov">
+    <div class="min-h-[80vh] py-12 text-slate-300">Section Gouvernance (placeholder)</div>
+  </SectionShell>
+
+  <SectionShell id="contact" hash="0a1b2c3" message="chore: contact" zone="gov">
+    <div class="min-h-[60vh] py-12 text-slate-300">Contact (placeholder)</div>
+  </SectionShell>
+</Layout>

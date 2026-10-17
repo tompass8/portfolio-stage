@@ -1,22 +1,56 @@
 /* src/styles/global.css */
 @import "tailwindcss";
 
-@theme {
+@theme static {
   --color-bg: #05060d;
   --color-surface: #0b0e1a;
   --color-neon-blue: #00e5ff;
   --color-neon-violet: #a855f7;
   --color-ok: #22c55e;
-  --font-mono: "JetBrains Mono", ui-monospace, monospace;
-  --font-sans: "Inter", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono Variable", ui-monospace, monospace;
+  --font-sans: "Inter Variable", system-ui, sans-serif;
 }
 
-html {
-  background: var(--color-bg);
-  color: #e5e7eb;
-}
+html { background: var(--color-bg); color: #e5e7eb; }
 
 /* Requis par Lenis */
 html.lenis, html.lenis body { height: auto; }
 .lenis.lenis-smooth { scroll-behavior: auto !important; }
 .lenis.lenis-stopped { overflow: hidden; }
+
+/* Grille de fond discrète */
+.bg-grid {
+  background-image:
+    linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse at 50% 30%, #000 20%, transparent 75%);
+}
+
+/* ---- Nœuds de commit ---- */
+[data-commit] { --dot: var(--color-neon-blue); }
+[data-commit][data-zone="gov"] { --dot: var(--color-neon-violet); }
+
+.commit-dot {
+  background: var(--color-bg);
+  border: 2px solid rgba(255,255,255,.25);
+  transition: background .4s, border-color .4s, box-shadow .4s, transform .4s;
+}
+[data-commit].is-active .commit-dot {
+  background: var(--dot);
+  border-color: var(--dot);
+  box-shadow: 0 0 16px var(--dot), 0 0 40px color-mix(in srgb, var(--dot) 40%, transparent);
+  transform: scale(1.25);
+}
+.commit-label { opacity: .35; transition: opacity .4s; }
+[data-commit].is-active .commit-label { opacity: 1; }
+
+/* ---- Tête de la ligne (HEAD) ---- */
+[data-line-head] {
+  background: #fff;
+  box-shadow: 0 0 12px var(--color-neon-blue), 0 0 32px var(--color-neon-blue);
+  transition: background .5s, box-shadow .5s;
+}
+html.zone-gov [data-line-head] {
+  box-shadow: 0 0 12px var(--color-neon-violet), 0 0 32px var(--color-neon-violet);
+}

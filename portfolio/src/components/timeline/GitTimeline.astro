@@ -1,0 +1,28 @@
+---
+// Ligne verticale gauche. Doit être placée DANS #timeline (position: relative).
+---
+<div
+  aria-hidden="true"
+  class="pointer-events-none absolute inset-y-0 left-6 z-20 w-px -translate-x-1/2 md:left-12"
+>
+  <!-- Rail (fond) -->
+  <div class="absolute inset-0 bg-white/10"></div>
+
+  <!-- Trait lumineux révélé au scroll -->
+  <div
+    data-line-reveal
+    class="absolute inset-y-0 left-1/2 w-[3px] -translate-x-1/2 rounded-full"
+    style="background: linear-gradient(to bottom,
+      var(--color-neon-blue) 0%,
+      var(--color-neon-blue) calc(var(--gov, 75%) - 6%),
+      var(--color-neon-violet) var(--gov, 75%),
+      var(--color-neon-violet) 100%);
+      filter: drop-shadow(0 0 6px rgba(0,229,255,.6));"
+  ></div>
+
+  <!-- HEAD : point lumineux qui suit le scroll -->
+  <div
+    data-line-head
+    class="absolute left-1/2 top-0 size-3 -translate-x-1/2 -translate-y-1/2 rounded-full"
+  ></div>
+</div>

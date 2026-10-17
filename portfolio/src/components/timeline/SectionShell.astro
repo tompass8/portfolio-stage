@@ -1,0 +1,27 @@
+---
+interface Props {
+  id: string;
+  hash: string;              // ex. "a1b2c3d"
+  message: string;           // ex. "feat: core engineering"
+  zone?: "dev" | "gov";
+  class?: string;
+}
+const { id, hash, message, zone = "dev", class: className = "" } = Astro.props;
+---
+<section id={id} data-commit data-zone={zone} class:list={["relative", className]}>
+  <slot name="background" />
+
+  <div class="relative mx-auto max-w-6xl pl-14 pr-6 md:pl-28">
+    <!-- Étiquette de commit + point posé sur la ligne -->
+    <p class="commit-label relative pt-24 font-mono text-xs text-slate-400 md:text-sm">
+      <span
+        class="commit-dot absolute -left-8 top-[calc(6rem+0.5em)] size-3.5 -translate-x-1/2 -translate-y-1/2 rounded-full md:-left-16"
+      ></span>
+<span class="text-(--dot)">commit {hash}</span>
+      <span class="mx-2 text-slate-600">—</span>
+      <span>{message}</span>
+    </p>
+
+    <slot />
+  </div>
+</section>
