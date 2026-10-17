@@ -1,0 +1,122 @@
+---
+import SectionShell from "../timeline/SectionShell.astro";
+import Particles from "./Particles";
+---
+
+<SectionShell id="hero" hash="a1b2c3d" message="init(A2Ω): candidature stage web, IA & gouvernance numérique" zone="dev" class="min-h-screen flex items-center">
+  <div slot="background" aria-hidden="true" class="pointer-events-none absolute inset-0 overflow-hidden">
+    <div
+      class="absolute -top-28 left-1/4 size-104 -translate-x-1/2 rounded-full opacity-20 blur-[130px]"
+      style="background: var(--color-neon-blue);"
+    ></div>
+    <div
+      class="absolute top-1/3 right-8 size-88 rounded-full opacity-15 blur-[130px]"
+      style="background: var(--color-neon-violet);"
+    ></div>
+    <Particles client:load />
+  </div>
+
+  <div class="relative z-10 py-14 md:py-20">
+    <!-- Badge Candidature A2Ω -->
+    <div
+      data-hero-reveal
+      class="inline-flex flex-wrap items-center gap-2.5 rounded-full border border-neon-blue/30 bg-surface/90 px-4 py-1.5 font-mono text-xs text-slate-200 backdrop-blur-md"
+    >
+      <span class="relative flex size-2">
+        <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-ok opacity-75"></span>
+        <span class="relative inline-flex size-2 rounded-full bg-ok"></span>
+      </span>
+      <span class="font-semibold text-neon-blue">CANDIDATURE ALPHA TO OMEGA (A2Ω)</span>
+      <span class="text-slate-600">|</span>
+      <span>Toulouse · Stage 2 à 6 mois · Dispo immédiate</span>
+    </div>
+
+    <!-- Titre avec machine à écrire -->
+    <h1 class="mt-6 max-w-4xl font-sans text-4xl font-extrabold tracking-tight text-white sm:text-6xl lg:leading-[1.08]">
+      <span class="block text-slate-400 text-lg sm:text-xl font-mono font-normal mb-2">
+        &gt; Tom Passerman — Étudiant Bachelor Informatique (Ynov Toulouse)
+      </span>
+      <span
+        data-typewriter="Développement Web, IA & Gouvernance Numérique"
+        class="bg-linear-to-r from-white via-slate-100 to-neon-blue bg-clip-text text-transparent"
+      >
+        Développement Web, IA &amp; Gouvernance Numérique
+      </span>
+      <span
+        data-typewriter-cursor
+        aria-hidden="true"
+        class="ml-1 inline-block h-[0.85em] w-0.75 translate-y-1 animate-pulse bg-neon-blue shadow-[0_0_12px_var(--color-neon-blue)]"
+      ></span>
+    </h1>
+
+    <p
+      data-hero-reveal
+      class="mt-5 max-w-3xl text-base leading-relaxed text-slate-300 sm:text-lg"
+    >
+      Ce site interactif est ma candidature pour rejoindre <strong class="text-white">Alpha to Omega</strong>.
+      Il illustre ma compréhension de vos deux piliers : <span class="font-mono text-neon-blue">75% d'ingénierie web sur mesure</span>
+      (du cadrage besoin au déploiement Cloudflare avec Astro, Git et APIs) et
+      <span class="font-mono text-neon-violet">25% de gouvernance numérique</span>
+      (cartographie SI, gestion des accès IAM, conformité RGPD et processus d'exploitation).
+    </p>
+
+    <!-- Boutons d'action -->
+    <div data-hero-reveal class="mt-8 flex flex-wrap items-center gap-3.5">
+      <a
+        href="#dev"
+        class="group relative inline-flex items-center gap-2.5 rounded-lg bg-neon-blue px-5 py-3 font-mono text-xs sm:text-sm font-semibold text-bg transition-all hover:shadow-[0_0_24px_rgba(0,229,255,0.55)]"
+      >
+        <span>01. Fil Conducteur Web (75%)</span>
+        <span class="transition-transform group-hover:translate-x-1">-&gt;</span>
+      </a>
+
+      <a
+        href="#governance"
+        class="inline-flex items-center gap-2.5 rounded-lg border border-neon-violet/40 bg-surface/80 px-5 py-3 font-mono text-xs sm:text-sm text-slate-200 backdrop-blur-sm transition-colors hover:border-neon-violet hover:bg-neon-violet/10"
+      >
+        <span class="size-2 rounded-full bg-neon-violet shadow-[0_0_8px_var(--color-neon-violet)]"></span>
+        <span>02. Gouvernance &amp; Mini-Jeu (25%)</span>
+      </a>
+
+      <a
+        href="#contact"
+        class="inline-flex items-center gap-2 rounded-lg border border-white/15 bg-white/5 px-4 py-3 font-mono text-xs sm:text-sm text-slate-300 hover:border-white/40 hover:text-white"
+      >
+        <span>03. Mon Parcours &amp; Contact</span>
+      </a>
+    </div>
+
+    <!-- 3 Cartes : Ce que j'ai compris du stage / Pourquoi A2Ω / Ma méthode IA -->
+    <div
+      data-hero-reveal
+      class="mt-12 grid gap-4 border-t border-white/10 pt-8 md:grid-cols-3"
+    >
+      <div class="rounded-xl border border-white/10 bg-surface/70 p-4 backdrop-blur-sm">
+        <div class="font-mono text-xs font-semibold text-neon-blue">01 // MON PARCOURS TERRAIN</div>
+        <p class="mt-2 text-xs leading-relaxed text-slate-300">
+          Étudiant en informatique à <strong>Ynov Toulouse</strong> (Anglais C1 - TOEIC 940). Expérience concrète en
+          stage chez <strong>Orange</strong> (déploiement logiciel Uniget, Windows Server) et chez <strong>ITL</strong>
+          (administration réseau &amp; infrastructure Milestone XProtect).
+        </p>
+      </div>
+
+      <div class="rounded-xl border border-white/10 bg-surface/70 p-4 backdrop-blur-sm">
+        <div class="font-mono text-xs font-semibold text-neon-blue">02 // POURQUOI ALPHA TO OMEGA ?</div>
+        <p class="mt-2 text-xs leading-relaxed text-slate-300">
+          Je ne veux pas seulement coder des composants isolés : je veux participer au cycle complet
+          (recueil du besoin client, architecture Astro, CI/CD, DNS/Cloudflare, diagnostic de logs) et
+          structurer la gouvernance IT des organisations que vous accompagnez.
+        </p>
+      </div>
+
+      <div class="rounded-xl border border-neon-violet/30 bg-surface/70 p-4 backdrop-blur-sm">
+        <div class="font-mono text-xs font-semibold text-neon-violet">03 // L'IA COMME OUTIL CRITIQUE</div>
+        <p class="mt-2 text-xs leading-relaxed text-slate-300">
+          Ce site a été co-construit avec l'IA selon votre philosophie : cadrage strict de l'architecture,
+          vérification ligne par ligne du code généré, correction manuelle des erreurs Git/Vite/Tailwind v4
+          et respect de la performance et de l'accessibilité.
+        </p>
+      </div>
+    </div>
+  </div>
+</SectionShell>

@@ -1,0 +1,37 @@
+---
+import SectionShell from "../timeline/SectionShell.astro";
+import GitPushTerminal from "./GitPushTerminal.astro";
+import ProjectCard from "./ProjectCard";
+import { projects } from "../../data/projects";
+---
+
+<SectionShell
+  id="dev"
+  hash="e4f5a6b"
+  message="feat(core): full-stack architecture, APIs & IoT telemetry"
+  zone="dev"
+  class="py-12 md:py-20"
+>
+  <div class="mt-6 max-w-3xl">
+    <span class="font-mono text-xs uppercase tracking-widest text-neon-blue">
+      01 // LE CŒUR DU RÉACTEUR (75%)
+    </span>
+    <h2 class="mt-2 font-sans text-3xl font-bold tracking-tight text-white sm:text-4xl">
+      Ingénierie Web, APIs &amp; Systèmes Distribués
+    </h2>
+    <p class="mt-3 text-base text-slate-300">
+      Du microcontrôleur embarqué aux conteneurs Docker en passant par des APIs .NET découplées :
+      chaque brique est versionnée, testée et déployée via un pipeline reproductible.
+    </p>
+  </div>
+
+  <div class="mt-8">
+    <GitPushTerminal />
+  </div>
+
+  <div class="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+    {projects.map((project) => (
+      <ProjectCard client:visible project={project} />
+    ))}
+  </div>
+</SectionShell>

@@ -4,13 +4,10 @@ import "@fontsource-variable/inter";
 import "@fontsource-variable/jetbrains-mono";
 import GitTimeline from "../components/timeline/GitTimeline.astro";
 
-interface Props {
-  title: string;
-  description?: string;
-}
+interface Props { title: string; description?: string; }
 const {
   title,
-  description = "Portfolio : Architecte Web & Gouvernance des Données",
+  description = "Candidature Tom Passerman — Alpha to Omega (Développement Web, IA & Gouvernance Numérique)",
 } = Astro.props;
 ---
 <!doctype html>
@@ -23,26 +20,25 @@ const {
     <meta name="theme-color" content="#05060d" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   </head>
-
   <body class="bg-bg font-sans antialiased selection:bg-neon-violet/40">
-    <!-- Grille de fond fixe -->
     <div aria-hidden="true" class="bg-grid pointer-events-none fixed inset-0 -z-10"></div>
-
-    <!-- Conteneur de toute la chronologie -->
     <main id="timeline" class="relative overflow-x-clip">
       <GitTimeline />
       <slot />
     </main>
-
     <script>
       import { ScrollTrigger } from "gsap/ScrollTrigger";
       import { initSmoothScroll } from "../scripts/smooth-scroll";
       import { initTimeline } from "../scripts/timeline";
+      import { initHero } from "../scripts/hero";
+      import { initDevSection } from "../scripts/dev";
+      import { initGovernanceSection } from "../scripts/governance";
 
       initSmoothScroll();
       initTimeline();
-
-      // Les polices/images modifient la hauteur de page → recalcul des triggers
+      initHero();
+      initDevSection();
+      initGovernanceSection();
       window.addEventListener("load", () => ScrollTrigger.refresh());
     </script>
   </body>

@@ -1,0 +1,47 @@
+---
+---
+<div
+  data-dev-terminal
+  class="relative overflow-hidden rounded-xl border border-white/10 bg-surface/90 font-mono text-xs shadow-[0_0_40px_rgba(0,0,0,0.6)] backdrop-blur-md sm:text-sm"
+>
+  <div class="flex items-center justify-between border-b border-white/10 bg-black/40 px-4 py-2.5">
+    <div class="flex items-center gap-2">
+      <span class="size-2.5 rounded-full bg-red-500/70"></span>
+      <span class="size-2.5 rounded-full bg-amber-400/70"></span>
+      <span class="size-2.5 rounded-full bg-ok/70"></span>
+      <span class="ml-2 text-slate-400">bash — deploy-pipeline.sh</span>
+    </div>
+    <span data-terminal-status class="rounded bg-neon-blue/10 px-2 py-0.5 text-[11px] text-neon-blue">
+      READY
+    </span>
+  </div>
+
+  <div class="space-y-2 p-4 sm:p-5">
+    <div class="flex items-center gap-2 text-slate-200">
+      <span class="text-neon-blue">tom@architect:~/core$</span>
+      <span data-git-cmd data-full-cmd="git push origin main --tags" class="font-semibold text-white">
+        git push origin main --tags
+      </span>
+      <span
+        data-git-cursor
+        aria-hidden="true"
+        class="inline-block h-4 w-2 animate-pulse bg-neon-blue"
+      ></span>
+    </div>
+
+    <div class="space-y-1 pt-1 text-slate-400">
+      <p data-git-log class="opacity-0">
+        Enumerating objects: 42, done. Counting objects: 100% (42/42), done.
+      </p>
+      <p data-git-log class="opacity-0">
+        Delta compression using up to 16 threads — Compressing objects: 100% (38/38).
+      </p>
+      <p data-git-log class="opacity-0 text-slate-300">
+        remote: <span class="text-neon-blue">[CI/CD]</span> Building multi-tier containers &amp; Edge bundles...
+      </p>
+      <p data-git-log class="opacity-0 text-ok">
+        ✔ To https://github.com/tompass8/portfolio-stage.git — [new tag] v2.4.0 -&gt; production
+      </p>
+    </div>
+  </div>
+</div>
