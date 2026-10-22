@@ -36,7 +36,7 @@ export default function RolesMatrix() {
             type="button"
             onClick={() => setActiveIdx(idx)}
             className={cn(
-              "rounded-lg border px-4 py-2.5 font-mono text-xs font-semibold transition-all cursor-pointer",
+              "min-h-11 rounded-lg border px-4 py-2.5 font-mono text-xs font-semibold transition-all cursor-pointer",
               idx === activeIdx
                 ? "border-neon-violet bg-neon-violet/25 text-white shadow-[0_0_16px_rgba(168,85,247,0.45)]"
                 : "border-white/30 bg-black/50 text-slate-200 hover:border-neon-violet/70 hover:text-white hover:shadow-[0_0_10px_rgba(168,85,247,0.2)]"

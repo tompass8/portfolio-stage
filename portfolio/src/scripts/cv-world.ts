@@ -14,7 +14,8 @@ const LAYER_SPEED: Record<string, number> = {
   mid: 0.6,
 };
 
-const isMobile = () => window.matchMedia("(max-width: 767px)").matches;
+const isStacked = () =>
+  window.matchMedia("(max-width: 1023px), (max-height: 640px)").matches;
 
 export function initCvWorld() {
   const worldEl = document.querySelector<HTMLElement>("[data-world]");
@@ -32,7 +33,7 @@ export function initCvWorld() {
   const projectCards = Array.from(world.querySelectorAll<HTMLElement>("[data-project]"));
   const avatar = createAvatar(avatarRoot);
 
-  const staticMode = () => isMobile() || prefersReducedMotion();
+  const staticMode = () => isStacked() || prefersReducedMotion();
   const distance = () => Math.max(container.offsetWidth - window.innerWidth, 0);
 
   function setProgress(p: number) {

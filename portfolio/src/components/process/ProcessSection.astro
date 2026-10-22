@@ -86,7 +86,7 @@ const steps = [
       class="kenburns h-40 w-full object-cover object-center opacity-55 grayscale-[55%] md:h-52"
     />
     <div class="absolute inset-0 bg-linear-to-r from-bg/85 via-bg/45 to-transparent"></div>
-    <p class="absolute bottom-3 left-4 font-mono text-xs text-slate-300">
+    <p class="absolute bottom-3 left-4 right-4 font-mono text-xs text-slate-300">
       <span class="text-ok">$</span> git push origin main<span class="ml-0.5 inline-block h-3 w-1.5 translate-y-0.5 animate-pulse bg-neon-blue"></span>
     </p>
   </div>
@@ -139,7 +139,7 @@ const steps = [
             />
           ))}
           <div class="pointer-events-none absolute inset-0 bg-linear-to-t from-bg/75 via-transparent to-transparent"></div>
-          <p class="absolute bottom-3 left-4 font-mono text-[11px] text-slate-300">
+          <p class="absolute bottom-3 left-4 right-4 font-mono text-[11px] leading-snug text-slate-300">
             <span class="text-neon-blue">▮</span>
             <span data-process-caption>{steps[0].caption}</span>
           </p>
@@ -160,7 +160,7 @@ const steps = [
               type="button"
               data-process-tab={i}
               class:list={[
-                "rounded-md border border-white/30 bg-black/50 px-3.5 py-2 font-mono text-[11px] font-semibold uppercase tracking-widest text-slate-200 transition-colors hover:border-neon-blue/60 hover:text-white",
+                "min-h-11 rounded-md border border-white/30 bg-black/50 px-3.5 py-2 font-mono text-[11px] font-semibold uppercase tracking-widest text-slate-200 transition-colors hover:border-neon-blue/60 hover:text-white",
                 i === 0 && "is-active",
               ]}
             >

@@ -601,7 +601,8 @@
 }
 
 /* ---------- Fallback : mobile / reduced-motion / no-JS ---------- */
-@media (max-width: 767px) {
+/* Seuil « empilé » : petit écran OU fenêtre courte (paysage téléphone, desktop bas). */
+@media (max-width: 1023px), (max-height: 640px) {
   [data-viewport] {
     position: relative !important;
     height: auto !important;
@@ -618,16 +619,29 @@
   [data-zone] {
     width: 100% !important;
     height: auto !important;
-    min-height: 100vh;
+    min-height: 100svh;
+    scroll-margin-top: 4rem;
   }
   [data-zone] > .relative.z-10 {
     padding-bottom: 6rem;
   }
   [data-avatar] { display: none; }
   .arcade-heli { display: none; }
+  [data-decor] { display: none; }
+  [data-project-row] {
+    flex-direction: column;
+    max-width: none !important;
+  }
+  [data-project-row] > [data-project] {
+    width: 100% !important;
+  }
+  [data-project-row] > [data-reveal] {
+    width: 100% !important;
+    max-width: none !important;
+  }
   .world-layer {
     width: 100%;
-    height: 100vh;
+    height: 100svh;
     bottom: auto;
     transform: none !important;
   }
@@ -650,14 +664,25 @@
   [data-zone] {
     width: 100% !important;
     height: auto !important;
-    min-height: 100vh;
+    min-height: 100svh;
+    scroll-margin-top: 4rem;
   }
   [data-zone] > .relative.z-10 {
     padding-bottom: 6rem;
   }
+  [data-decor] { display: none; }
+  [data-project-row] {
+    flex-direction: column;
+    max-width: none !important;
+  }
+  [data-project-row] > [data-project],
+  [data-project-row] > [data-reveal] {
+    width: 100% !important;
+    max-width: none !important;
+  }
   .world-layer {
     width: 100%;
-    height: 100vh;
+    height: 100svh;
     bottom: auto;
     transform: none !important;
   }

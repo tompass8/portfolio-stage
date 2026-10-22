@@ -83,7 +83,7 @@ export default function ProjectExplorer() {
               aria-selected={filter === cat.key}
               onClick={() => applyFilter(cat.key)}
               className={cn(
-                "flex items-center gap-2 rounded-full border px-4 py-2 font-mono text-[11px] uppercase tracking-widest transition-all duration-300",
+                "flex min-h-11 items-center gap-2 rounded-full border px-4 py-2 font-mono text-[11px] uppercase tracking-widest transition-all duration-300",
                 filter === cat.key
                   ? "border-neon-blue bg-neon-blue/15 text-neon-blue shadow-[0_0_16px_rgba(0,229,255,0.25)]"
                   : "border-white/30 bg-black/50 text-slate-200 hover:border-neon-blue/60 hover:text-white"

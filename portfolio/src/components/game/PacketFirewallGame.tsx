@@ -351,7 +351,7 @@ export default function PacketFirewallGame() {
           height={H}
           tabIndex={0}
           aria-label="Mini-jeu WAF : déplacez le bouclier avec la souris ou les flèches du clavier"
-          className="h-64 w-full cursor-crosshair block focus:outline-none focus-visible:ring-2 focus-visible:ring-neon-blue"
+          className="aspect-[2/1] w-full cursor-crosshair touch-none block focus:outline-none focus-visible:ring-2 focus-visible:ring-neon-blue"
         />
         {phase !== "running" && (
           <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/75 p-4 text-center backdrop-blur-xs">

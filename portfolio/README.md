@@ -88,6 +88,8 @@ Le projet applique le principe **DOM-first** : le DOM est la source de vérité 
 
 Le scroll vertical pilote une **translation horizontale** du monde (`data-world-container` déplacé en `transform` par GSAP), les calques de fond suivent à des vitesses différentes (parallaxe via `.world-layer` dimensionnées en `calc(100% + var(--world-w))`), et les props décoratifs sont cliquables (« saut »).
 
+**Seuil « empilé »** : sur petit écran **ou** fenêtre courte — `(max-width: 1023px), (max-height: 640px)` — le monde horizontal est remplacé par un **layout vertical empilé** (les zones s'enchaînent, cartes projets en colonne, décors masqués via `[data-decor]`). Le seuil est défini **à l'identique** dans `sprites.css` et dans `isStacked()` (`cv-world.ts`) : toute modification doit garder les deux alignés.
+
 ### L'hélicoptère de police (`HeliSprite.astro` + `cv-helicopter.ts` + `sprites.css`)
 
 Animation **100 % CSS** (aucun binaire, aucun canvas) pilotée par une timeline de 20 s (`--heli-cycle`) :
@@ -112,7 +114,7 @@ Le sprite est **orienté vers la droite** : le conteneur `.arcade-heli__flip` ap
 ## 5. Accessibilité & mouvement réduit
 
 - `prefers-reduced-motion: reduce` → **early-return** de tous les `init*()` : aucune animation, **contenu intégralement visible**.
-- Sur `/cv` en reduced-motion, le monde passe en **layout empilé** (zones les unes sous les autres) au lieu de la piste horizontale ; l'hélico est affiché en position fixe (`animation: none`).
+- Sur `/cv`, le monde passe en **layout empilé** (zones les unes sous les autres) soit en reduced-motion, soit sous le seuil `(max-width: 1023px), (max-height: 640px)` — ce qui couvre aussi le **paysage téléphone** ; l'hélico est alors masqué.
 - `/cv` reste lisible **sans JavaScript** grâce au bloc `<noscript>` qui rend biographie, compétences, expériences, projets et contacts en HTML simple.
 - Canvas et décors purement ornementaux sont `aria-hidden="true"` ; tout le contenu utile vit dans le DOM.
 - Navigation clavier complète, focus visible, contrastes conformes AA sur fond `#05060d`.

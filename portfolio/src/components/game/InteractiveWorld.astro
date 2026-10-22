@@ -46,7 +46,7 @@ const devicon = (name: string) =>
           <div class="ground-strip" aria-hidden="true"></div>
 
           {zone.kind === "experience" && (
-            <div class="absolute bottom-16 left-0 right-0 z-0 flex items-end justify-around px-8" aria-hidden="true">
+            <div data-decor class="absolute bottom-16 left-0 right-0 z-0 flex items-end justify-around px-8" aria-hidden="true">
               <img src="/assets/props/security-cam.png" alt="" width="170" height="230" class="pixelated opacity-95 drop-shadow-[0_8px_20px_rgba(0,0,0,0.8)]" data-jump-prop />
               <img src="/assets/props/server-rack.png" alt="" width="170" height="230" class="pixelated opacity-95 drop-shadow-[0_8px_20px_rgba(0,0,0,0.8)]" data-jump-prop />
               <img src="/assets/props/telecom-tower.png" alt="" width="190" height="250" class="pixelated opacity-95 drop-shadow-[0_8px_20px_rgba(0,0,0,0.8)]" data-jump-prop />
@@ -55,7 +55,7 @@ const devicon = (name: string) =>
           )}
 
           {zone.kind === "projects" && (
-            <div class="absolute inset-0 z-0" aria-hidden="true">
+            <div data-decor class="absolute inset-0 z-0" aria-hidden="true">
               <img src="/assets/props/floating-platform.png" alt="" width="130" height="173" class="pixelated absolute left-[6%] bottom-44 drop-shadow-[0_6px_16px_rgba(0,0,0,0.7)]" data-jump-platform />
               <img src="/assets/props/floating-platform.png" alt="" width="130" height="173" class="pixelated absolute left-[44%] bottom-60 drop-shadow-[0_6px_16px_rgba(0,0,0,0.7)]" data-jump-platform />
               <img src="/assets/props/floating-platform.png" alt="" width="130" height="173" class="pixelated absolute left-[80%] bottom-48 drop-shadow-[0_6px_16px_rgba(0,0,0,0.7)]" data-jump-platform />
@@ -66,7 +66,7 @@ const devicon = (name: string) =>
           )}
 
             {zone.kind === "projects" && (
-              <div class="pointer-events-none absolute inset-0 z-20" aria-hidden="true">
+              <div data-decor class="pointer-events-none absolute inset-0 z-20" aria-hidden="true">
                 <div class="absolute right-[6%] top-[6%] rotate-3 rounded-lg border border-white/15 bg-white/5 p-2.5 shadow-[0_10px_30px_rgba(0,0,0,0.45)]">
                   <img src="/assets/iot/esp32-board.svg" alt="" width="190" height="146" class="h-auto w-full max-w-[190px]" />
                 </div>
@@ -78,6 +78,7 @@ const devicon = (name: string) =>
 
           {zone.kind === "contact" && (
             <img
+              data-decor
               src="/assets/props/arcade-terminal.png"
               alt=""
               width="180"
@@ -172,7 +173,7 @@ const devicon = (name: string) =>
             )}
 
           {zone.kind === "skills" && (
-            <div class="absolute bottom-16 left-0 right-0 z-0 flex items-end justify-between px-16" aria-hidden="true">
+            <div data-decor class="absolute bottom-16 left-0 right-0 z-0 flex items-end justify-between px-16" aria-hidden="true">
               <img src="/assets/props/server-rack.png" alt="" width="180" height="240" class="pixelated opacity-95 drop-shadow-[0_8px_20px_rgba(0,0,0,0.8)]" data-avatar-use-target />
               <img src="/assets/props/control-screen.png" alt="" width="190" height="255" class="pixelated opacity-95 drop-shadow-[0_8px_20px_rgba(0,0,0,0.8)]" />
               <img src="/assets/props/server-rack.png" alt="" width="180" height="240" class="pixelated opacity-95 drop-shadow-[0_8px_20px_rgba(0,0,0,0.8)]" data-avatar-use-target />
@@ -215,7 +216,7 @@ const devicon = (name: string) =>
             )}
 
             {zone.kind === "projects" && (
-              <div class="mt-6 flex max-w-[1900px] gap-5 overflow-visible">
+              <div data-project-row class="mt-6 flex max-w-[1900px] gap-5 overflow-visible">
                 {projects.items.map((p) => (
                   <article
                     data-project={p.id}
