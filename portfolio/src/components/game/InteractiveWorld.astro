@@ -127,7 +127,7 @@ const devicon = (name: string) =>
 
           {zone.kind === "skills" && (
             <div class="mt-6 grid max-w-6xl gap-4 sm:grid-cols-2 lg:grid-cols-4" style="position:relative;z-index:5">
-                {skills.groups.map((g, gi) => {
+                {skills.groups.map((g) => {
                   const levelPct = g.pct;
                   const segments = 10;
                   const lit = Math.round((levelPct / 100) * segments);

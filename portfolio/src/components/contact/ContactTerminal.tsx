@@ -16,7 +16,7 @@ export default function ContactTerminal() {
   const [mailto, setMailto] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const missing: string[] = [];

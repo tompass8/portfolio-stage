@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 type Kind = "good" | "bad" | "crit";
 type Phase = "idle" | "running" | "paused" | "over";

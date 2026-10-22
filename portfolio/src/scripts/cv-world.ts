@@ -17,8 +17,9 @@ const LAYER_SPEED: Record<string, number> = {
 const isMobile = () => window.matchMedia("(max-width: 767px)").matches;
 
 export function initCvWorld() {
-  const world = document.querySelector<HTMLElement>("[data-world]");
-  if (!world) return;
+  const worldEl = document.querySelector<HTMLElement>("[data-world]");
+  if (!worldEl) return;
+  const world = worldEl;
 
   const viewport = world.querySelector<HTMLElement>("[data-viewport]")!;
   const container = world.querySelector<HTMLElement>("[data-world-container]")!;

@@ -1,5 +1,4 @@
 import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { prefersReducedMotion } from "./smooth-scroll";
 
 export function initDevSection() {

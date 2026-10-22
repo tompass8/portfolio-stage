@@ -15,8 +15,9 @@ const RESTART_AT: Record<Variant, number> = {
 const FALLBACK_CYCLE_MS = 20000;
 
 export function initCvHelicopter() {
-  const heli = document.querySelector<HTMLElement>("[data-heli]");
-  if (!heli) return;
+  const heliEl = document.querySelector<HTMLElement>("[data-heli]");
+  if (!heliEl) return;
+  const heli = heliEl;
 
   if (prefersReducedMotion()) return;
 
