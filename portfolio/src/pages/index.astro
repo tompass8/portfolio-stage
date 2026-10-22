@@ -3,33 +3,41 @@ import Layout from "../layouts/Layout.astro";
 import SectionShell from "../components/timeline/SectionShell.astro";
 import Hero from "../components/hero/Hero.astro";
 import DevSection from "../components/dev/DevSection.astro";
+import PhotoMarquee from "../components/media/PhotoMarquee.astro";
+import ProcessSection from "../components/process/ProcessSection.astro";
 import GovSection from "../components/governance/GovSection.astro";
 import ContactTerminal from "../components/contact/ContactTerminal";
+import CvGameCta from "../components/game/CvGameCta.astro";
 ---
-<Layout title="Tom Passerman × Alpha to Omega | Web, IA & Gouvernance Numérique">
+<Layout title="Tom Passerman — Candidature Alpha to Omega | Web, IA & Gouvernance Numérique">
   <Hero />
+  <div class="-mt-4 mb-12">
+    <CvGameCta />
+  </div>
   <DevSection />
+  <PhotoMarquee />
+  <ProcessSection />
   <GovSection />
 
   <SectionShell
     id="contact"
     hash="0a1b2c3"
-    message="chore(release): ready for onboarding at Alpha to Omega Toulouse"
+    message="chore(release): dossier de candidature Alpha to Omega Toulouse"
     zone="gov"
     class="py-12 md:py-24"
   >
     <div class="mt-6 mb-8 max-w-3xl">
       <span class="font-mono text-xs uppercase tracking-widest text-neon-blue">
-        03 // DÉPLOIEMENT &amp; PRISE DE CONTACT
+        04 // DÉPLOIEMENT &amp; PRISE DE CONTACT
       </span>
-      <h2 class="mt-2 font-sans text-3xl font-bold tracking-tight text-white sm:text-4xl">
+      <h2 data-reveal-title class="mt-2 font-sans text-3xl font-bold tracking-tight text-white sm:text-4xl">
         Échangeons sur vos prochains projets Web &amp; Gouvernance
       </h2>
     </div>
 
     <ContactTerminal client:visible />
 
-    <footer class="mt-16 border-t border-white/10 pt-6 font-mono text-xs text-slate-500 flex flex-wrap justify-between gap-4">
+    <footer class="mt-16 border-t border-white/10 pt-6 font-mono text-xs text-slate-400 flex flex-wrap justify-between gap-4">
       <span>Tom Passerman — Développé sur mesure avec Astro, Tailwind v4, GSAP &amp; déployé sur Cloudflare</span>
       <span>Candidature Stage Alpha to Omega (A2Ω) — Toulouse</span>
     </footer>

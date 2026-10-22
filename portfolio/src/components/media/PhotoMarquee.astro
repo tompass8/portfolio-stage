@@ -1,0 +1,33 @@
+---
+const shots = [
+  { src: "/images/hero-bg.webp", label: "data center" },
+  { src: "/images/process-code.webp", label: "source code" },
+  { src: "/projects/spark.webp", label: "iot / esp32" },
+  { src: "/images/gov-servers.webp", label: "infrastructure" },
+  { src: "/projects/le-gourmand.webp", label: "full-stack" },
+  { src: "/images/ambient-code.webp", label: "ci / cd" },
+  { src: "/images/process/build.webp", label: "code review" },
+  { src: "/images/process/suivi.webp", label: "monitoring" },
+];
+---
+<div class="marquee relative my-6 overflow-hidden rounded-2xl border border-white/10 bg-surface/40 py-4" aria-hidden="true">
+  <div class="marquee-track flex w-max gap-4 px-4">
+    {[...shots, ...shots].map((s) => (
+      <figure class="relative h-36 w-56 shrink-0 overflow-hidden rounded-xl border border-white/10 md:h-44 md:w-72">
+        <img
+          src={s.src}
+          alt=""
+          width="1400"
+          height="1050"
+          loading="lazy"
+          decoding="async"
+          class="h-full w-full object-cover opacity-65 grayscale-[50%]"
+        />
+        <div class="pointer-events-none absolute inset-0 bg-linear-to-t from-bg/80 via-transparent to-transparent"></div>
+        <figcaption class="absolute bottom-2 left-3 font-mono text-[10px] uppercase tracking-widest text-slate-300">
+          {s.label}
+        </figcaption>
+      </figure>
+    ))}
+  </div>
+</div>
