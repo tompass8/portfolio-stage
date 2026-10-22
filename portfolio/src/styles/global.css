@@ -6,6 +6,7 @@
   --color-surface: #0b0e1a;
   --color-neon-blue: #00e5ff;
   --color-neon-violet: #a855f7;
+  --color-amber: #fbbf24;
   --color-ok: #22c55e;
   --font-mono: "JetBrains Mono Variable", ui-monospace, monospace;
   --font-sans: "Inter Variable", system-ui, sans-serif;
@@ -53,4 +54,272 @@ html.lenis, html.lenis body { height: auto; }
 }
 html.zone-gov [data-line-head] {
   box-shadow: 0 0 12px var(--color-neon-violet), 0 0 32px var(--color-neon-violet);
+}
+
+/* ---- Révélations de titres (SplitText) ---- */
+.split-line { will-change: transform; }
+
+/* ---- Section process (sticky au scroll) ---- */
+/* Sans JS / mouvement réduit : pile statique, tout est déjà visible. */
+[data-process].is-animated { height: 360svh; }
+[data-process].is-animated [data-process-sticky] {
+  position: sticky;
+  top: 0;
+  min-height: 100svh;
+}
+[data-process].is-animated [data-process-step] {
+  grid-column: 1;
+  grid-row: 1;
+  opacity: 0;
+  transform: translateY(20px);
+  pointer-events: none;
+  transition: opacity .5s ease, transform .5s ease;
+}
+[data-process].is-animated [data-process-step].is-active {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+[data-process].is-animated [data-process-fill] { transform: scaleX(0); }
+[data-process-tab].is-active {
+  color: var(--color-neon-blue);
+  border-color: color-mix(in srgb, var(--color-neon-blue) 50%, transparent);
+  background: color-mix(in srgb, var(--color-neon-blue) 12%, transparent);
+}
+
+/* ---- Rail de progression des sections ---- */
+[data-nav-label] {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  color: #64748b;
+  opacity: 0;
+  transform: translateX(6px);
+  transition: opacity .3s, transform .3s, color .3s;
+}
+[data-nav-item]:hover [data-nav-label],
+[data-nav-item].is-active [data-nav-label] {
+  opacity: 1;
+  transform: none;
+}
+[data-nav-item].is-active [data-nav-label] { color: #fff; }
+[data-nav-fill] { transform: scaleY(0); transition: transform .15s linear; }
+
+/* ---- Halo des cartes du Hero (tokens) ---- */
+.card-glow--blue {
+  background: radial-gradient(
+    120% 100% at 50% 0%,
+    color-mix(in srgb, var(--color-neon-blue) 14%, transparent),
+    transparent 70%
+  );
+}
+.card-glow--violet {
+  background: radial-gradient(
+    120% 100% at 50% 0%,
+    color-mix(in srgb, var(--color-neon-violet) 16%, transparent),
+    transparent 70%
+  );
+}
+
+/* ---- Lueurs néon (tokens) ---- */
+.glow-blue {
+  box-shadow: 0 0 24px color-mix(in srgb, var(--color-neon-blue) 35%, transparent);
+}
+.glow-blue-hover:hover {
+  box-shadow: 0 0 36px color-mix(in srgb, var(--color-neon-blue) 55%, transparent);
+}
+.glow-blue-strong:hover {
+  box-shadow: 0 0 24px color-mix(in srgb, var(--color-neon-blue) 55%, transparent);
+}
+.glow-blue-button:hover {
+  box-shadow: 0 0 20px color-mix(in srgb, var(--color-neon-blue) 50%, transparent);
+}
+.glow-amber-button:hover {
+  box-shadow: 0 0 22px color-mix(in srgb, var(--color-amber) 45%, transparent);
+}
+
+/* ---- Focus visible global (accessibilité clavier) ---- */
+:where(a, button, input, textarea, select, summary, [tabindex]):focus-visible {
+  outline: 2px solid var(--color-neon-blue);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+[data-net-node]:focus-visible {
+  outline: 2px solid var(--color-neon-blue);
+  outline-offset: 3px;
+}
+[data-net-node]:focus-visible circle:first-of-type {
+  stroke: var(--color-neon-blue);
+  stroke-width: 3;
+}
+
+/* ---- Bouton CTA fixe ---- */
+[data-fixed-cta] {
+  opacity: 0;
+  transform: translateY(14px);
+  pointer-events: none;
+  visibility: hidden;
+}
+[data-fixed-cta].is-visible {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+  visibility: visible;
+}
+
+/* ---- Fond ambiant : photos qui dérivent (site entier) ---- */
+.ambient-photo {
+  position: absolute;
+  object-fit: cover;
+  opacity: .1;
+  filter: saturate(.75) contrast(1.05);
+  animation: ambient-drift 75s ease-in-out infinite alternate;
+  will-change: transform;
+}
+.ambient-photo--b { animation-duration: 95s; animation-direction: alternate-reverse; }
+
+@keyframes ambient-drift {
+  from { transform: translate3d(-3%, -2%, 0) scale(1.12); }
+  to   { transform: translate3d(3%, 3%, 0) scale(1.22); }
+}
+
+/* ---- Ken Burns sur les bandeaux photo ---- */
+.kenburns {
+  animation: kenburns 26s ease-in-out infinite alternate;
+  will-change: transform;
+}
+@keyframes kenburns {
+  from { transform: scale(1); }
+  to   { transform: scale(1.09); }
+}
+
+/* ---- Blobs aurora du hero ---- */
+.aurora-a { animation: aurora-a 38s ease-in-out infinite alternate; }
+.aurora-b { animation: aurora-b 48s ease-in-out infinite alternate; }
+@keyframes aurora-a {
+  from { transform: translate(-50%, 0) scale(1); }
+  to   { transform: translate(-28%, 14%) scale(1.18); }
+}
+@keyframes aurora-b {
+  from { transform: translate(0, 0) scale(1); }
+  to   { transform: translate(-10%, -12%) scale(1.15); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ambient-photo, .kenburns, .aurora-a, .aurora-b { animation: none; }
+  .ambient-photo { transform: scale(1.12); }
+}
+
+/* ---- Pile d'images de la section process ---- */
+.process-shot {
+  position: absolute;
+  inset: 0;
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity .7s ease;
+  will-change: opacity;
+}
+.process-shot.is-active { opacity: 1; }
+@media (prefers-reduced-motion: reduce) {
+  .process-shot { transition: none; }
+}
+
+/* ---- Carrousel photo (marquee) ---- */
+.marquee-track {
+  animation: marquee 50s linear infinite;
+  will-change: transform;
+}
+@keyframes marquee {
+  to { transform: translateX(-50%); }
+}
+.marquee:hover .marquee-track { animation-play-state: paused; }
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track { animation: none; }
+}
+
+/* ---- Bande « En chiffres » : balayage lumineux de fond ---- */
+.stats-sweep {
+  background: linear-gradient(
+    110deg,
+    transparent 25%,
+    rgba(0, 229, 255, 0.05) 42%,
+    rgba(168, 85, 247, 0.05) 55%,
+    transparent 72%
+  );
+  background-size: 250% 100%;
+  animation: stats-sweep 9s linear infinite;
+  will-change: background-position;
+}
+@keyframes stats-sweep {
+  from { background-position: 120% 0; }
+  to { background-position: -120% 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .stats-sweep { animation: none; }
+}
+
+/* ---- Bande « En chiffres » : ligne de scan traversant les chiffres (5 s) ---- */
+.stats-line {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    transparent 47%,
+    rgba(0, 229, 255, 0.75) 49.6%,
+    rgba(168, 85, 247, 0.75) 50.2%,
+    transparent 53%,
+    transparent 100%
+  );
+  background-size: 280% 100%;
+  animation: stats-line 5s linear infinite;
+  will-change: background-position, opacity;
+}
+@keyframes stats-line {
+  0% { background-position: 120% 0; opacity: 0; }
+  12% { opacity: 1; }
+  88% { opacity: 1; }
+  100% { background-position: -20% 0; opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .stats-line { animation: none; opacity: 0; }
+}
+
+/* ---- Diagramme CI/CD IA : pulse le long du flux ---- */
+.cicd-link {
+  position: relative;
+  flex: 1 1 0%;
+  height: 1px;
+  min-width: 2rem;
+  margin-inline: 0.5rem;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.15);
+}
+.cicd-pulse {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 40%;
+  background: linear-gradient(90deg, transparent, var(--color-neon-blue), transparent);
+  animation: cicd-flow 2.2s ease-in-out infinite;
+  will-change: left;
+}
+@keyframes cicd-flow {
+  0% { left: -40%; opacity: 0; }
+  15% { opacity: 1; }
+  85% { opacity: 1; }
+  100% { left: 100%; opacity: 0; }
+}
+.cicd-arrow {
+  font-family: var(--font-mono);
+  animation: cicd-arrow 1.4s ease-in-out infinite;
+}
+@keyframes cicd-arrow {
+  0%, 100% { opacity: 0.35; transform: translateY(0); }
+  50% { opacity: 1; transform: translateY(3px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cicd-pulse, .cicd-arrow { animation: none; }
+  .cicd-pulse { left: 30%; opacity: 0.8; }
 }
