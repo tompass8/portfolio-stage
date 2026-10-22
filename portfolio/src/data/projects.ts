@@ -1,3 +1,5 @@
+export type ProjectCategory = "web" | "api" | "iot";
+
 export interface Project {
   id: string;
   slug: string;
@@ -10,6 +12,7 @@ export interface Project {
   image: string;
   repoUrl?: string;
   status: "production" | "prototype" | "containerized";
+  category: ProjectCategory;
 }
 
 export const projects: Project[] = [
@@ -26,26 +29,28 @@ export const projects: Project[] = [
       { label: "Architecture", value: "3-Tiers isolée" },
       { label: "Conteneurs", value: "Non-root / Alpine" },
     ],
-    image: "/projects/le-gourmand.svg",
+    image: "/projects/le-gourmand.webp",
     repoUrl: "https://github.com/tompass8",
     status: "containerized",
+    category: "web",
   },
   {
     id: "02",
-    slug: "taskboard",
-    title: "TaskBoard",
-    subtitle: "API Kanban Temps Réel & Clean Architecture",
-    architecture: "Domain <- Application <- Infrastructure / WebAPI",
+    slug: "ymmo",
+    title: "YMMO — Groupe Immobilier",
+    subtitle: "Plateforme web d'achat, vente et analyse de biens immobiliers avec IA",
+    architecture: "Vue 3 ─► Nginx ─► (.NET 10 ─► PostgreSQL 16) + (FastAPI ─► 2M biens)",
     description:
-      "Back-end C# .NET structuré selon les principes de la Clean Architecture. Persistance via Entity Framework Core et SQLite, synchronisation temps réel des colonnes par WebSockets.",
-    stack: ["C# .NET", "Clean Architecture", "EF Core", "SQLite", "SignalR"],
+      "Plateforme immobilière en trois services orchestrés par Docker Compose : API .NET 10 (auth JWT, CRUD biens/offres), SPA Vue 3 + Pinia (catalogue, dashboards Chart.js) et agrégateur Python FastAPI analysant 2M de biens via scikit-learn.",
+    stack: ["Vue 3", ".NET 10", "PostgreSQL 16", "FastAPI / Python", "Docker Compose"],
     metrics: [
-      { label: "Couplage", value: "Inversion de dép." },
-      { label: "Sync", value: "Temps réel" },
+      { label: "Base agrégée", value: "2M de biens (IA)" },
+      { label: "Services", value: "3 conteneurs" },
     ],
-    image: "/projects/taskboard.svg",
+    image: "/projects/ymmo.webp",
     repoUrl: "https://github.com/tompass8",
-    status: "production",
+    status: "containerized",
+    category: "api",
   },
   {
     id: "03",
@@ -60,8 +65,9 @@ export const projects: Project[] = [
       { label: "Protocole", value: "ESP-NOW (<10ms)" },
       { label: "Topologie", value: "Master / Slaves" },
     ],
-    image: "/projects/spark.svg",
+    image: "/projects/spark.webp",
     repoUrl: "https://github.com/tompass8",
     status: "prototype",
+    category: "iot",
   },
 ];

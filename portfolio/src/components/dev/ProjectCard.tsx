@@ -37,7 +37,6 @@ export default function ProjectCard({ project }: Props) {
   return (
     <article
       ref={cardRef}
-      data-project-card
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       style={{ transform, transformStyle: "preserve-3d" }}
@@ -63,14 +62,19 @@ export default function ProjectCard({ project }: Props) {
           </span>
         </div>
 
-        <div className="relative mt-4 overflow-hidden rounded-xl border border-white/10 bg-linear-to-br from-black/70 via-surface to-neon-blue/10 p-4">
-          <div className="font-mono text-[11px] text-slate-400">ARCHITECTURE PIPELINE</div>
-          <div className="mt-2 font-mono text-xs font-medium text-neon-blue">
-            {project.architecture}
-          </div>
-          <div className="mt-3 flex items-center gap-1.5 text-[10px] font-mono text-slate-500">
-            <span className="size-1.5 rounded-full bg-ok"></span>
-            <span>asset: {project.image}</span>
+        <div className="relative mt-4 aspect-[16/10] overflow-hidden rounded-xl border border-white/10">
+          <img
+            src={project.image}
+            alt=""
+            width={1600}
+            height={1000}
+            loading="lazy"
+            decoding="async"
+            className="h-full w-full object-cover opacity-75 grayscale-[45%] transition duration-500 ease-out group-hover:scale-[1.04] group-hover:opacity-100 group-hover:grayscale-0"
+          />
+          <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-black/85 via-black/25 to-transparent" />
+          <div className="absolute inset-x-3 bottom-2.5 font-mono text-[10px] leading-snug text-neon-blue">
+            <span className="text-slate-400">$</span> {project.architecture}
           </div>
         </div>
 
