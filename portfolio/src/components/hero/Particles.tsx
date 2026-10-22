@@ -21,10 +21,25 @@ export default function Particles() {
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     let animationFrameId: number;
     let isVisible = true;
-    let width = (canvas.width = canvas.parentElement?.clientWidth || window.innerWidth);
-    let height = (canvas.height = canvas.parentElement?.clientHeight || window.innerHeight);
+    const dpr = Math.min(window.devicePixelRatio || 1, 1.75);
+    const css = getComputedStyle(document.documentElement);
+    const neonBlue = css.getPropertyValue("--color-neon-blue").trim() || "#00e5ff";
+    const neonViolet = css.getPropertyValue("--color-neon-violet").trim() || "#a855f7";
 
-    const colors = ["#00e5ff", "#00e5ff", "#00e5ff", "#a855f7"];
+    const sizeCanvas = () => {
+      const w = canvas.parentElement?.clientWidth || window.innerWidth;
+      const h = canvas.parentElement?.clientHeight || window.innerHeight;
+      canvas.width = Math.round(w * dpr);
+      canvas.height = Math.round(h * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      return { w, h };
+    };
+
+    const size = sizeCanvas();
+    let width = size.w;
+    let height = size.h;
+
+    const colors = [neonBlue, neonBlue, neonBlue, neonViolet];
     const particleCount = Math.min(Math.floor((width * height) / 18000), 70);
     const connectionDistance = 140;
     const mouse = { x: -9999, y: -9999, radius: 130 };
@@ -70,13 +85,14 @@ export default function Particles() {
           const p2 = particles[j];
           const dist = Math.hypot(p.x - p2.x, p.y - p2.y);
           if (dist < connectionDistance) {
-            const alpha = (1 - dist / connectionDistance) * 0.22;
             ctx.beginPath();
             ctx.moveTo(p.x, p.y);
             ctx.lineTo(p2.x, p2.y);
-            ctx.strokeStyle = `rgba(0, 229, 255, ${alpha.toFixed(3)})`;
+            ctx.globalAlpha = (1 - dist / connectionDistance) * 0.22;
+            ctx.strokeStyle = neonBlue;
             ctx.lineWidth = 0.8;
             ctx.stroke();
+            ctx.globalAlpha = 1;
           }
         }
       }
@@ -88,8 +104,9 @@ export default function Particles() {
 
     const handleResize = () => {
       if (!canvas.parentElement) return;
-      width = canvas.width = canvas.parentElement.clientWidth;
-      height = canvas.height = canvas.parentElement.clientHeight;
+      const next = sizeCanvas();
+      width = next.w;
+      height = next.h;
       if (reducedMotion) drawFrame();
     };
 
