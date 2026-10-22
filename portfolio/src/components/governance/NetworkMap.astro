@@ -6,8 +6,11 @@ import { networkNodes } from "../../data/network";
     <div>
       <span class="font-mono text-xs text-neon-violet">CARTOGRAPHIE SI &amp; FLUX DE DONNÉES</span>
       <h3 class="font-sans text-lg font-bold text-white">
-        Inventaire de l'existant, dépendances &amp; points de contrôle
+        Architecture cible : inventaire, dépendances &amp; points de contrôle
       </h3>
+      <p class="mt-1 font-mono text-[11px] text-slate-400">
+        Schéma proposé pour l'organisation cible (A2Ω) — chaque brique, son propriétaire, ses données et ses garde-fous.
+      </p>
     </div>
     <span class="rounded-full border border-neon-violet/40 bg-neon-violet/10 px-3 py-1 font-mono text-[11px] text-neon-violet">
       Cliquez sur un nœud pour inspecter
@@ -46,7 +49,7 @@ import { networkNodes } from "../../data/network";
             tabindex="0"
             role="button"
             aria-label={`Inspecter ${node.label}`}
-            class="cursor-pointer transition-transform focus:outline-none"
+            class="cursor-pointer transition-transform"
           >
             <circle
               cx={node.x}
@@ -87,23 +90,23 @@ import { networkNodes } from "../../data/network";
       </div>
       <dl class="mt-3 space-y-2.5 text-slate-300">
         <div>
-          <dt class="text-[10px] uppercase text-slate-500">Rôle dans l'architecture</dt>
+          <dt class="text-[10px] uppercase text-slate-400">Rôle dans l'architecture</dt>
           <dd data-node-role class="mt-0.5 text-white">{networkNodes[0].role}</dd>
         </div>
         <div>
-          <dt class="text-[10px] uppercase text-slate-500">Responsable / Propriétaire</dt>
+          <dt class="text-[10px] uppercase text-slate-400">Responsable / Propriétaire</dt>
           <dd data-node-owner class="mt-0.5 text-neon-blue">{networkNodes[0].owner}</dd>
         </div>
         <div>
-          <dt class="text-[10px] uppercase text-slate-500">Données traitées</dt>
+          <dt class="text-[10px] uppercase text-slate-400">Données traitées</dt>
           <dd data-node-data class="mt-0.5">{networkNodes[0].dataTypes}</dd>
         </div>
         <div>
-          <dt class="text-[10px] uppercase text-slate-500">Continuité / Sauvegarde</dt>
+          <dt class="text-[10px] uppercase text-slate-400">Continuité / Sauvegarde</dt>
           <dd data-node-backup class="mt-0.5">{networkNodes[0].backupPolicy}</dd>
         </div>
         <div>
-          <dt class="text-[10px] uppercase text-slate-500">Conformité RGPD</dt>
+          <dt class="text-[10px] uppercase text-slate-400">Conformité RGPD</dt>
           <dd data-node-gdpr class="mt-0.5 text-ok">{networkNodes[0].gdprStatus}</dd>
         </div>
       </dl>

@@ -21,6 +21,9 @@ export default function RolesMatrix() {
           <h3 className="font-sans text-lg font-bold text-white">
             Gestion des comptes, authentifications &amp; moindre privilège
           </h3>
+          <p className="mt-1 font-mono text-[11px] text-slate-400">
+            Matrice cible proposée — le rôle « Développeur Web / Stagiaire » est ma future position, pas un poste occupé aujourd'hui.
+          </p>
         </div>
         <span className="font-mono text-xs text-slate-400">RBAC Policy v2.6</span>
       </div>
@@ -33,10 +36,10 @@ export default function RolesMatrix() {
             type="button"
             onClick={() => setActiveIdx(idx)}
             className={cn(
-              "rounded-lg border px-3 py-2 font-mono text-xs transition-all cursor-pointer",
+              "rounded-lg border px-4 py-2.5 font-mono text-xs font-semibold transition-all cursor-pointer",
               idx === activeIdx
-                ? "border-neon-violet bg-neon-violet/20 text-white shadow-[0_0_16px_rgba(168,85,247,0.35)]"
-                : "border-white/10 bg-black/30 text-slate-400 hover:border-white/25 hover:text-slate-200"
+                ? "border-neon-violet bg-neon-violet/25 text-white shadow-[0_0_16px_rgba(168,85,247,0.45)]"
+                : "border-white/30 bg-black/50 text-slate-200 hover:border-neon-violet/70 hover:text-white hover:shadow-[0_0_10px_rgba(168,85,247,0.2)]"
             )}
           >
             {item.role}
@@ -47,11 +50,11 @@ export default function RolesMatrix() {
       {/* Détails du rôle */}
       <div className="mt-5 grid gap-4 sm:grid-cols-2">
         <div className="rounded-xl border border-white/10 bg-black/40 p-3.5 font-mono text-xs">
-          <div className="text-[10px] uppercase text-slate-500">Acteur / Périmètre</div>
+          <div className="text-[10px] uppercase text-slate-400">Acteur / Périmètre</div>
           <div className="mt-1 font-semibold text-white">{current.actor}</div>
         </div>
         <div className="rounded-xl border border-white/10 bg-black/40 p-3.5 font-mono text-xs">
-          <div className="text-[10px] uppercase text-slate-500">Politique d'Authentification</div>
+          <div className="text-[10px] uppercase text-slate-400">Politique d'Authentification</div>
           <div className="mt-1 font-semibold text-neon-blue">{current.authMethod}</div>
         </div>
       </div>
