@@ -28,6 +28,7 @@ npm install          # installe les dépendances
 npm run dev          # serveur de dev sur http://localhost:4321
 npm run build        # build de production dans ./dist/
 npm run preview      # prévisualise le build (avec l'adaptateur Cloudflare)
+npm run check        # vérification TypeScript + Astro (astro check)
 npm run astro -- --help
 npm run generate-types   # wrangler types → types des bindings Cloudflare
 ```
@@ -140,7 +141,7 @@ npx wrangler deploy
 - **PDF du CV (placeholder)** : `public/cv-tom-passerman.pdf.pdf` est un fichier de 9 octets servant de placeholder ; les liens de téléchargement (`src/pages/cv.astro` et `resumeData.pdfUrl`) pointent dessus. Il faut déposer le vrai PDF sous ce nom exact pour que le téléchargement soit exploitable.
 - **Envoi d'e-mail non branché** : `src/pages/api/contact.ts` répond volontairement `501` et bascule vers un `mailto:` affiché à l'utilisateur (bandeau « MODE MAIL »). Brancher un service d'envoi suppose d'ajouter une variable d'environnement côté serveur, jamais exposée au client.
 - **Contenu placeholder** : les valeurs de `src/data/stats.ts` et les libellés tronqués de `HudNavigation.astro` sont à remplacer par les données réelles.
-- **`npx astro check` non installé** (`@astrojs/check` + `typescript` manquants) : la vérification de types stricte n'est pas encore câblée dans le projet.
+- **Vérification de types** : `npm run check` (`@astrojs/check` + `typescript`) est câblé et passe à **0 erreur** sur les 51 fichiers ; à relancer après chaque modification de `.ts`/`.tsx`.
 - **Boucles RAF isolées** : `Particles.tsx` et `PacketFirewallGame.tsx` ont leur propre `requestAnimationFrame` ; à migrer vers `gsap.ticker` lors d'une refonte (ne jamais créer de 4ᵉ boucle).
 - `session: false` et `imageService` (optimisations Astro) sont des pistes d'amélioration non activées.
 
@@ -153,7 +154,7 @@ Le détail des règles (vision, budgets, tiering, a11y, motion, nettoyage, check
 - tout nouveau style passe par un token `@theme` ;
 - classes conditionnelles via `cn()` (`src/lib/utils.ts`) ;
 - nettoyage complet des tweens, ScrollTriggers, listeners et observers ;
-- `npm run build` vert avant toute livraison.
+- `npm run check` à 0 erreur et `npm run build` vert avant toute livraison.
 
 ---
 

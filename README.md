@@ -34,6 +34,7 @@ npm install          # installe les dépendances
 npm run dev          # serveur de dev sur http://localhost:4321
 npm run build        # build de production dans portfolio/dist/
 npm run preview      # prévisualise le build (avec l'adaptateur Cloudflare)
+npm run check        # vérification TypeScript + Astro (astro check)
 npm run generate-types   # wrangler types → types des bindings Cloudflare
 ```
 
