@@ -138,7 +138,6 @@ npx wrangler deploy
 
 ## 8. Dette technique connue
 
-- **PDF du CV (placeholder)** : `public/cv-tom-passerman.pdf.pdf` est un fichier de 9 octets servant de placeholder ; les liens de téléchargement (`src/pages/cv.astro` et `resumeData.pdfUrl`) pointent dessus. Il faut déposer le vrai PDF sous ce nom exact pour que le téléchargement soit exploitable.
 - **Envoi d'e-mail non branché** : `src/pages/api/contact.ts` répond volontairement `501` et bascule vers un `mailto:` affiché à l'utilisateur (bandeau « MODE MAIL »). Brancher un service d'envoi suppose d'ajouter une variable d'environnement côté serveur, jamais exposée au client.
 - **Contenu placeholder** : les valeurs de `src/data/stats.ts` et les libellés tronqués de `HudNavigation.astro` sont à remplacer par les données réelles.
 - **Vérification de types** : `npm run check` (`@astrojs/check` + `typescript`) est câblé et passe à **0 erreur** sur les 51 fichiers ; à relancer après chaque modification de `.ts`/`.tsx`.

@@ -60,7 +60,7 @@ site stage/
 ├── .gitignore            # artefacts Astro générés à la racine du dépôt
 ├── README.md             # ce fichier (page d'accueil du dépôt)
 └── portfolio/            # application Astro
-    ├── public/           # assets statiques (pixel-art, photos, illustrations IoT, PDF du CV)
+    ├── public/           # assets statiques (pixel-art, photos, illustrations IoT)
     ├── src/
     │   ├── components/   # Astro (structure & contenu) + React (widgets interactifs)
     │   ├── data/         # tout le contenu éditorial, data-driven

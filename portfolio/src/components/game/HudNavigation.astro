@@ -1,7 +1,7 @@
 ---
 import { resumeData } from "../../data/resumeData";
 
-const { zones, meta } = resumeData;
+const { zones } = resumeData;
 ---
 <header
   class="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-bg/80 backdrop-blur-md"
@@ -42,13 +42,6 @@ const { zones, meta } = resumeData;
         <span data-progress-label class="w-9 font-mono text-[11px] text-amber-400">0%</span>
       </div>
 
-      <a
-        href={meta.pdfUrl}
-        download
-        class="rounded-md border border-zinc-600 bg-zinc-900 px-3 py-1.5 font-mono text-[11px] font-semibold text-white transition-colors hover:bg-zinc-800"
-      >
-        Télécharger CV (PDF)
-      </a>
     </div>
   </div>
 

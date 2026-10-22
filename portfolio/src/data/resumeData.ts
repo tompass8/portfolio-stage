@@ -63,7 +63,6 @@ export interface ResumeData {
     name: string;
     headline: string;
     location: string;
-    pdfUrl: string;
   };
   zones: ResumeZone[];
   spawn: {
@@ -95,7 +94,6 @@ export const resumeData: ResumeData = {
     name: "Tom Passerman",
     headline: "Passionné d'IT — Full-Stack, Systèmes & Réseaux, Data & IoT",
     location: "Toulouse, France",
-    pdfUrl: "/cv-tom-passerman.pdf.pdf",
   },
 
   zones: [
