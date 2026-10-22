@@ -1,0 +1,308 @@
+---
+import { resumeData } from "../../data/resumeData";
+import HeliSprite from "./HeliSprite.astro";
+
+const { zones, spawn, skills, experience, projects, contact } = resumeData;
+const worldWidth = zones.reduce((s, z) => s + z.width, 0);
+const devicon = (name: string) =>
+  `https://cdn.jsdelivr.net/gh/devicons/devicon/icons/${name}/${name}-original.svg`;
+---
+<div id="cv-world" class="relative bg-bg" data-world>
+  <!-- Piste de scroll (hauteur = largeur du monde) -->
+  <div data-scroll-track class="pointer-events-none" aria-hidden="true"></div>
+
+    <div data-viewport class="sticky top-0 h-screen overflow-hidden" style={`--world-w:${worldWidth}px`}>
+    <!-- Fonds parallaxe -->
+    <div class="absolute inset-0 overflow-hidden" aria-hidden="true">
+      <div class="world-layer layer-sky" data-layer="sky"></div>
+      <div class="arcade-stars"></div>
+      <div class="arcade-constell"></div>
+      <div class="arcade-rocket arcade-rocket--forward"></div>
+      <div class="arcade-rocket arcade-rocket--backward"></div>
+      <div class="arcade-sun"></div>
+      <HeliSprite />
+      <div class="world-layer layer-far" data-layer="far"></div>
+      <div class="world-layer layer-mid" data-layer="mid"></div>
+      <div class="arcade-neon-row"></div>
+      <div class="arcade-cars"></div>
+      <div class="absolute inset-x-0 bottom-0 h-64 bg-linear-to-t from-black/70 to-transparent"></div>
+    </div>
+
+    <!-- Le monde (translation horizontale par GSAP) -->
+    <div
+      data-world-container
+      class="absolute inset-y-0 left-0 flex items-end pb-16 will-change-transform"
+      style={`width:${worldWidth}px`}
+    >
+      {zones.map((zone) => (
+        <section
+          id={zone.id}
+          data-zone={zone.hash}
+          data-zone-width={zone.width}
+          class="relative h-full shrink-0 overflow-hidden"
+          style={`width:${zone.width}px`}
+          aria-label={zone.title}
+        >
+          <div class="ground-strip" aria-hidden="true"></div>
+
+          {zone.kind === "experience" && (
+            <div class="absolute bottom-16 left-0 right-0 z-0 flex items-end justify-around px-8" aria-hidden="true">
+              <img src="/assets/props/security-cam.png" alt="" width="170" height="230" class="pixelated opacity-95 drop-shadow-[0_8px_20px_rgba(0,0,0,0.8)]" data-jump-prop />
+              <img src="/assets/props/server-rack.png" alt="" width="170" height="230" class="pixelated opacity-95 drop-shadow-[0_8px_20px_rgba(0,0,0,0.8)]" data-jump-prop />
+              <img src="/assets/props/telecom-tower.png" alt="" width="190" height="250" class="pixelated opacity-95 drop-shadow-[0_8px_20px_rgba(0,0,0,0.8)]" data-jump-prop />
+              <img src="/assets/props/control-screen.png" alt="" width="170" height="230" class="pixelated opacity-95 drop-shadow-[0_8px_20px_rgba(0,0,0,0.8)]" data-jump-prop />
+            </div>
+          )}
+
+          {zone.kind === "projects" && (
+            <div class="absolute inset-0 z-0" aria-hidden="true">
+              <img src="/assets/props/floating-platform.png" alt="" width="130" height="173" class="pixelated absolute left-[6%] bottom-44 drop-shadow-[0_6px_16px_rgba(0,0,0,0.7)]" data-jump-platform />
+              <img src="/assets/props/floating-platform.png" alt="" width="130" height="173" class="pixelated absolute left-[44%] bottom-60 drop-shadow-[0_6px_16px_rgba(0,0,0,0.7)]" data-jump-platform />
+              <img src="/assets/props/floating-platform.png" alt="" width="130" height="173" class="pixelated absolute left-[80%] bottom-48 drop-shadow-[0_6px_16px_rgba(0,0,0,0.7)]" data-jump-platform />
+              <img src="/assets/props/server-rack.png" alt="" width="120" height="160" class="pixelated absolute left-[26%] bottom-16 opacity-95 drop-shadow-[0_6px_16px_rgba(0,0,0,0.7)]" data-jump-prop data-avatar-use-target />
+              <img src="/assets/props/server-rack.png" alt="" width="120" height="160" class="pixelated absolute left-[66%] bottom-16 opacity-95 drop-shadow-[0_6px_16px_rgba(0,0,0,0.7)]" data-jump-prop />
+              <img src="/assets/props/telecom-tower.png" alt="" width="120" height="160" class="pixelated absolute right-[3%] bottom-16 opacity-95 drop-shadow-[0_6px_16px_rgba(0,0,0,0.7)]" />
+            </div>
+          )}
+
+            {zone.kind === "projects" && (
+              <div class="pointer-events-none absolute inset-0 z-20" aria-hidden="true">
+                <div class="absolute right-[6%] top-[6%] rotate-3 rounded-lg border border-white/15 bg-white/5 p-2.5 shadow-[0_10px_30px_rgba(0,0,0,0.45)]">
+                  <img src="/assets/iot/esp32-board.svg" alt="" width="190" height="146" class="h-auto w-full max-w-[190px]" />
+                </div>
+                <div class="absolute right-[26%] top-[4%] -rotate-3 rounded-lg border border-white/15 bg-white/5 p-2.5 shadow-[0_10px_30px_rgba(0,0,0,0.45)]">
+                  <img src="/assets/iot/rm3100-sensor.svg" alt="" width="190" height="146" class="h-auto w-full max-w-[190px]" />
+                </div>
+              </div>
+            )}
+
+          {zone.kind === "contact" && (
+            <img
+              src="/assets/props/arcade-terminal.png"
+              alt=""
+              width="180"
+              height="240"
+              class="pixelated absolute bottom-16 left-[14%] z-0 drop-shadow-[0_8px_20px_rgba(0,0,0,0.75)]"
+              data-avatar-use-target
+              aria-hidden="true"
+            />
+          )}
+
+          <div data-checkpoint-dot class="pointer-events-none absolute bottom-24 left-1/2 z-10 size-3 -translate-x-1/2 rounded-full bg-white/15 transition-all"></div>
+
+          <div class="relative z-10 flex h-full flex-col justify-end px-10 pb-24">
+            <p class="font-mono text-xs uppercase tracking-widest text-amber-400">{zone.level}</p>
+            <h2 data-reveal-title class="mt-2 max-w-3xl font-sans text-3xl font-bold text-white sm:text-5xl">
+              {zone.title}
+            </h2>
+            <p class="mt-2 font-mono text-sm text-slate-400">{zone.subtitle}</p>
+
+            {zone.kind === "spawn" && (
+              <div class="mt-6 grid max-w-4xl gap-5 md:grid-cols-2">
+                <div class="rounded-2xl border border-white/10 bg-bg/92 p-5 backdrop-blur-xl">
+                  <p class="text-sm leading-relaxed text-slate-300">{spawn.bio}</p>
+                  <ul class="mt-4 space-y-2 font-mono text-xs text-slate-300">
+                    {spawn.highlights.map((h) => (
+                      <li><span class="text-amber-400">▸</span> {h}</li>
+                    ))}
+                  </ul>
+                </div>
+                <div class="flex flex-col gap-3">
+                  {spawn.controls.map((c) => (
+                    <div class="flex items-center gap-3 rounded-xl border border-white/10 bg-bg/90 px-4 py-3">
+                      <img src={`/assets/ui/${c.icon}.png`} alt="" width="56" height="56" class="pixelated" />
+                      <span class="font-mono text-xs text-slate-300">{c.label}</span>
+                    </div>
+                  ))}
+                  <!-- clins d'oeil décor : ballon + échiquier -->
+                  <div class="flex items-center gap-4 font-mono text-[11px] text-slate-400">
+                    <span title="Football" class="text-xl animate-bounce" data-ball>⚽</span>
+                    <span title="Échecs" class="text-xl animate-pulse" data-chess>♟️</span>
+                    <span class="rounded border border-amber-400/40 px-2 py-1 text-amber-300 animate-pulse">Bienvenue à bord</span>
+                    <span class="text-amber-300 animate-pulse">J'adore les échecs et le football !</span>
+                  </div>
+                </div>
+              </div>
+            )}
+
+          {zone.kind === "skills" && (
+            <div class="mt-6 grid max-w-6xl gap-4 sm:grid-cols-2 lg:grid-cols-4" style="position:relative;z-index:5">
+                {skills.groups.map((g, gi) => {
+                  const levelPct = g.pct;
+                  const segments = 10;
+                  const lit = Math.round((levelPct / 100) * segments);
+                  return (
+                    <div data-reveal class="rounded-2xl border border-white/10 bg-bg/92 p-4 backdrop-blur-xl">
+                      <div class="flex items-center justify-between">
+                        <h3 class="font-sans text-sm font-bold text-white">{g.title}</h3>
+                        <span data-energy-value class="font-mono text-[10px] text-amber-400" data-target={levelPct}>0%</span>
+                      </div>
+                      <div data-energy-gauge class="mt-2 flex gap-0.5" aria-hidden="true">
+                        {Array.from({ length: segments }).map((_, i) => (
+                          <span
+                            data-seg
+                            data-lit={i < lit ? "1" : "0"}
+                            class={`h-2.5 flex-1 rounded-[1px] border border-white/15 ${i < lit ? "bg-bg" : "bg-white/5"}`}
+                          ></span>
+                        ))}
+                      </div>
+                      <p class="mt-1 font-mono text-[10px] uppercase tracking-widest text-slate-500">{g.level}</p>
+                      <ul class="mt-3 space-y-1.5">
+                        {g.items.map((it) => (
+                          <li class="flex items-center gap-2 font-mono text-[11px] text-slate-300">
+                            {it.icon && (
+                              <img
+                                src={it.icon.startsWith("/") ? it.icon : devicon(it.icon)}
+                                alt=""
+                                width="16"
+                                height="16"
+                                loading="lazy"
+                                class="pixelated"
+                                onerror={`this.style.display='none'`}
+                              />
+                            )}
+                            {it.name}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+
+          {zone.kind === "skills" && (
+            <div class="absolute bottom-16 left-0 right-0 z-0 flex items-end justify-between px-16" aria-hidden="true">
+              <img src="/assets/props/server-rack.png" alt="" width="180" height="240" class="pixelated opacity-95 drop-shadow-[0_8px_20px_rgba(0,0,0,0.8)]" data-avatar-use-target />
+              <img src="/assets/props/control-screen.png" alt="" width="190" height="255" class="pixelated opacity-95 drop-shadow-[0_8px_20px_rgba(0,0,0,0.8)]" />
+              <img src="/assets/props/server-rack.png" alt="" width="180" height="240" class="pixelated opacity-95 drop-shadow-[0_8px_20px_rgba(0,0,0,0.8)]" data-avatar-use-target />
+              <img src="/assets/npc/teammate-idle.png" alt="" width="190" height="190" class="pixelated opacity-95 drop-shadow-[0_8px_20px_rgba(0,0,0,0.8)]" />
+            </div>
+          )}
+
+          {zone.kind === "experience" && (
+              <div class="mt-6 flex max-w-6xl flex-wrap items-end gap-6">
+                {experience.jobs.map((job) => (
+                <div data-reveal class="w-full max-w-sm rounded-2xl border border-yellow-400/80 bg-[#0a0a0a] p-5 shadow-[0_0_40px_rgba(255,215,0,0.2)]">
+                  <div class="flex items-baseline justify-between">
+                    <h3 class="font-sans text-lg font-bold text-[#ffcc00]">{job.company}</h3>
+                    <span class="font-mono text-[11px] text-yellow-300">{job.period}</span>
+                  </div>
+                  <p class="mt-1 font-mono text-xs text-amber-200">{job.role}</p>
+                  <ul class="mt-3 space-y-2 text-sm text-white">
+                    {job.missions.map((m) => (
+                      <li class="flex gap-2"><span class="text-[#ffcc00]">▸</span>{m}</li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+              <div data-reveal class="w-full max-w-xs rounded-2xl border border-yellow-400/80 bg-[#0a0a0a] p-5 shadow-[0_0_40px_rgba(255,215,0,0.2)]">
+                  <h3 class="font-mono text-xs uppercase tracking-widest text-[#ffcc00]">Répartition des tâches</h3>
+                  <div class="mt-4 space-y-3">
+                    {experience.split.map((s) => (
+                      <div>
+                        <div class="flex justify-between font-mono text-[11px] text-amber-100">
+                          <span>{s.label}</span><span>{s.value}%</span>
+                        </div>
+                        <span class="mt-1 block h-2 overflow-hidden rounded-full bg-black/60">
+                          <span class="block h-full rounded-full bg-linear-to-r from-[#ffcc00] to-[#ffe599]" style={`width:${s.value}%`}></span>
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {zone.kind === "projects" && (
+              <div class="mt-6 flex max-w-[1900px] gap-5 overflow-visible">
+                {projects.items.map((p) => (
+                  <article
+                    data-project={p.id}
+                    data-checkpoint={p.checkpoint ? "1" : "0"}
+                    class="w-[340px] shrink-0 rounded-2xl border border-zinc-600 bg-zinc-950 p-5 shadow-[0_8px_30px_rgba(0,0,0,0.9)]"
+                  >
+                    <div class="flex items-center justify-between font-mono text-[11px]">
+                      <span class="text-zinc-300">{p.kind}</span>
+                      <span data-checkpoint-light class="size-2 rounded-full bg-zinc-400"></span>
+                    </div>
+                    <h3 class="mt-2 font-sans text-base font-bold text-white">{p.name}</h3>
+                    <p class="mt-2 text-xs leading-relaxed text-zinc-300">{p.summary}</p>
+                    <ul class="mt-3 space-y-1.5 text-[11px] text-zinc-200">
+                      {p.features.map((f) => (
+                        <li class="flex gap-2"><span class="text-zinc-500">-</span>{f}</li>
+                      ))}
+                    </ul>
+                    <div class="mt-3 flex flex-wrap gap-1.5">
+                      {p.stack.map((s) => (
+                        <span class="rounded border border-zinc-600 px-1.5 py-0.5 font-mono text-[10px] text-zinc-300">{s}</span>
+                      ))}
+                    </div>
+                  </article>
+                ))}
+              </div>
+            )}
+
+            {zone.kind === "contact" && (
+              <div class="mt-6 flex max-w-5xl flex-wrap gap-6">
+                <div class="w-full max-w-md rounded-2xl border border-zinc-600 bg-zinc-950 p-5">
+                  <h3 class="font-mono text-xs uppercase tracking-widest text-amber-400">Terminal de contact</h3>
+                  <form data-contact-form class="mt-4 space-y-3" novalidate>
+                    <div>
+                      <label for="cv-name" class="sr-only">Nom ou organisation</label>
+                      <input id="cv-name" name="name" required placeholder="Nom" class="w-full rounded-md border border-zinc-600 bg-zinc-900 px-3 py-2 font-mono text-xs text-white focus:border-amber-400/70" />
+                    </div>
+                    <div>
+                      <label for="cv-email" class="sr-only">Email de réponse</label>
+                      <input id="cv-email" name="email" type="email" required placeholder="Email" class="w-full rounded-md border border-zinc-600 bg-zinc-900 px-3 py-2 font-mono text-xs text-white focus:border-amber-400/70" />
+                    </div>
+                    <div>
+                      <label for="cv-message" class="sr-only">Message</label>
+                      <textarea id="cv-message" name="message" required rows="3" placeholder="Message" class="w-full resize-none rounded-md border border-zinc-600 bg-zinc-900 px-3 py-2 font-mono text-xs text-white focus:border-amber-400/70"></textarea>
+                    </div>
+                    <p data-form-error role="status" aria-live="polite" class="hidden font-mono text-[11px] text-red-400"></p>
+                    <a data-form-mailto href="#" class="hidden rounded-md border border-amber-400/50 bg-amber-400/10 px-3 py-2 font-mono text-xs text-amber-300 transition-colors hover:bg-amber-400/20">
+                      Ouvrir mon client mail →
+                    </a>
+                    <button type="submit" class="w-full rounded-md border border-amber-400/50 bg-amber-400/15 px-3 py-2 font-mono text-xs font-semibold text-white transition-colors hover:bg-amber-400/30">
+                      Envoyer
+                    </button>
+                  </form>
+                </div>
+                <div class="flex flex-col gap-2">
+                  {contact.channels.map((c) => (
+                    <a href={c.href} target="_blank" rel="noopener" class="rounded-xl border border-zinc-600 bg-zinc-950 px-4 py-3 font-mono text-xs text-zinc-200 transition-colors hover:border-amber-400/60 hover:text-amber-300">
+                      {c.label} — {c.value}
+                    </a>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </section>
+      ))}
+
+      <!-- Props décoratifs (contrôle-screen, floating-platform, etc.) -->
+    </div>
+
+    <!-- Avatar fixe -->
+    <div
+      data-avatar
+      class="pointer-events-none absolute bottom-16 z-30"
+      style="left:20%"
+      aria-hidden="true"
+    >
+      <div data-avatar-shell class="sprite-shell is-right">
+        <div data-avatar-sprite class="sprite sprite--idle"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Overlay LEVEL COMPLETE -->
+  <div data-level-complete aria-hidden="true" class="pointer-events-none fixed inset-0 z-[60] flex items-center justify-center bg-black/70 opacity-0 transition-opacity duration-500">
+    <div class="text-center">
+      <p class="font-mono text-sm text-amber-400">LEVEL COMPLETE</p>
+      <p class="mt-2 font-sans text-4xl font-black text-white">Message transmis à votre messagerie</p>
+    </div>
+  </div>
+</div>

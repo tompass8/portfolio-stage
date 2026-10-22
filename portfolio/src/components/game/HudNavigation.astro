@@ -1,0 +1,69 @@
+---
+import { resumeData } from "../../data/resumeData";
+
+const { zones, meta } = resumeData;
+---
+<header
+  class="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-bg/80 backdrop-blur-md"
+  data-hud
+>
+  <div class="mx-auto flex max-w-7xl flex-wrap items-center gap-x-4 gap-y-2 px-4 py-2.5">
+    <a
+      href="/"
+      class="font-mono text-xs text-amber-400 transition-colors hover:text-white"
+      aria-label="Retour au site classique"
+    >
+      ← SITE CLASSIQUE
+    </a>
+
+    <span class="hidden font-mono text-[11px] text-slate-500 sm:inline">/cv</span>
+
+    <nav class="order-3 flex w-full gap-1 overflow-x-auto sm:order-2 sm:w-auto" aria-label="Téléportation par niveau">
+      {zones.map((z) => (
+        <button
+          type="button"
+          data-teleport={z.hash}
+          class="shrink-0 rounded-md border border-zinc-600 px-2.5 py-1 font-mono text-[11px] text-zinc-200 transition-colors hover:border-amber-400/60 hover:text-amber-300"
+        >
+          {z.index === 0 ? "Intro" : z.title.split(" ").slice(0, 1)}
+        </button>
+      ))}
+    </nav>
+
+    <div class="order-2 ml-auto flex items-center gap-3 sm:order-3">
+      <div class="hidden items-center gap-2 sm:flex">
+        <span class="font-mono text-[10px] uppercase tracking-widest text-slate-500">Progression</span>
+        <span class="relative block h-2 w-28 overflow-hidden rounded-full border border-white/15 bg-black/50">
+          <span
+            data-progress-bar
+            class="absolute inset-y-0 left-0 w-0 rounded-full bg-linear-to-r from-amber-400 to-amber-600"
+          ></span>
+        </span>
+        <span data-progress-label class="w-9 font-mono text-[11px] text-amber-400">0%</span>
+      </div>
+
+      <a
+        href={meta.pdfUrl}
+        download
+        class="rounded-md border border-zinc-600 bg-zinc-900 px-3 py-1.5 font-mono text-[11px] font-semibold text-white transition-colors hover:bg-zinc-800"
+      >
+        Télécharger CV (PDF)
+      </a>
+    </div>
+  </div>
+
+  <div class="h-0.5 w-full bg-white/5 sm:hidden">
+    <span
+      data-progress-bar
+      class="block h-full w-0 bg-linear-to-r from-amber-400 to-amber-600"
+    ></span>
+  </div>
+</header>
+
+<div
+  data-scroll-hint
+  aria-hidden="true"
+  class="pointer-events-none fixed bottom-4 left-1/2 z-40 -translate-x-1/2 rounded-full border border-white/15 bg-black/70 px-4 py-2 font-mono text-[11px] text-slate-300 backdrop-blur-md transition-opacity duration-500"
+>
+  Scroll pour avancer →
+</div>

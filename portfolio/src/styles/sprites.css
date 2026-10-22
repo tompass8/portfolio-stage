@@ -1,0 +1,696 @@
+/* src/styles/sprites.css — CV gamifié : sprites 48x48, pixel art, parallaxe */
+
+:root {
+  --sprite-scale: 3;
+  --player-w: 48px;
+  --player-h: 48px;
+}
+
+.pixelated,
+.pixel-art {
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+/* ---------- Avatar / sprite sheets 48x48 ---------- */
+.sprite {
+  display: block;
+  width: var(--player-w);
+  height: var(--player-h);
+  background-repeat: no-repeat;
+  background-position: 0 0;
+  image-rendering: pixelated;
+  transform-origin: center bottom;
+  will-change: transform;
+}
+
+.sprite--idle {
+  background-image: url("/assets/player/Idle.png");
+  animation: sprite-idle 0.8s steps(4) infinite;
+}
+
+.sprite--run {
+  background-image: url("/assets/player/Run.png");
+  animation: sprite-run 0.6s steps(6) infinite;
+}
+
+.sprite--jump {
+  background-image: url("/assets/player/Jump.png");
+  animation: sprite-jump 0.5s steps(4) 1 forwards;
+}
+
+.sprite--use {
+  background-image: url("/assets/player/Use.png");
+  animation: sprite-use 0.9s steps(6) infinite;
+}
+
+/* Miroir directionnel — scaleX est appliqué au conteneur, l'animation reste sur .sprite */
+.sprite-shell {
+  position: relative;
+  width: var(--player-w);
+  height: var(--player-h);
+  transform: scaleX(1);
+  transform-origin: center bottom;
+  transition: transform 0.12s linear;
+}
+.sprite-shell.is-left { transform: scaleX(-1); }
+.sprite-shell.is-right { transform: scaleX(1); }
+
+/* keyframes : background-position = -(frame * largeur_frame) */
+@keyframes sprite-idle {
+  from { background-position: 0 0; }
+  to { background-position: -192px 0; } /* 4 frames x 48 */
+}
+
+@keyframes sprite-run {
+  from { background-position: 0 0; }
+  to { background-position: -288px 0; } /* 6 frames x 48 */
+}
+
+@keyframes sprite-jump {
+  from { background-position: 0 0; }
+  to { background-position: -192px 0; } /* 4 frames x 48 */
+}
+
+@keyframes sprite-use {
+  from { background-position: 0 0; }
+  to { background-position: -288px 0; } /* 6 frames x 48 */
+}
+
+.sprite--teammate {
+  background-image: url("/assets/npc/teammate-idle.png");
+  animation: sprite-idle 1s steps(4) infinite;
+}
+
+/* ---------- Parallaxe ---------- */
+.world-layer {
+  position: absolute;
+  inset: 0;
+  width: calc(100% + var(--world-w, 0px));
+  background-repeat: repeat-x;
+  background-position: 0 bottom;
+  background-size: auto 100%;
+  image-rendering: pixelated;
+  pointer-events: none;
+  will-change: transform;
+}
+
+.layer-sky { background-image: url("/assets/bg/layer-1-sky.png"); }
+.layer-far { background-image: url("/assets/bg/layer-2-far-city.png"); background-size: auto 70%; background-position: 0 calc(100% - 64px); }
+.layer-mid { background-image: url("/assets/bg/layer-3-mid-buildings.png"); background-size: auto 85%; background-position: 0 calc(100% - 48px); }
+
+.ground-strip {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 64px;
+  background-image: url("/assets/tiles/ground-tile.png");
+  background-repeat: repeat-x;
+  background-size: auto 64px;
+  image-rendering: pixelated;
+}
+
+/* ---------- Ambiance ville arcade ---------- */
+.arcade-stars {
+  position: absolute;
+  inset: 0 0 45% 0;
+  background-image:
+    radial-gradient(1.8px 1.8px at 15% 25%, #fff, transparent),
+    radial-gradient(1.6px 1.6px at 25% 35%, #fde68a, transparent),
+    radial-gradient(1.8px 1.8px at 40% 18%, #fff, transparent),
+    radial-gradient(1.4px 1.4px at 55% 28%, #fca5a5, transparent),
+    radial-gradient(1.8px 1.8px at 68% 22%, #fff, transparent),
+    radial-gradient(1.6px 1.6px at 78% 38%, #fde68a, transparent),
+    radial-gradient(1.8px 1.8px at 88% 16%, #fff, transparent),
+    radial-gradient(1.4px 1.4px at 12% 48%, #fff, transparent),
+    radial-gradient(1.6px 1.6px at 35% 52%, #fde68a, transparent),
+    radial-gradient(1.8px 1.8px at 62% 44%, #fca5a5, transparent),
+    radial-gradient(1.4px 1.4px at 84% 50%, #fff, transparent);
+  background-repeat: repeat-x;
+  background-size: 1200px 100%;
+  opacity: 0.9;
+  animation: arcade-twinkle 3.8s ease-in-out infinite, arcade-stars-drift 60s linear infinite;
+}
+@keyframes arcade-twinkle {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 1; }
+}
+@keyframes arcade-stars-drift {
+  from { background-position-x: 0; }
+  to { background-position-x: -1200px; }
+}
+
+/* Constellations */
+.arcade-constell {
+  position: absolute;
+  inset: 0 0 52% 0;
+  background-image:
+    linear-gradient(35deg, transparent 48%, rgba(253,230,138,0.8) 48%, rgba(253,230,138,0.8) 52%, transparent 52%),
+    linear-gradient(-25deg, transparent 49%, rgba(252,165,165,0.7) 49%, rgba(252,165,165,0.7) 51%, transparent 51%),
+    radial-gradient(2px 2px at 22% 24%, #fff, transparent),
+    radial-gradient(2px 2px at 28% 30%, #fff, transparent),
+    radial-gradient(2px 2px at 34% 26%, #fff, transparent),
+    radial-gradient(2px 2px at 64% 26%, #fff, transparent),
+    radial-gradient(2px 2px at 70% 32%, #fff, transparent),
+    radial-gradient(2px 2px at 76% 28%, #fff, transparent),
+    radial-gradient(2px 2px at 82% 20%, #fff, transparent);
+  background-repeat: no-repeat, no-repeat, repeat-x, repeat-x, repeat-x, repeat-x, repeat-x, repeat-x, repeat-x;
+  background-size: 140px 60px, 130px 50px, 900px 100%, 900px 100%, 900px 100%, 900px 100%, 900px 100%, 900px 100%, 900px 100%;
+  background-position: 18% 18%, 62% 16%, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0;
+  opacity: 0.9;
+  filter: drop-shadow(0 0 4px rgba(253,230,138,0.6));
+  animation: arcade-constell-fade 5s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes arcade-constell-fade {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 1; }
+}
+
+/* Soleil/grille rétro derrière la skyline */
+.arcade-sun {
+  position: absolute;
+  left: 50%;
+  bottom: 26%;
+  width: 240px;
+  height: 240px;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(245,158,11,0.5) 0%, rgba(168,85,247,0.25) 45%, transparent 70%);
+  filter: blur(2px);
+  animation: arcade-sun-pulse 6s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes arcade-sun-pulse {
+  0%, 100% { transform: translateX(-50%) scale(1); opacity: 0.75; }
+  50% { transform: translateX(-50%) scale(1.08); opacity: 1; }
+}
+
+/* Rangée d'enseignes néon clignotantes */
+.arcade-neon-row {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 118px;
+  height: 4px;
+  background: repeating-linear-gradient(
+    90deg,
+    transparent 0 40px,
+    #fbbf24 40px 52px,
+    transparent 52px 90px,
+    #a855f7 90px 102px,
+    transparent 102px 160px
+  );
+  opacity: 0.85;
+  filter: blur(0.4px) drop-shadow(0 0 8px currentColor);
+  animation: arcade-flicker 2.4s steps(1) infinite, arcade-scroll 14s linear infinite;
+}
+@keyframes arcade-flicker {
+  0%, 45%, 55%, 100% { opacity: 0.85; }
+  50% { opacity: 0.25; }
+}
+@keyframes arcade-scroll {
+  from { background-position-x: 0; }
+  to { background-position-x: 160px; }
+}
+
+/* Lumières de voitures filant sur la ligne d'horizon */
+.arcade-cars {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 76px;
+  height: 3px;
+  background-image:
+    linear-gradient(90deg, transparent, #ff3b3b 40%, transparent),
+    linear-gradient(90deg, transparent, #ffe066 50%, transparent);
+  background-size: 300px 3px, 520px 3px;
+  background-position: 0 0, 120px 0;
+  background-repeat: repeat-x;
+  animation: arcade-cars 3.5s linear infinite;
+  opacity: 0.85;
+}
+@keyframes arcade-cars {
+  from { background-position: 0 0, 120px 0; }
+  to { background-position: 300px 0, -400px 0; }
+}
+
+/* Fusée qui traverse le ciel */
+.arcade-rocket {
+  position: absolute;
+  width: 6px;
+  height: 18px;
+  border-radius: 50% 50% 50% 50% / 70% 70% 30% 30%;
+  filter: drop-shadow(0 0 10px rgba(255,204,0,0.9)) drop-shadow(0 0 18px rgba(255,59,59,0.6));
+  pointer-events: none;
+  opacity: 0.95;
+}
+.arcade-rocket--forward {
+  left: -12%;
+  top: 12%;
+  background: linear-gradient(to bottom, #fff 0%, #ffcc00 40%, #ff3b3b 100%);
+  transform: rotate(-15deg);
+  animation: arcade-rocket-fly-forward 16s linear infinite;
+}
+.arcade-rocket--forward::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  width: 2px;
+  height: 14px;
+  transform: translateX(-50%);
+  background: linear-gradient(to bottom, rgba(255,204,0,0.9), transparent);
+  filter: blur(1px);
+}
+@keyframes arcade-rocket-fly-forward {
+  0% { left: -12%; top: 18%; opacity: 0; }
+  5% { opacity: 1; }
+  95% { opacity: 1; }
+  100% { left: 110%; top: 6%; opacity: 0; }
+}
+
+.arcade-rocket--backward {
+  right: -12%;
+  top: 22%;
+  background: linear-gradient(to bottom, #fff 0%, #fbbf24 40%, #a855f7 100%);
+  transform: rotate(165deg);
+  animation: arcade-rocket-fly-backward 19s linear infinite 4s;
+}
+.arcade-rocket--backward::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  width: 2px;
+  height: 16px;
+  transform: translateX(-50%);
+  background: linear-gradient(to bottom, rgba(251,191,36,0.9), transparent);
+  filter: blur(1px);
+}
+@keyframes arcade-rocket-fly-backward {
+  0% { right: -12%; top: 26%; opacity: 0; }
+  5% { opacity: 1; }
+  95% { opacity: 1; }
+  100% { right: 110%; top: 14%; opacity: 0; }
+}
+
+/* ---------- Hélicoptère de police (décor du ciel) ---------- */
+.arcade-heli {
+  --heli-cycle: 20s;
+  --imp-x: -12px;
+  --imp-y: calc(70vh - 50px);
+  --imp-rot: 14deg;
+  --boom-x: 46px;
+  --boom-y: 70vh;
+  position: absolute;
+  top: 16%;
+  left: 0;
+  width: 120px;
+  height: 56px;
+  pointer-events: none;
+  will-change: transform;
+  animation: arcade-heli-fly var(--heli-cycle) linear infinite;
+}
+
+[data-heli-variant="hit"] {
+  --imp-x: -12px;
+  --imp-y: -28px;
+  --imp-rot: -150deg;
+  --boom-x: 46px;
+  --boom-y: 22px;
+}
+
+@keyframes arcade-heli-fly {
+  0% { transform: translate3d(-180px, 0, 0); }
+  59% { transform: translate3d(54vw, 0, 0); }
+  100% { transform: translate3d(108vw, 0, 0); }
+}
+
+/* Miroir : l'hélico vole vers la droite, nez vers la droite */
+.arcade-heli__flip {
+  position: absolute;
+  inset: 0;
+  transform: scaleX(-1);
+}
+
+/* Coque : opacité + tangage (variante "hit" : détruite après l'impact) */
+@keyframes arcade-heli-body-ground {
+  0% { opacity: 0; transform: translateY(0); }
+  2% { opacity: 1; }
+  55% { opacity: 1; transform: translateY(-3px); }
+  59% { opacity: 1; transform: translateY(0); }
+  61% { opacity: 1; transform: translateY(3px); }
+  63% { opacity: 1; transform: translateY(-2px); }
+  65% { opacity: 1; transform: translateY(1px); }
+  67%, 100% { opacity: 1; transform: translateY(0); }
+}
+@keyframes arcade-heli-body-hit {
+  0% { opacity: 0; transform: translateY(0); }
+  2% { opacity: 1; }
+  55% { opacity: 1; transform: translateY(-3px); }
+  59% { opacity: 1; transform: translateY(0); }
+  61% { opacity: 0; }
+  100% { opacity: 0; transform: translateY(0); }
+}
+[data-heli-variant="ground"] .arcade-heli__body { animation: arcade-heli-body-ground var(--heli-cycle) linear infinite; }
+[data-heli-variant="hit"] .arcade-heli__body { animation: arcade-heli-body-hit var(--heli-cycle) linear infinite; }
+
+.arcade-heli__body {
+  position: absolute;
+  inset: 0;
+}
+.arcade-heli__cabin {
+  position: absolute;
+  left: 26px;
+  top: 16px;
+  width: 58px;
+  height: 28px;
+  border-radius: 18px 8px 6px 14px;
+  background: linear-gradient(180deg, #60a5fa 0 42%, #e5e7eb 42% 54%, #1d4ed8 54% 100%);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.55);
+}
+.arcade-heli__cockpit {
+  position: absolute;
+  left: 56px;
+  top: 20px;
+  width: 24px;
+  height: 13px;
+  border-radius: 9px 5px 4px 9px;
+  background: linear-gradient(180deg, #bae6fd, #38bdf8);
+  box-shadow: inset 0 -2px 0 rgba(14, 116, 144, 0.45);
+}
+.arcade-heli__tail {
+  position: absolute;
+  left: 74px;
+  top: 24px;
+  width: 38px;
+  height: 8px;
+  border-radius: 0 4px 4px 0;
+  background: #1d4ed8;
+}
+.arcade-heli__fin {
+  position: absolute;
+  left: 104px;
+  top: 12px;
+  width: 6px;
+  height: 22px;
+  border-radius: 3px 3px 0 0;
+  background: #1d4ed8;
+}
+.arcade-heli__tail-rotor {
+  position: absolute;
+  left: 101px;
+  top: 17px;
+  width: 3px;
+  height: 18px;
+  background: #0f172a;
+  transform-origin: 50% 50%;
+  animation: arcade-heli-tail-rotor 0.45s linear infinite;
+}
+@keyframes arcade-heli-tail-rotor {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.arcade-heli__skids {
+  position: absolute;
+  left: 30px;
+  top: 40px;
+  width: 48px;
+  height: 9px;
+  background:
+    linear-gradient(#0f172a, #0f172a) 6px 0 / 3px 6px no-repeat,
+    linear-gradient(#0f172a, #0f172a) 32px 0 / 3px 6px no-repeat,
+    linear-gradient(#0f172a, #0f172a) 0 6px / 48px 3px no-repeat;
+}
+.arcade-heli__light {
+  position: absolute;
+  top: 11px;
+  width: 10px;
+  height: 7px;
+  border-radius: 2px;
+  opacity: 0.25;
+}
+.arcade-heli__light--red {
+  left: 36px;
+  background: #ef4444;
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.9);
+  animation: arcade-heli-light-red 0.55s steps(1) infinite;
+}
+.arcade-heli__light--blue {
+  left: 50px;
+  background: #3b82f6;
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.9);
+  animation: arcade-heli-light-blue 0.55s steps(1) infinite;
+}
+@keyframes arcade-heli-light-red {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0.25; }
+}
+@keyframes arcade-heli-light-blue {
+  0%, 49% { opacity: 0.25; }
+  50%, 100% { opacity: 1; }
+}
+.arcade-heli__disc {
+  position: absolute;
+  left: 4px;
+  top: 2px;
+  width: 88px;
+  height: 14px;
+  border-radius: 50%;
+  background: rgba(148, 163, 184, 0.12);
+  filter: blur(2px);
+}
+.arcade-heli__rotor {
+  position: absolute;
+  left: 8px;
+  top: 3px;
+  width: 78px;
+  height: 3px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #0f172a 0 50%, #334155 50% 100%);
+  transform-origin: 50% 50%;
+  animation: arcade-heli-rotor 0.14s linear infinite;
+}
+@keyframes arcade-heli-rotor {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Fusée embarquée : arrimée, puis détachée vers le point d'impact */
+.arcade-heli__rocket {
+  position: absolute;
+  left: 46px;
+  top: 46px;
+  width: 24px;
+  height: 8px;
+  border-radius: 1px 4px 4px 1px;
+  background: linear-gradient(180deg, #f1f5f9 0 55%, #94a3b8 55% 100%);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.5);
+  transform-origin: 50% 50%;
+  animation: arcade-heli-rocket var(--heli-cycle) linear infinite;
+}
+.arcade-heli__rocket::before {
+  content: "";
+  position: absolute;
+  left: -6px;
+  top: 0;
+  width: 7px;
+  height: 8px;
+  background: #f87171;
+  clip-path: polygon(100% 0, 100% 100%, 0 50%);
+}
+.arcade-heli__rocket::after {
+  content: "";
+  position: absolute;
+  left: 4px;
+  bottom: -3px;
+  width: 7px;
+  height: 4px;
+  background: #64748b;
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+}
+@keyframes arcade-heli-rocket {
+  0%, 52% { transform: translate3d(0, 0, 0) rotate(0deg); opacity: 1; }
+  55% { transform: translate3d(-8px, 14px, 0) rotate(-35deg); opacity: 1; }
+  59% { transform: translate3d(var(--imp-x), var(--imp-y), 0) rotate(var(--imp-rot)); opacity: 1; }
+  60% { opacity: 0; }
+  100% { opacity: 0; }
+}
+.arcade-heli__flame {
+  position: absolute;
+  left: 100%;
+  top: 1px;
+  width: 14px;
+  height: 6px;
+  background: linear-gradient(to right, #fde68a, #f97316 55%, transparent);
+  clip-path: polygon(0 0, 100% 50%, 0 100%);
+  opacity: 0;
+  transform-origin: 0% 50%;
+  animation: arcade-heli-flame var(--heli-cycle) linear infinite, arcade-heli-flame-flicker 0.12s steps(2) infinite;
+}
+@keyframes arcade-heli-flame {
+  0%, 52% { opacity: 0; }
+  54% { opacity: 1; }
+  59% { opacity: 1; }
+  60%, 100% { opacity: 0; }
+}
+@keyframes arcade-heli-flame-flicker {
+  0% { transform: scaleX(0.75); }
+  100% { transform: scaleX(1.15); }
+}
+
+/* Explosion */
+.arcade-heli__boom {
+  position: absolute;
+  left: var(--boom-x);
+  top: var(--boom-y);
+  width: 0;
+  height: 0;
+}
+.arcade-heli__blast {
+  position: absolute;
+  left: -34px;
+  top: -34px;
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fff 0 12%, #fde68a 12% 30%, #fbbf24 30% 48%, #f97316 48% 64%, #ef4444 64% 76%, transparent 78%);
+  opacity: 0;
+  transform: scale(0.15);
+  animation: arcade-heli-blast var(--heli-cycle) linear infinite;
+}
+@keyframes arcade-heli-blast {
+  0%, 58.5% { opacity: 0; transform: scale(0.15); }
+  60% { opacity: 1; transform: scale(0.55); }
+  62% { opacity: 1; transform: scale(1.05); }
+  65% { opacity: 0.85; transform: scale(1.35); }
+  68%, 100% { opacity: 0; transform: scale(1.5); }
+}
+.arcade-heli__smoke {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(203, 213, 225, 0.85), rgba(71, 85, 105, 0.25) 68%, transparent);
+  opacity: 0;
+  animation: arcade-heli-smoke var(--heli-cycle) linear infinite;
+}
+.arcade-heli__smoke--1 { left: -17px; top: -17px; width: 34px; height: 34px; }
+.arcade-heli__smoke--2 { left: -3px; top: -27px; width: 26px; height: 26px; animation-delay: 0.3s; }
+.arcade-heli__smoke--3 { left: -27px; top: -25px; width: 30px; height: 30px; animation-delay: 0.6s; }
+@keyframes arcade-heli-smoke {
+  0%, 59% { opacity: 0; transform: scale(0.4) translateY(0); }
+  61% { opacity: 0.9; transform: scale(0.7) translateY(-4px); }
+  70% { opacity: 0; transform: scale(1.6) translateY(-26px); }
+  100% { opacity: 0; transform: scale(1.6) translateY(-26px); }
+}
+.arcade-heli__debris {
+  position: absolute;
+  left: -2px;
+  top: -2px;
+  width: 4px;
+  height: 4px;
+  background: #f97316;
+  opacity: 0;
+  animation: arcade-heli-debris var(--heli-cycle) linear infinite;
+}
+@keyframes arcade-heli-debris {
+  0%, 59% { opacity: 0; transform: translate(0, 0) rotate(0deg); }
+  60% { opacity: 1; }
+  66%, 100% { opacity: 0; transform: translate(var(--dx), var(--dy)) rotate(var(--dr)); }
+}
+
+/* ---------- Fallback : mobile / reduced-motion / no-JS ---------- */
+@media (max-width: 767px) {
+  [data-viewport] {
+    position: relative !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+  [data-world-container] {
+    position: relative !important;
+    inset: auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    width: 100% !important;
+    transform: none !important;
+  }
+  [data-zone] {
+    width: 100% !important;
+    height: auto !important;
+    min-height: 100vh;
+  }
+  [data-zone] > .relative.z-10 {
+    padding-bottom: 6rem;
+  }
+  [data-avatar] { display: none; }
+  .arcade-heli { display: none; }
+  .world-layer {
+    width: 100%;
+    height: 100vh;
+    bottom: auto;
+    transform: none !important;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  /* Layout empilé (comme mobile) : le monde horizontal devient vertical */
+  [data-viewport] {
+    position: relative !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+  [data-world-container] {
+    position: relative !important;
+    inset: auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    width: 100% !important;
+    transform: none !important;
+  }
+  [data-zone] {
+    width: 100% !important;
+    height: auto !important;
+    min-height: 100vh;
+  }
+  [data-zone] > .relative.z-10 {
+    padding-bottom: 6rem;
+  }
+  .world-layer {
+    width: 100%;
+    height: 100vh;
+    bottom: auto;
+    transform: none !important;
+  }
+
+  .arcade-stars,
+  .arcade-constell,
+  .arcade-rocket--forward,
+  .arcade-rocket--backward,
+  .arcade-sun,
+  .arcade-neon-row,
+  .arcade-cars { animation: none; opacity: 0.6; }
+  .world-layer { transform: none !important; }
+  .sprite--idle,
+  .sprite--run,
+  .sprite--jump,
+  .sprite--use,
+  .sprite--teammate { animation: none; }
+  .sprite--run { background-position: -48px 0; }
+
+  /* Hélicoptère : état final visible, sans vol ni explosion */
+  .arcade-heli {
+    animation: none;
+    top: 6vh;
+    transform: translate3d(22vw, 0, 0);
+  }
+  [data-heli] .arcade-heli__body { animation: none; opacity: 1; transform: none; }
+  .arcade-heli__rocket { animation: none; opacity: 1; transform: none; }
+  .arcade-heli__flame { animation: none; opacity: 0; }
+  .arcade-heli__boom,
+  .arcade-heli__blast,
+  .arcade-heli__smoke,
+  .arcade-heli__debris { animation: none; opacity: 0; }
+  .arcade-heli__rotor,
+  .arcade-heli__tail-rotor { animation: none; }
+  .arcade-heli__light { animation: none; opacity: 1; }
+}

@@ -1,0 +1,30 @@
+---
+import "../styles/global.css";
+import "../styles/sprites.css";
+import "@fontsource-variable/inter";
+import "@fontsource-variable/jetbrains-mono";
+
+interface Props {
+  title: string;
+  description?: string;
+}
+const {
+  title,
+  description = "CV interactif gamifié — Tom Passerman, Ingénieur IT (Full-Stack, Systèmes & Réseaux, Data & IoT).",
+} = Astro.props;
+---
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#05060d" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="robots" content="noindex" />
+  </head>
+  <body class="bg-bg font-sans text-slate-200 antialiased selection:bg-neon-violet/40">
+    <slot />
+  </body>
+</html>
