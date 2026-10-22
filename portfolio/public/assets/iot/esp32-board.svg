@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="38 18 224 172" width="224" height="172" role="img" aria-label="ESP32 DevKit v1 — Fritzing-style breadboard view">
+  <style>
+    .pcb { fill:#0a7a5a; stroke:#064e3a; stroke-width:1.4; }
+    .pcb-edge { fill:#065f46; }
+    .copper { fill:#c9a227; stroke:#8a6f16; stroke-width:0.7; }
+    .copper-hole { fill:#2a2410; }
+    .pad-label { font-family:monospace; font-size:4.2px; fill:#eaf6ff; }
+    .module { fill:#1b2530; stroke:#0b1220; stroke-width:1.2; }
+    .shield { fill:#2b3947; stroke:#0b1220; stroke-width:1; }
+    .silkscreen { font-family:monospace; fill:#d7fbe9; }
+    .chip-text { font-family:monospace; fill:#00e5ff; }
+  </style>
+
+  <!-- board -->
+  <rect class="pcb" x="46" y="24" width="208" height="152" rx="5"/>
+  <rect class="pcb-edge" x="46" y="24" width="208" height="7" rx="3"/>
+
+  <!-- mounting holes -->
+  <circle cx="58" cy="36" r="3.1" fill="#052e24"/>
+  <circle cx="242" cy="36" r="3.1" fill="#052e24"/>
+  <circle cx="58" cy="164" r="3.1" fill="#052e24"/>
+  <circle cx="242" cy="164" r="3.1" fill="#052e24"/>
+
+  <!-- ESP32 WROOM-32 shield (metal can) -->
+  <rect class="shield" x="104" y="46" width="92" height="74" rx="3"/>
+  <rect class="module" x="112" y="54" width="76" height="58" rx="2"/>
+  <text class="chip-text" x="150" y="78" font-size="12" text-anchor="middle">ESP32</text>
+  <text class="chip-text" x="150" y="90" font-size="6" text-anchor="middle">WROOM-32</text>
+  <text class="chip-text" x="150" y="100" font-size="4.2" fill="#8ad7ff" text-anchor="middle">2.4GHz Wi-Fi + BT</text>
+  <!-- pcb antenna + meander -->
+  <rect x="112" y="46" width="76" height="7" fill="#0d1b12"/>
+  <path d="M116 50 h6 v-3 h6 v3 h6 v-3 h6 v3 h6 v-3 h6 v3 h6 v-3 h6" fill="none" stroke="#c8b06a" stroke-width="0.9"/>
+
+  <!-- micro-USB connector -->
+  <rect class="module" x="132" y="168" width="36" height="20" rx="2"/>
+  <rect x="138" y="172" width="24" height="12" rx="1.5" fill="#0c1522" stroke="#3d4b5c" stroke-width="0.8"/>
+  <text class="silkscreen" x="150" y="185" font-size="4" text-anchor="middle">USB</text>
+
+  <!-- left header (15 pins) -->
+  <g>
+    <rect class="copper" x="52" y="40" width="14" height="128" rx="1.5"/>
+    <g fill="#2a2410">
+      <rect x="55.5" y="46" width="7" height="5"/><rect x="55.5" y="56" width="7" height="5"/>
+      <rect x="55.5" y="66" width="7" height="5"/><rect x="55.5" y="76" width="7" height="5"/>
+      <rect x="55.5" y="86" width="7" height="5"/><rect x="55.5" y="96" width="7" height="5"/>
+      <rect x="55.5" y="106" width="7" height="5"/><rect x="55.5" y="116" width="7" height="5"/>
+      <rect x="55.5" y="126" width="7" height="5"/><rect x="55.5" y="136" width="7" height="5"/>
+      <rect x="55.5" y="146" width="7" height="5"/><rect x="55.5" y="156" width="7" height="5"/>
+    </g>
+  </g>
+  <!-- right header -->
+  <g>
+    <rect class="copper" x="234" y="40" width="14" height="128" rx="1.5"/>
+    <g fill="#2a2410">
+      <rect x="237.5" y="46" width="7" height="5"/><rect x="237.5" y="56" width="7" height="5"/>
+      <rect x="237.5" y="66" width="7" height="5"/><rect x="237.5" y="76" width="7" height="5"/>
+      <rect x="237.5" y="86" width="7" height="5"/><rect x="237.5" y="96" width="7" height="5"/>
+      <rect x="237.5" y="106" width="7" height="5"/><rect x="237.5" y="116" width="7" height="5"/>
+      <rect x="237.5" y="126" width="7" height="5"/><rect x="237.5" y="136" width="7" height="5"/>
+      <rect x="237.5" y="146" width="7" height="5"/><rect x="237.5" y="156" width="7" height="5"/>
+    </g>
+  </g>
+
+  <!-- status LEDs -->
+  <circle cx="78" cy="140" r="3" fill="#e11d48"/>
+  <circle cx="78" cy="150" r="3" fill="#22c55e"/>
+  <text class="silkscreen" x="86" y="143" font-size="3.4">PWR</text>
+  <text class="silkscreen" x="86" y="153" font-size="3.4">LED</text>
+
+  <!-- EN + BOOT buttons -->
+  <rect class="module" x="200" y="52" width="18" height="14" rx="2"/>
+  <rect class="module" x="200" y="72" width="18" height="14" rx="2"/>
+  <text class="silkscreen" x="209" y="61" font-size="3.4" text-anchor="middle">EN</text>
+  <text class="silkscreen" x="209" y="81" font-size="3.4" text-anchor="middle">BOOT</text>
+
+  <!-- silkscreen labels near headers -->
+  <text class="pad-label" x="70" y="49">3V3</text>
+  <text class="pad-label" x="70" y="69">EN</text>
+  <text class="pad-label" x="70" y="89">GPIO4</text>
+  <text class="pad-label" x="70" y="109">GPIO16</text>
+  <text class="pad-label" x="70" y="129">GND</text>
+  <text class="pad-label" x="203" y="49">VIN</text>
+  <text class="pad-label" x="203" y="69">GND</text>
+  <text class="pad-label" x="203" y="89">GPIO21</text>
+  <text class="pad-label" x="203" y="109">GPIO22</text>
+
+  <!-- vendor mark -->
+  <text class="silkscreen" x="150" y="164" font-size="5" text-anchor="middle" opacity="0.85">ESP32 DEVKIT V1</text>
+</svg>
