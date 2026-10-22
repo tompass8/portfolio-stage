@@ -1,0 +1,34 @@
+---
+// Rail fixe de progression des sections (façon fps-navigation-bar d'EnduroSat)
+const items = [
+  { id: "hero", label: "Intro", zone: "dev" },
+  { id: "dev", label: "Dev", zone: "dev" },
+  { id: "process", label: "Méthode", zone: "dev" },
+  { id: "governance", label: "Gouvernance", zone: "gov" },
+  { id: "contact", label: "Contact", zone: "gov" },
+];
+---
+<nav
+  aria-label="Progression des sections"
+  data-section-nav
+  class="fixed right-4 top-1/2 z-40 hidden -translate-y-1/2 flex-col items-end gap-4 lg:flex"
+>
+  {items.map((item) => (
+    <a
+      href={`#${item.id}`}
+      data-nav-item={item.id}
+      class="group flex items-center gap-3"
+    >
+      <span data-nav-label>{item.label}</span>
+      <span class="relative block h-14 w-px bg-white/10">
+        <span
+          data-nav-fill
+          class:list={[
+            "absolute left-0 top-0 block h-full w-px origin-top",
+            item.zone === "gov" ? "bg-neon-violet" : "bg-neon-blue",
+          ]}
+        ></span>
+      </span>
+    </a>
+  ))}
+</nav>
