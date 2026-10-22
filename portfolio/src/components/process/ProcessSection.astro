@@ -1,0 +1,176 @@
+---
+import SectionShell from "../timeline/SectionShell.astro";
+import StatsBand from "../stats/StatsBand.astro";
+
+const steps = [
+  {
+    n: "01",
+    title: "Cadrage",
+    sub: "vos besoins",
+    image: "/images/process/cadrage.webp",
+    caption: "ATELIER DE RECUEIL — USER-STORIES & JALONS",
+    points: [
+      "Ateliers de recueil du besoin & user-stories",
+      "Choix de la stack et des livrables",
+      "Jalons, budget et critères d'acceptation",
+    ],
+  },
+  {
+    n: "02",
+    title: "Build",
+    sub: "itératif & testé",
+    image: "/images/process/build.webp",
+    caption: "REVUE DE CODE — SPRINTS & TESTS AUTOMATISÉS",
+    points: [
+      "Développement par sprints avec démos régulières",
+      "Revue de code et tests automatisés",
+      "Intégration continue dès le premier commit",
+    ],
+  },
+  {
+    n: "03",
+    title: "Deploy",
+    sub: "en production",
+    image: "/images/process/deploy.webp",
+    caption: "PIPELINE CI/CD — MISE EN LIGNE SANS DOWNTIME",
+    points: [
+      "Pipeline CI/CD reproductible",
+      "Conteneurisation & mise en ligne sans downtime",
+      "Logs, métriques et alertes en place",
+    ],
+  },
+  {
+    n: "04",
+    title: "Suivi",
+    sub: "après la mise en ligne",
+    image: "/images/process/suivi.webp",
+    caption: "MONITORING — MÉTRIQUES & OPTIMISATION",
+    points: [
+      "Monitoring, correctifs et évolutions",
+      "Optimisation des performances",
+      "Transfert de compétences & documentation",
+    ],
+  },
+];
+---
+<SectionShell
+  id="process"
+  hash="b3c4d5e"
+  message="feat(process): méthode cadrage -> build -> deploy -> suivi"
+  zone="dev"
+  class="py-12 md:py-20"
+>
+  <div class="mt-6 max-w-3xl">
+    <span class="font-mono text-xs uppercase tracking-widest text-neon-blue">
+      02 // MÉTHODE DE TRAVAIL
+    </span>
+    <h2 data-reveal-title class="mt-2 font-sans text-3xl font-bold tracking-tight text-white sm:text-4xl">
+      De l'idée à la production en quatre étapes
+    </h2>
+    <p class="mt-3 text-base text-slate-300">
+      Une méthode de livraison continue, transparente et mesurable — le même niveau d'exigence
+      que j'applique déjà sur mes projets et mes missions d'accompagnement, et que je mettrai
+      en pratique chez Alpha to Omega.
+    </p>
+  </div>
+
+  <!-- Bandeau photo « commit en cours » -->
+  <div class="relative mt-8 overflow-hidden rounded-2xl border border-white/10">
+    <img
+      src="/images/process-code.webp"
+      alt=""
+      width="1600"
+      height="1067"
+      loading="lazy"
+      decoding="async"
+      class="kenburns h-40 w-full object-cover object-center opacity-55 grayscale-[55%] md:h-52"
+    />
+    <div class="absolute inset-0 bg-linear-to-r from-bg/85 via-bg/45 to-transparent"></div>
+    <p class="absolute bottom-3 left-4 font-mono text-xs text-slate-300">
+      <span class="text-ok">$</span> git push origin main<span class="ml-0.5 inline-block h-3 w-1.5 translate-y-0.5 animate-pulse bg-neon-blue"></span>
+    </p>
+  </div>
+
+  <!-- Bloc sticky piloté au scroll (waypoint type « Two steps » d'EnduroSat) -->
+  <div data-process class="relative mt-10">
+    <div data-process-sticky class="flex flex-col justify-center">
+      <div class="grid gap-8 md:grid-cols-2 md:items-center">
+        <div data-process-steps class="grid gap-6">
+          {steps.map((s, i) => (
+            <article
+              data-process-step={i}
+              class:list={["grid gap-5 md:grid-cols-1 md:items-start", i === 0 && "is-active"]}
+            >
+              <div>
+                <span class="font-mono text-xs text-slate-400">{s.n}</span>
+                <h3 class="mt-1 font-sans text-3xl font-bold text-white sm:text-4xl">{s.title}</h3>
+                <p class="font-mono text-xs uppercase tracking-widest text-neon-blue">{s.sub}</p>
+              </div>
+              <div class="rounded-2xl border border-white/10 bg-surface/80 p-6 backdrop-blur-md">
+                <ul class="space-y-2.5 font-mono text-xs text-slate-300">
+                  {s.points.map((p) => (
+                    <li class="flex gap-2">
+                      <span class="text-neon-blue">›</span>
+                      <span>{p}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </article>
+          ))}
+        </div>
+
+        <!-- Pile d'images pilotée par le scroll -->
+        <div
+          class="relative hidden aspect-[4/3] overflow-hidden rounded-2xl border border-white/10 md:block"
+          aria-hidden="true"
+        >
+          {steps.map((s, i) => (
+            <img
+              data-process-image={i}
+              data-caption={s.caption}
+              src={s.image}
+              alt=""
+              width="1400"
+              height="1050"
+              loading="lazy"
+              decoding="async"
+              class:list={["process-shot", i === 0 && "is-active"]}
+            />
+          ))}
+          <div class="pointer-events-none absolute inset-0 bg-linear-to-t from-bg/75 via-transparent to-transparent"></div>
+          <p class="absolute bottom-3 left-4 font-mono text-[11px] text-slate-300">
+            <span class="text-neon-blue">▮</span>
+            <span data-process-caption>{steps[0].caption}</span>
+          </p>
+        </div>
+      </div>
+
+      <!-- Barre de progression façon « In just 6 months » -->
+      <div class="mt-8">
+        <div class="relative h-px w-full bg-white/10">
+          <span
+            data-process-fill
+            class="absolute left-0 top-0 block h-px w-full origin-left bg-neon-blue shadow-[0_0_8px_var(--color-neon-blue)]"
+          ></span>
+        </div>
+        <div class="mt-4 flex flex-wrap gap-2">
+          {steps.map((s, i) => (
+            <button
+              type="button"
+              data-process-tab={i}
+              class:list={[
+                "rounded-md border border-white/30 bg-black/50 px-3.5 py-2 font-mono text-[11px] font-semibold uppercase tracking-widest text-slate-200 transition-colors hover:border-neon-blue/60 hover:text-white",
+                i === 0 && "is-active",
+              ]}
+            >
+              {s.n}. {s.title}
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <StatsBand />
+</SectionShell>
