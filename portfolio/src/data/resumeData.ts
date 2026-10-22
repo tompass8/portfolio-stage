@@ -45,6 +45,7 @@ export interface ResumeZone {
   hash: string;
   level: string;
   title: string;
+  short: string;
   subtitle: string;
   kind: "spawn" | "skills" | "experience" | "projects" | "contact";
   width: number;
@@ -104,6 +105,7 @@ export const resumeData: ResumeData = {
       hash: "intro",
       level: "ZONE 00 // SPAWN & IDENTITÉ",
       title: "Bienvenue à bord",
+      short: "Intro",
       subtitle: "Origines, profil et prise en main",
       kind: "spawn",
       width: 1400,
@@ -114,6 +116,7 @@ export const resumeData: ResumeData = {
       hash: "competences",
       level: "NIVEAU 01 // LA FORGE TECHNIQUE",
       title: "Matrice des compétences",
+      short: "Compétences",
       subtitle: "Salle de serveurs & laboratoire",
       kind: "skills",
       width: 1600,
@@ -124,6 +127,7 @@ export const resumeData: ResumeData = {
       hash: "experiences",
       level: "NIVEAU 02 // LES QG",
       title: "Quartiers généraux professionnels",
+      short: "Expériences",
       subtitle: "ITL & Orange — infrastructures critiques",
       kind: "experience",
       width: 1600,
@@ -134,6 +138,7 @@ export const resumeData: ResumeData = {
       hash: "projets",
       level: "NIVEAU 03 // LE LABO & L'USINE",
       title: "Projets phares & prototype IoT",
+      short: "Projets",
       subtitle: "Hardware, Cloud et systèmes embarqués",
       kind: "projects",
       width: 2200,
@@ -144,6 +149,7 @@ export const resumeData: ResumeData = {
       hash: "contact",
       level: "NIVEAU 04 // BOSS FINAL",
       title: "Le Terminal de Contact",
+      short: "Contact",
       subtitle: "Borne d'arcade — envoie ton message",
       kind: "contact",
       width: 1400,

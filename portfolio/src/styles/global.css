@@ -323,3 +323,12 @@ html.zone-gov [data-line-head] {
   .cicd-pulse, .cicd-arrow { animation: none; }
   .cicd-pulse { left: 30%; opacity: 0.8; }
 }
+/* ---- Animations decoratives Tailwind : neutralisees en mouvement reduit ---- */
+@media (prefers-reduced-motion: reduce) {
+  .animate-bounce,
+  .animate-pulse,
+  .animate-ping,
+  .animate-spin {
+    animation: none !important;
+  }
+}

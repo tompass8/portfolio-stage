@@ -9,12 +9,13 @@ const { spawn, skills, experience, projects, contact } = resumeData;
 <GameLayout title="CV Interactif — Tom Passerman">
   <HudNavigation />
   <main class="relative">
+    <h1 class="sr-only">CV interactif de Tom Passerman — développeur web, IA et gouvernance numérique</h1>
     <InteractiveWorld />
   </main>
 
   <noscript>
     <section class="mx-auto max-w-4xl px-6 py-16">
-      <h1 class="font-sans text-3xl font-bold text-white">CV — Tom Passerman</h1>
+      <p class="font-sans text-3xl font-bold text-white">CV — Tom Passerman</p>
       <p class="mt-3 text-sm text-slate-300">{spawn.bio}</p>
       <ul class="mt-4 space-y-1 font-mono text-xs text-slate-300">
         {spawn.highlights.map((h) => <li>▸ {h}</li>)}
