@@ -1,0 +1,17 @@
+# Artefacts de build Astro générés à la racine du dépôt
+.astro/
+
+# Dépendances installées à la racine (le projet vit dans portfolio/)
+node_modules/
+
+# Sorties de build
+dist/
+
+# Fichiers OS / IDE
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Configuration locale opencode
+.opencode/
