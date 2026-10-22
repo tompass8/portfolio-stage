@@ -2,11 +2,9 @@
 import Lenis from "lenis";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { prefersReducedMotion } from "../lib/motion";
 
-gsap.registerPlugin(ScrollTrigger);
-
-export const prefersReducedMotion = () =>
-  window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+export { prefersReducedMotion };
 
 let lenis: Lenis | null = null;
 export const getLenis = () => lenis;

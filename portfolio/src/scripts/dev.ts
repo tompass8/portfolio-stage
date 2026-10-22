@@ -27,7 +27,6 @@ export function initDevSection() {
 
   cmdEl.textContent = "";
   gsap.set(logs, { opacity: 0, x: -8 });
-  gsap.set(cards, { opacity: 0, y: 32 });
 
   const proxy = { chars: 0 };
 
@@ -66,16 +65,25 @@ export function initDevSection() {
     "+=0.1"
   );
 
-  tl.to(
-    cards,
-    {
-      opacity: 1,
-      y: 0,
-      duration: 0.6,
-      stagger: 0.15,
-      ease: "power3.out",
-      clearProps: "transform",
-    },
-    "-=0.2"
-  );
+  // Révélation des cartes sur leur propre déclencheur (évite de fighting
+  // avec le tilt 3D possédé par React sur ProjectCard)
+  if (cards.length) {
+    gsap.fromTo(
+      cards,
+      { opacity: 0, y: 32 },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 0.6,
+        stagger: 0.15,
+        ease: "power3.out",
+        clearProps: "transform",
+        scrollTrigger: {
+          trigger: cards[0],
+          start: "top 88%",
+          once: true,
+        },
+      }
+    );
+  }
 }
