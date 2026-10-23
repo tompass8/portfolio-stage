@@ -600,9 +600,9 @@
   66%, 100% { opacity: 0; transform: translate(var(--dx), var(--dy)) rotate(var(--dr)); }
 }
 
-/* ---------- Fallback : mobile / reduced-motion / no-JS ---------- */
-/* Seuil « empilé » : petit écran OU fenêtre courte (paysage téléphone, desktop bas). */
-@media (max-width: 1023px), (max-height: 640px) {
+/* ---------- Fallback : fenêtre courte uniquement (paysage) ---------- */
+/* Le monde horizontal reste actif sur téléphone portrait : seul le très court écran bascule. */
+@media (max-height: 640px) {
   [data-viewport] {
     position: relative !important;
     height: auto !important;
@@ -632,9 +632,7 @@
     flex-direction: column;
     max-width: none !important;
   }
-  [data-project-row] > [data-project] {
-    width: 100% !important;
-  }
+  [data-project-row] > [data-project],
   [data-project-row] > [data-reveal] {
     width: 100% !important;
     max-width: none !important;
@@ -644,6 +642,91 @@
     height: 100svh;
     bottom: auto;
     transform: none !important;
+  }
+}
+
+/* ---------- Compaction mobile du contenu des zones (monde horizontal conservé) ---------- */
+/* Sous 1024px de large, on réduit tailles et paddings pour que chaque zone tienne dans 100vh
+   sans casser la piste horizontale (le conteneur du monde reste en flex-row). */
+@media (max-width: 1023px) {
+  [data-zone] > .relative.z-10 {
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+    padding-bottom: 5.5rem;
+  }
+  [data-zone] > .relative.z-10 > p:first-of-type {
+    font-size: 0.65rem;
+  }
+  [data-zone] h2[data-reveal-title] {
+    font-size: 1.35rem;
+    line-height: 1.2;
+  }
+  [data-zone] > .relative.z-10 > p {
+    font-size: 0.75rem;
+  }
+
+  /* Compétences : grille forcée en 4 colonnes (comme desktop) pour des cartes ~288px */
+  [data-zone="competences"] > .relative.z-10 > div:nth-of-type(1) {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.6rem;
+  }
+  [data-zone="competences"] [data-reveal] {
+    padding: 0.65rem;
+  }
+  [data-zone="competences"] [data-reveal] h3 {
+    font-size: 0.72rem;
+  }
+  [data-zone="competences"] [data-reveal] li {
+    font-size: 0.62rem;
+    gap: 0.35rem;
+  }
+  [data-zone="competences"] [data-reveal] li img {
+    width: 12px;
+    height: 12px;
+  }
+
+  /* Expériences : cartes compactes */
+  [data-zone="experiences"] > .relative.z-10 > div:nth-of-type(1) {
+    gap: 0.9rem;
+  }
+  [data-zone="experiences"] [data-reveal] {
+    padding: 0.85rem;
+  }
+  [data-zone="experiences"] [data-reveal] h3 {
+    font-size: 0.95rem;
+  }
+  [data-zone="experiences"] [data-reveal] li {
+    font-size: 0.72rem;
+  }
+
+  /* Projets : cartes plus étroites (on avance horizontalement) */
+  [data-project-row] {
+    gap: 0.85rem;
+  }
+  [data-project-row] > [data-project] {
+    width: 300px;
+    padding: 0.85rem;
+  }
+  [data-project-row] > [data-project] h3 {
+    font-size: 0.9rem;
+  }
+  [data-project-row] > [data-project] p,
+  [data-project-row] > [data-project] li {
+    font-size: 0.65rem;
+  }
+
+  /* Intro : 2 colonnes (comme desktop) pour des cartes ~440px */
+  [data-zone="intro"] > .relative.z-10 > div:nth-of-type(1) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.85rem;
+  }
+  [data-zone="intro"] > .relative.z-10 > div:nth-of-type(1) > div:first-child {
+    padding: 0.9rem;
+  }
+
+  /* Contact : formulaires compacts */
+  [data-zone="contact"] > .relative.z-10 > div:nth-of-type(1) {
+    gap: 0.9rem;
   }
 }
 @media (prefers-reduced-motion: reduce) {

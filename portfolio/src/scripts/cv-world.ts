@@ -15,7 +15,7 @@ const LAYER_SPEED: Record<string, number> = {
 };
 
 const isStacked = () =>
-  window.matchMedia("(max-width: 1023px), (max-height: 640px)").matches;
+  prefersReducedMotion() || window.matchMedia("(max-height: 640px)").matches;
 
 export function initCvWorld() {
   const worldEl = document.querySelector<HTMLElement>("[data-world]");
