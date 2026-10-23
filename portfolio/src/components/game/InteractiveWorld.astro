@@ -8,10 +8,16 @@ const devicon = (name: string) =>
   `https://cdn.jsdelivr.net/gh/devicons/devicon/icons/${name}/${name}-original.svg`;
 ---
 <div id="cv-world" class="relative bg-bg" data-world>
-  <!-- Piste de scroll (hauteur = largeur du monde) -->
-  <div data-scroll-track class="pointer-events-none" aria-hidden="true"></div>
-
-    <div data-viewport class="sticky top-0 h-screen overflow-hidden" style={`--world-w:${worldWidth}px`}>
+  <!-- Piste de scroll horizontale (largeur = largeur du monde) -->
+  <div
+    data-hscroll
+    class="relative h-screen w-full overflow-x-auto overflow-y-hidden overscroll-x-contain"
+    tabindex="0"
+    role="region"
+    aria-label="CV interactif — défilement horizontal"
+  >
+    <div data-hscroll-inner class="relative h-screen" style={`width:${worldWidth}px`}>
+      <div data-viewport class="sticky left-0 top-0 h-screen overflow-hidden" style={`--world-w:${worldWidth}px`}>
     <!-- Fonds parallaxe -->
     <div class="absolute inset-0 overflow-hidden" aria-hidden="true">
       <div class="world-layer layer-sky" data-layer="sky"></div>
@@ -295,6 +301,8 @@ const devicon = (name: string) =>
     >
       <div data-avatar-shell class="sprite-shell is-right">
         <div data-avatar-sprite class="sprite sprite--idle"></div>
+      </div>
+    </div>
       </div>
     </div>
   </div>

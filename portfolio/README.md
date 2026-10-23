@@ -86,9 +86,11 @@ Le projet applique le principe **DOM-first** : le DOM est la source de vérité 
 | `zone-projects` | `#projets` | 2 200 px | Cartes projets + prototype IoT |
 | `zone-contact` | `#contact` | 1 400 px | Terminal de contact + canaux |
 
-Le scroll vertical pilote une **translation horizontale** du monde (`data-world-container` déplacé en `transform` par GSAP), les calques de fond suivent à des vitesses différentes (parallaxe via `.world-layer` dimensionnées en `calc(100% + var(--world-w))`), et les props décoratifs sont cliquables (« saut »).
+Le monde défile sur un **axe horizontal natif** : `[data-hscroll]` est un vrai scroller (`overflow-x: auto`) et `cv-world.ts` lit son `scrollLeft` pour déplacer `data-world-container` en `transform` via GSAP. Le viewport (`data-viewport`) reste `sticky left-0` pendant que le monde défile ; les calques de fond suivent à des vitesses différentes (parallaxe via `.world-layer` dimensionnées en `calc(100% + var(--world-w))`) et les props décoratifs sont cliquables (« saut »).
 
-**Monde horizontal sur mobile** : le scroll vertical pilote la translation latérale sur **toutes les largeurs**, téléphone compris. Sous `1024px`, le contenu des zones est simplement **compacté** (grilles multi-colonnes façon desktop, cartes projets ~300px, paddings réduits) pour tenir dans `100vh` sans casser la piste horizontale.
+**Entrées** : trackpad horizontal, swipe tactile, et **molette verticale remappée** sur l'axe horizontal (avec passage au footer vertical aux extrémités) ; flèches ← → au clavier. La barre de défilement est masquée. Le footer « Fin de la balade » reste sous le monde, atteint en scroll vertical une fois la course terminée.
+
+**Monde horizontal sur mobile** : l'axe horizontal est conservé sur **toutes les largeurs**, téléphone compris. Sous `1024px`, le contenu des zones est simplement **compacté** (grilles multi-colonnes façon desktop, cartes projets ~300px, paddings réduits) pour tenir dans `100vh` sans casser la piste horizontale.
 
 **Seuil « empilé »** : le layout vertical (zones les unes sous les autres, décors masqués) n'est conservé que pour `prefers-reduced-motion: reduce` **ou** une fenêtre très courte — `(max-height: 640px)` (paysage téléphone). Ce seuil est défini **à l'identique** dans `sprites.css` et dans `isStacked()` (`cv-world.ts`) : toute modification doit garder les deux alignés.
 

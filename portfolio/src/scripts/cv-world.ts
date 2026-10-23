@@ -1,12 +1,8 @@
-// src/scripts/cv-world.ts — moteur du CV gamifié (side-scrolling 2D)
+// src/scripts/cv-world.ts — moteur du CV gamifié (side-scrolling 2D, axe horizontal)
 import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { ScrollToPlugin } from "gsap/ScrollToPlugin";
 import { createAvatar } from "./cv-avatar";
 import { prefersReducedMotion } from "../lib/motion";
 import type { SpriteState } from "../data/resumeData";
-
-gsap.registerPlugin(ScrollToPlugin);
 
 const LAYER_SPEED: Record<string, number> = {
   sky: 0.1,
@@ -14,6 +10,7 @@ const LAYER_SPEED: Record<string, number> = {
   mid: 0.6,
 };
 
+// Empilé uniquement si mouvement réduit ou fenêtre très courte (paysage téléphone).
 const isStacked = () =>
   prefersReducedMotion() || window.matchMedia("(max-height: 640px)").matches;
 
@@ -22,7 +19,7 @@ export function initCvWorld() {
   if (!worldEl) return;
   const world = worldEl;
 
-  const viewport = world.querySelector<HTMLElement>("[data-viewport]")!;
+  const scroller = world.querySelector<HTMLElement>("[data-hscroll]");
   const container = world.querySelector<HTMLElement>("[data-world-container]")!;
   const avatarRoot = world.querySelector<HTMLElement>("[data-avatar]")!;
   const layers = Array.from(world.querySelectorAll<HTMLElement>("[data-layer]"));
@@ -34,7 +31,14 @@ export function initCvWorld() {
   const avatar = createAvatar(avatarRoot);
 
   const staticMode = () => isStacked() || prefersReducedMotion();
-  const distance = () => Math.max(container.offsetWidth - window.innerWidth, 0);
+  const viewportWidth = () => scroller?.clientWidth ?? window.innerWidth;
+  const distance = () => Math.max(container.offsetWidth - viewportWidth(), 0);
+  const maxScroll = () => (scroller ? Math.max(scroller.scrollWidth - scroller.clientWidth, 1) : 1);
+
+  function syncViewportWidth() {
+    if (!scroller) return;
+    world.style.setProperty("--vp-w", `${scroller.clientWidth}px`);
+  }
 
   function setProgress(p: number) {
     progressBars.forEach((b) => (b.style.width = `${p * 100}%`));
@@ -137,94 +141,92 @@ export function initCvWorld() {
     return r.left < cx && r.right > 0;
   }
 
-  let st: ScrollTrigger | undefined;
-  let teleportOffsets: Record<string, number> = {};
+  // Position monde de chaque zone → utilisé par la téléportation
+  const zoneOffsets: Record<string, number> = {};
+  let acc = 0;
+  world.querySelectorAll<HTMLElement>("[data-zone]").forEach((zone) => {
+    zoneOffsets[zone.dataset.zone ?? ""] = acc;
+    acc += Number(zone.dataset.zoneWidth ?? 0);
+  });
 
-  function buildPinned() {
-    // Téléportation : position monde de la zone → position de scroll correspondante
-    const zoneOffsets: Record<string, number> = {};
-    let acc = 0;
-    world.querySelectorAll<HTMLElement>("[data-zone]").forEach((zone) => {
-      const w = Number(zone.dataset.zoneWidth ?? 0);
-      zoneOffsets[zone.dataset.zone ?? ""] = acc;
-      acc += w;
+  function render(p: number, x = -p * distance()) {
+    moveWorld(x);
+    moveLayers(x);
+    setProgress(p);
+    updateProximityEffects();
+    updateGauges();
+    if (scrollHint) scrollHint.style.opacity = p > 0.02 ? "0" : "1";
+    checkpoints.forEach((cp) => {
+      const r = cp.getBoundingClientRect();
+      const on = r.left > 0 && r.left < window.innerWidth;
+      cp.style.background = on ? "#fbbf24" : "rgba(255,255,255,0.15)";
+      cp.style.boxShadow = on ? "0 0 12px rgba(251,191,36,0.9)" : "none";
     });
-
-    const total = distance();
-
-    st = ScrollTrigger.create({
-      trigger: world,
-      start: "top top",
-      end: () => `+=${distance()}`,
-      pin: viewport,
-      scrub: 1,
-      anticipatePin: 1,
-      invalidateOnRefresh: true,
-      onUpdate: (self) => {
-        const x = -self.progress * distance();
-        moveWorld(x);
-        moveLayers(x);
-        setProgress(self.progress);
-        applyAvatarFromVelocity(self.direction, self.getVelocity());
-        updateProximityEffects();
-        updateGauges();
-        if (scrollHint) scrollHint.style.opacity = self.progress > 0.02 ? "0" : "1";
-        checkpoints.forEach((cp) => {
-          const r = cp.getBoundingClientRect();
-          const on = r.left > 0 && r.left < window.innerWidth;
-          cp.style.background = on ? "#fbbf24" : "rgba(255,255,255,0.15)";
-          cp.style.boxShadow = on ? "0 0 12px rgba(251,191,36,0.9)" : "none";
-        });
-        projectCards.forEach((card) => {
-          const r = card.getBoundingClientRect();
-          const on = r.left < window.innerWidth && r.right > 0;
-          const light = card.querySelector<HTMLElement>("[data-checkpoint-light]");
-          if (!light) return;
-          light.style.background = on ? "#fbbf24" : "rgba(255,255,255,0.2)";
-          light.style.boxShadow = on ? "0 0 8px rgba(251,191,36,0.9)" : "none";
-        });
-      },
+    projectCards.forEach((card) => {
+      const r = card.getBoundingClientRect();
+      const on = r.left < window.innerWidth && r.right > 0;
+      const light = card.querySelector<HTMLElement>("[data-checkpoint-light]");
+      if (!light) return;
+      light.style.background = on ? "#fbbf24" : "rgba(255,255,255,0.2)";
+      light.style.boxShadow = on ? "0 0 8px rgba(251,191,36,0.9)" : "none";
     });
-
-    // Sauvegarde des offsets pour la téléportation
-    teleportOffsets = zoneOffsets;
-    return total;
   }
 
+  let horizontalScrollHandler: (() => void) | null = null;
+  let wheelHandler: ((e: WheelEvent) => void) | null = null;
   let nativeScrollHandler: (() => void) | null = null;
+  let lastScrollLeft = 0;
+  let lastScrollTime = 0;
+
+  function buildHorizontal() {
+    if (!scroller) return;
+
+    const onScroll = () => {
+      const max = maxScroll();
+      const p = Math.min(Math.max(scroller.scrollLeft / max, 0), 1);
+      const now = performance.now();
+      const dl = scroller.scrollLeft - lastScrollLeft;
+      const dt = Math.max(now - lastScrollTime, 1);
+      render(p);
+      applyAvatarFromVelocity(dl >= 0 ? 1 : -1, Math.abs((dl / dt) * 16));
+      lastScrollLeft = scroller.scrollLeft;
+      lastScrollTime = now;
+    };
+
+    if (horizontalScrollHandler) scroller.removeEventListener("scroll", horizontalScrollHandler);
+    horizontalScrollHandler = onScroll;
+    scroller.addEventListener("scroll", onScroll, { passive: true });
+
+    // Molette verticale → défilement horizontal, avec passage au footer aux extrémités
+    const onWheel = (e: WheelEvent) => {
+      if (staticMode()) return;
+      const max = maxScroll();
+      const atStart = scroller.scrollLeft <= 0;
+      const atEnd = scroller.scrollLeft >= max - 1;
+      const dominantY = Math.abs(e.deltaY) > Math.abs(e.deltaX);
+      if (!dominantY) return;
+      if ((e.deltaY < 0 && atStart) || (e.deltaY > 0 && atEnd)) return;
+      e.preventDefault();
+      scroller.scrollLeft += e.deltaY;
+    };
+    if (wheelHandler) scroller.removeEventListener("wheel", wheelHandler);
+    wheelHandler = onWheel;
+    scroller.addEventListener("wheel", onWheel, { passive: false });
+
+    lastScrollLeft = scroller.scrollLeft;
+    lastScrollTime = performance.now();
+    onScroll();
+  }
 
   function buildNative() {
-    const track = world.querySelector<HTMLElement>("[data-scroll-track]")!;
-    const stacked = staticMode();
-    if (stacked) {
-      track.style.display = "none";
-      track.style.height = "0px";
-    } else {
-      track.style.display = "";
-      track.style.height = `${Math.max(distance(), window.innerHeight * 2)}px`;
-    }
+    // Fallback vertical empilé : pas de pin, pas de translation horizontale
     const onScroll = () => {
-      let p = 0;
-      let x = 0;
-      if (stacked) {
-        const top = window.scrollY + world.getBoundingClientRect().top;
-        const total = Math.max(world.offsetHeight - window.innerHeight, 1);
-        p = Math.min(Math.max((window.scrollY - top) / total, 0), 1);
-      } else {
-        const max = Math.max(track.offsetHeight - window.innerHeight, 1);
-        p = Math.min(Math.max(window.scrollY / max, 0), 1);
-        x = -p * distance();
-      }
-      moveWorld(x);
-      moveLayers(x);
-      setProgress(p);
-      updateProximityEffects();
-      updateGauges();
-      if (scrollHint) scrollHint.style.opacity = p > 0.02 ? "0" : "1";
+      const top = window.scrollY + world.getBoundingClientRect().top;
+      const total = Math.max(world.offsetHeight - window.innerHeight, 1);
+      const p = Math.min(Math.max((window.scrollY - top) / total, 0), 1);
+      render(p, 0);
     };
-    if (nativeScrollHandler) {
-      window.removeEventListener("scroll", nativeScrollHandler);
-    }
+    if (nativeScrollHandler) window.removeEventListener("scroll", nativeScrollHandler);
     nativeScrollHandler = onScroll;
     window.addEventListener("scroll", onScroll, { passive: true });
     onScroll();
@@ -236,36 +238,45 @@ export function initCvWorld() {
     const handler = () => {
       const hash = btn.dataset.teleport;
       if (!hash) return;
-      const offset = teleportOffsets[hash] ?? 0;
-      const worldDistance = distance();
-      const ratio = worldDistance > 0 ? offset / worldDistance : 0;
       if (staticMode()) {
         const zone = world.querySelector<HTMLElement>(`[data-zone="${hash}"]`);
         zone?.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" });
         return;
       }
-      const y = world.offsetTop + ratio * worldDistance;
-      gsap.to(window, { scrollTo: { y, autoKill: false }, duration: 0.8, ease: "power2.inOut" });
+      if (!scroller) return;
+      const worldDistance = distance();
+      const ratio = worldDistance > 0 ? (zoneOffsets[hash] ?? 0) / worldDistance : 0;
+      scroller.scrollTo({ left: ratio * maxScroll(), behavior: "smooth" });
     };
     btn.addEventListener("click", handler);
     teleportHandlers.push([btn, handler]);
   });
 
-  function setup() {
-    ScrollTrigger.getAll().forEach((t) => {
-      if (t.trigger === world) t.kill();
-    });
-    st?.kill();
-    st = undefined;
+  function teardownHandlers() {
+    if (scroller && horizontalScrollHandler) {
+      scroller.removeEventListener("scroll", horizontalScrollHandler);
+      horizontalScrollHandler = null;
+    }
+    if (scroller && wheelHandler) {
+      scroller.removeEventListener("wheel", wheelHandler);
+      wheelHandler = null;
+    }
+    if (nativeScrollHandler) {
+      window.removeEventListener("scroll", nativeScrollHandler);
+      nativeScrollHandler = null;
+    }
+  }
 
+  function setup() {
+    teardownHandlers();
+    syncViewportWidth();
     if (staticMode()) {
-      // fallback vertical natif : pas de pin
       world.style.height = "auto";
       buildNative();
       return;
     }
-
-    buildPinned();
+    world.style.height = "";
+    buildHorizontal();
   }
 
   setup();
@@ -273,26 +284,15 @@ export function initCvWorld() {
   let resizeTimer = 0;
   const onResize = () => {
     window.clearTimeout(resizeTimer);
-    resizeTimer = window.setTimeout(() => {
-      ScrollTrigger.refresh();
-      setup();
-    }, 200);
+    resizeTimer = window.setTimeout(() => setup(), 200);
   };
-  const onLoad = () => ScrollTrigger.refresh();
   window.addEventListener("resize", onResize);
-  window.addEventListener("load", onLoad);
 
   return () => {
     window.clearTimeout(resizeTimer);
     window.removeEventListener("resize", onResize);
-    window.removeEventListener("load", onLoad);
-    if (nativeScrollHandler) {
-      window.removeEventListener("scroll", nativeScrollHandler);
-      nativeScrollHandler = null;
-    }
+    teardownHandlers();
     teleportHandlers.forEach(([btn, handler]) => btn.removeEventListener("click", handler));
-    st?.kill();
-    st = undefined;
     avatar.destroy();
   };
 }

@@ -600,12 +600,44 @@
   66%, 100% { opacity: 0; transform: translate(var(--dx), var(--dy)) rotate(var(--dr)); }
 }
 
+/* ---------- Scroller horizontal natif du monde (/cv) ---------- */
+[data-hscroll] {
+  position: relative;
+  height: 100vh;
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+[data-hscroll]::-webkit-scrollbar { display: none; }
+[data-hscroll]:focus-visible {
+  outline: 2px solid rgba(251, 191, 36, 0.6);
+  outline-offset: -2px;
+}
+[data-hscroll-inner] {
+  position: relative;
+  height: 100vh;
+}
+/* Largeur calée sur le clientWidth réel du scroller (évite le décalage de la scrollbar page). */
+[data-viewport] {
+  width: var(--vp-w, 100vw);
+}
+
 /* ---------- Fallback : fenêtre courte uniquement (paysage) ---------- */
 /* Le monde horizontal reste actif sur téléphone portrait : seul le très court écran bascule. */
 @media (max-height: 640px) {
+  [data-hscroll],
+  [data-hscroll-inner] {
+    height: auto !important;
+    width: 100% !important;
+    overflow: visible !important;
+  }
   [data-viewport] {
     position: relative !important;
     height: auto !important;
+    width: 100% !important;
     overflow: visible !important;
   }
   [data-world-container] {
@@ -731,9 +763,16 @@
 }
 @media (prefers-reduced-motion: reduce) {
   /* Layout empilé (comme mobile) : le monde horizontal devient vertical */
+  [data-hscroll],
+  [data-hscroll-inner] {
+    height: auto !important;
+    width: 100% !important;
+    overflow: visible !important;
+  }
   [data-viewport] {
     position: relative !important;
     height: auto !important;
+    width: 100% !important;
     overflow: visible !important;
   }
   [data-world-container] {
