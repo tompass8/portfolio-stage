@@ -14,7 +14,7 @@ const linkedin = resumeData.contact.channels.find((c) => c.label === "LinkedIn")
 const secondary = "press group flex h-full min-h-16 items-center gap-4 rounded-[6px] bg-panel p-5 text-xl font-semibold no-underline";
 const arrowNudge = "ml-auto transition-transform duration-200 ease-out group-hover:translate-x-0.5 group-hover:-translate-y-0.5";
 ---
-<div class="grid gap-4 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)]">
+<div data-rise class="grid gap-4 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)]">
   <a
     href={`mailto:${email}?subject=${encodeURIComponent(subject)}`}
     class="press-lg group flex min-h-[16rem] flex-col justify-between rounded-[6px] bg-sign p-6 text-ink no-underline hover:bg-sign-press sm:p-8"

@@ -1,5 +1,10 @@
 [
   {
+    "hash": "3add3ec",
+    "date": "2026-11-03",
+    "subject": "feat(projets): plans illustres pour SPARK, Le Gourmand et YMMO"
+  },
+  {
     "hash": "16f0ac4",
     "date": "2026-11-03",
     "subject": "feat: corrections de la critique (Impeccable, Taste, Emil)"
@@ -23,10 +28,5 @@
     "hash": "0152f55",
     "date": "2026-11-03",
     "subject": "perf(a11y): corrections de l'audit Impeccable post-refonte"
-  },
-  {
-    "hash": "e47bc16",
-    "date": "2026-11-03",
-    "subject": "feat(design): refonte complete en signaletique d'aerogare"
   }
 ]

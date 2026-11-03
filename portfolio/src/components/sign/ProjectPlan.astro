@@ -15,29 +15,33 @@ const captions: Record<string, string> = {
 const spots = [true, true, false, true, false, true];
 ---
 {captions[slug] && (
-  <figure class="mt-8 rounded-[6px] bg-panel p-4 sm:p-5">
+  <figure data-plan class="lift mt-8 rounded-[6px] bg-panel p-4 sm:p-5">
     <svg viewBox="0 0 480 300" class="w-full" role="img" aria-label={`Illustration du fonctionnement de ${title}`}>
       {slug === "spark" && (
         <>
           {spots.map((busy, i) => (
             <g>
               <rect x={24 + i * 72} y="16" width="72" height="104" class:list={[busy ? "fill-panel" : "fill-sign"]} />
-              {busy && <rect x={38 + i * 72} y="30" width="44" height="70" rx="8" class="fill-ink" />}
+              {busy && <rect x={38 + i * 72} y="30" width="44" height="70" rx="8" class="plan-item fill-ink" style={`--i:${i}`} />}
               {!busy && <text x={60 + i * 72} y="72" text-anchor="middle" class="fill-ink font-sans" font-size="13" font-weight="700">LIBRE</text>}
               <rect x={53 + i * 72} y="110" width="14" height="14" class="fill-sign stroke-ink" stroke-width="3" />
-              <path d={`M ${60 + i * 72} 124 L 240 204`} class="stroke-ink" stroke-width="2" stroke-dasharray="5 5" fill="none" />
+              <path d={`M ${60 + i * 72} 124 L 240 204`} class="plan-link stroke-ink" stroke-width="2" stroke-dasharray="5 5" fill="none" />
             </g>
           ))}
           <path d="M 24 16 V 120 M 456 16 V 120" class="stroke-ink" stroke-width="4" />
           {[1, 2, 3, 4, 5].map((i) => <path d={`M ${24 + i * 72} 16 V 120`} class="stroke-ink" stroke-width="4" />)}
-          <rect x="174" y="204" width="132" height="44" rx="6" class="fill-ink" />
-          <text x="240" y="232" text-anchor="middle" class="fill-sign font-sans" font-size="15" font-weight="700">ESP32 maître</text>
+          <g class="plan-item" style="--i:6">
+            <rect x="174" y="204" width="132" height="44" rx="6" class="fill-ink" />
+            <text x="240" y="232" text-anchor="middle" class="fill-sign font-sans" font-size="15" font-weight="700">ESP32 maître</text>
+          </g>
           <text x="118" y="182" class="fill-ink font-sans" font-size="13" font-weight="600">ESP-NOW</text>
           <path d="M 306 226 H 352" class="stroke-ink" stroke-width="4" />
           <path d="M 344 218 L 354 226 L 344 234" class="stroke-ink" stroke-width="4" fill="none" />
-          <rect x="356" y="196" width="112" height="60" rx="6" class="fill-sign stroke-ink" stroke-width="3" />
-          <text x="412" y="221" text-anchor="middle" class="fill-ink font-sans" font-size="14" font-weight="700">Interface web</text>
-          <text x="412" y="241" text-anchor="middle" class="fill-ink font-sans" font-size="13">2 places libres</text>
+          <g class="plan-item" style="--i:7">
+            <rect x="356" y="196" width="112" height="60" rx="6" class="fill-sign stroke-ink" stroke-width="3" />
+            <text x="412" y="221" text-anchor="middle" class="fill-ink font-sans" font-size="14" font-weight="700">Interface web</text>
+            <text x="412" y="241" text-anchor="middle" class="fill-ink font-sans" font-size="13">2 places libres</text>
+          </g>
           <rect x="24" y="272" width="12" height="12" class="fill-sign stroke-ink" stroke-width="3" />
           <text x="44" y="283" class="fill-ink font-sans" font-size="13">ESP8266 + magnétomètre (un par place)</text>
         </>
@@ -54,7 +58,7 @@ const spots = [true, true, false, true, false, true];
             { x: 248, label: "API", sub: "Express 5" },
             { x: 356, label: "Base", sub: "MySQL 8" },
           ].map((c, i) => (
-            <g>
+            <g class="plan-item" style={`--i:${i}`}>
               <rect x={c.x} y="100" width="100" height="76" rx="6" class:list={[i === 1 ? "fill-sign" : "fill-panel", "stroke-ink"]} stroke-width="3" />
               <text x={c.x + 50} y="134" text-anchor="middle" class="fill-ink font-sans" font-size="15" font-weight="700">{c.label}</text>
               <text x={c.x + 50} y="154" text-anchor="middle" class="fill-ink font-sans" font-size="13">{c.sub}</text>
@@ -78,7 +82,7 @@ const spots = [true, true, false, true, false, true];
             { x: 168, label: "API", sub: ".NET 10", sub2: "auth JWT, biens, offres" },
             { x: 320, label: "Agrégateur", sub: "FastAPI", sub2: "scikit-learn" },
           ].map((s, i) => (
-            <g>
+            <g class="plan-item" style={`--i:${i + 1}`}>
               <path d={`M ${s.x + 72} 60 V 92`} class="stroke-ink" stroke-width="4" />
               <rect x={s.x} y="92" width="144" height="84" rx="6" class:list={[i === 0 ? "fill-sign" : "fill-panel", "stroke-ink"]} stroke-width="3" />
               <text x={s.x + 72} y="124" text-anchor="middle" class="fill-ink font-sans" font-size="15" font-weight="700">{s.label}</text>

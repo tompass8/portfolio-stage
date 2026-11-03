@@ -133,8 +133,8 @@ export function initCvWorld() {
       segs.forEach((seg, i) => {
         const lit = seg.dataset.lit === "1";
         window.setTimeout(() => {
-          seg.style.background = lit ? "var(--color-sign)" : "var(--color-concrete)";
-          seg.style.outline = lit ? "2px solid var(--color-ink)" : "none";
+          seg.style.background = lit ? "var(--color-sign)" : "rgb(255 255 255 / 0.15)";
+          seg.style.outline = "none";
           seg.style.outlineOffset = "-2px";
         }, i * 60);
       });
@@ -220,8 +220,8 @@ export function initCvWorld() {
       const on = r.left < window.innerWidth && r.right > 0;
       const light = card.querySelector<HTMLElement>("[data-checkpoint-light]");
       if (!light) return;
-      light.style.background = on ? "var(--color-sign)" : "var(--color-concrete)";
-      light.style.outline = on ? "2px solid var(--color-ink)" : "none";
+      light.style.background = on ? "var(--color-sign)" : "rgb(255 255 255 / 0.2)";
+      light.style.outline = "none";
     });
   }
 

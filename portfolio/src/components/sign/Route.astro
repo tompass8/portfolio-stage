@@ -6,14 +6,14 @@ interface Props {
 }
 const { stops, label } = Astro.props;
 ---
-<ol aria-label={label} class="flex flex-col gap-0 sm:flex-row sm:items-start">
+<ol data-route aria-label={label} class="flex flex-col gap-0 sm:flex-row sm:items-start">
   {stops.map((stop, i) => {
     const branches = Array.isArray(stop) ? stop : [stop];
     const last = i === stops.length - 1;
     return (
-      <li class="relative flex flex-1 gap-4 pb-6 sm:flex-col sm:gap-3 sm:pb-0 sm:pr-4">
-        {!last && <span aria-hidden="true" class="absolute left-[0.6875rem] top-3 h-full w-1.5 bg-ink sm:left-3 sm:top-[0.6875rem] sm:h-1.5 sm:w-full"></span>}
-        <span aria-hidden="true" class="relative z-10 mt-0.5 size-7 shrink-0 rounded-full border-[6px] border-ink bg-panel"></span>
+      <li class="relative flex flex-1 gap-4 pb-6 sm:flex-col sm:gap-3 sm:pb-0 sm:pr-4" style={`--i:${i}`}>
+        {!last && <span aria-hidden="true" class="route-seg absolute left-[0.6875rem] top-3 h-full w-1.5 bg-ink sm:left-3 sm:top-[0.6875rem] sm:h-1.5 sm:w-full"></span>}
+        <span aria-hidden="true" class="route-stop relative z-10 mt-0.5 size-7 shrink-0 rounded-full border-[6px] border-ink bg-panel"></span>
         <span class="flex flex-col gap-1">
           {branches.map((b) => (
             <span class="text-lg font-semibold leading-snug">{b}</span>

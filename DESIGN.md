@@ -154,10 +154,18 @@ Conteneur de 90rem centré, gouttière de 16 px (24 px dès 640 px). Chaque sect
 
 ## Elevation & Depth
 
-Système entièrement plat. La profondeur vient de l'empilement d'aplats (béton → blanc → jaune → noir) et des cadres noirs épais, jamais d'ombres portées. Seul mouvement : la mise à jour en volet du tableau des départs à sa première apparition (rotation X de 90° à 0°, 420 ms, décalage de 45 ms par cellule), désactivée en mouvement réduit.
+Système entièrement plat. La profondeur vient de l'empilement d'aplats (béton → blanc → jaune → noir) et des cadres noirs épais, jamais d'ombres portées.
+
+Mouvement (tout désactivé en mouvement réduit, et rien n'est caché sans JavaScript) :
+- **Apparitions** au défilement : montée de 18 px, 650 ms `cubic-bezier(0.23, 1, 0.32, 1)`, décalage de 70 ms par élément. Les panneaux de section font entrer le pictogramme avant le titre.
+- **Lignes de flux** qui se tracent tronçon par tronçon (260 ms par arrêt) ; **plans de projet** qui se posent élément par élément.
+- **Tableau des départs** : volet qui tombe d'au-dessus, 360 ms `cubic-bezier(0.32, 0.72, 0, 1)`, 35 ms par cellule.
+- **Survol** (souris uniquement) : la porte se soulève de 6 px et son numéro bascule comme un volet ; les panneaux montent de 4 px et prennent un cadre noir de 3 px ; un repère jaune glisse devant les lignes de liste.
+- **Pression** : léger rétrécissement (0,97, ou 0,985 sur les grandes surfaces).
+- **CV** : intro en borne d'arcade dont l'écran est un trou dans le décor, zoom de 1,8 s `cubic-bezier(0.65, 0, 0.35, 1)` jusqu'au jeu ; cartes du monde noires translucides (62 %) à cadre jaune.
 
 ### Named Rules
-**The Flat-Panel Rule.** Un panneau est un aplat. S'il doit se détacher, il change de couleur de fond, pas d'ombre.
+**The Flat-Panel Rule.** Un panneau est un aplat. S'il doit se détacher, il change de couleur de fond ou prend un cadre, jamais une ombre portée.
 
 ## Shapes
 
@@ -192,7 +200,7 @@ Statut, niveau, accès : noir sur jaune (fort) ou contour noir de 2 px (neutre) 
 - **Do** garder le texte secondaire teinté du fond (encre sur jaune, encre atténuée), contraste ≥ 4,5:1.
 
 ### Don't:
-- **Don't** réintroduire les lueurs, dégradés, fonds animés ou la palette néon cyan/violet.
+- **Don't** réintroduire les lueurs, dégradés, fonds animés ou la palette néon cyan/violet (le mouvement passe par transform et opacity, jamais par un fond qui bouge).
 - **Don't** poser un surtitre (kicker) au-dessus d'un titre : l'information passe en étiquette après le titre.
 - **Don't** utiliser la mono pour faire « technique » : seulement pour les données et le code.
 - **Don't** imbriquer des cartes dans des cartes.

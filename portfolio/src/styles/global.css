@@ -97,5 +97,70 @@ p, li, dd { text-wrap: pretty; }
   }
 }
 
+/* ==== Mouvement ====
+   Tout est désactivé en mouvement réduit. Les éléments ne se cachent que si la classe
+   .js-motion a été posée en tête de page (donc jamais sans JavaScript). */
+@media (prefers-reduced-motion: no-preference) {
+  /* Apparition au défilement : montée courte, décélération franche, décalage par élément */
+  .js-motion [data-rise] {
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity 500ms ease-out, transform 650ms cubic-bezier(0.23, 1, 0.32, 1);
+    transition-delay: calc(var(--d, 0) * 70ms);
+  }
+  .js-motion [data-rise].is-in { opacity: 1; transform: none; }
+
+  /* Panneau de section : le pictogramme arrive avant le titre */
+  .js-motion [data-sign] [data-picto] { transform: translateX(-24px); opacity: 0; transition: transform 500ms cubic-bezier(0.23, 1, 0.32, 1), opacity 300ms ease-out; }
+  .js-motion [data-sign] h2 { transform: translateX(-12px); opacity: 0; transition: transform 550ms cubic-bezier(0.23, 1, 0.32, 1) 80ms, opacity 350ms ease-out 80ms; }
+  .js-motion [data-sign].is-in [data-picto],
+  .js-motion [data-sign].is-in h2 { transform: none; opacity: 1; }
+
+  /* Lignes de flux : chaque tronçon se trace, puis l'arrêt suivant apparaît */
+  .js-motion [data-route] .route-seg { transform: scaleX(0); transform-origin: left center; transition: transform 420ms cubic-bezier(0.65, 0, 0.35, 1); transition-delay: calc(var(--i, 0) * 260ms + 120ms); }
+  .js-motion [data-route] .route-stop { transform: scale(0.4); opacity: 0; transition: transform 320ms cubic-bezier(0.23, 1, 0.32, 1), opacity 200ms ease-out; transition-delay: calc(var(--i, 0) * 260ms); }
+  .js-motion [data-route].is-in .route-seg { transform: none; }
+  .js-motion [data-route].is-in .route-stop { transform: none; opacity: 1; }
+  @media (max-width: 639px) {
+    .js-motion [data-route] .route-seg { transform: scaleY(0); transform-origin: center top; }
+  }
+
+  /* Plans des projets : les éléments se posent un par un */
+  .js-motion [data-plan] .plan-item { opacity: 0; transform: translateY(-14px); transform-box: fill-box; transition: opacity 300ms ease-out, transform 500ms cubic-bezier(0.23, 1, 0.32, 1); transition-delay: calc(var(--i, 0) * 90ms + 150ms); }
+  .js-motion [data-plan] .plan-link { stroke-dashoffset: 0; animation: none; }
+  .js-motion [data-plan].is-in .plan-item { opacity: 1; transform: none; }
+  .js-motion [data-plan].is-in .plan-link { animation: plan-flow 1.6s linear 900ms 2; }
+  @keyframes plan-flow { to { stroke-dashoffset: -40; } }
+
+  /* Survol (souris seulement) */
+  @media (hover: hover) {
+    /* Porte : elle se soulève et son numéro bascule comme un volet */
+    .gate { transition: transform 260ms cubic-bezier(0.23, 1, 0.32, 1), background-color 150ms ease-out; }
+    :root .gate:hover { transform: translateY(-6px); }
+    .gate .gate-num { display: inline-block; transform-origin: 50% 55%; }
+    .gate:hover .gate-num { animation: gate-flap 420ms cubic-bezier(0.32, 0.72, 0, 1); }
+
+    /* Pictogrammes du bandeau : petit saut */
+    [data-sign-link] [data-picto] { transition: transform 220ms cubic-bezier(0.23, 1, 0.32, 1); }
+    [data-sign-link]:hover [data-picto] { transform: translateY(-3px); }
+
+    /* Panneaux de contenu : ils montent d'un cran et prennent un cadre */
+    .lift { transition: transform 260ms cubic-bezier(0.23, 1, 0.32, 1), box-shadow 260ms ease-out; }
+    :root .lift:hover { transform: translateY(-4px); box-shadow: inset 0 0 0 3px var(--color-ink); }
+
+    /* Lignes d'annuaire et listes : un repère jaune glisse depuis la gauche */
+    .row-hover { position: relative; transition: padding-left 220ms cubic-bezier(0.23, 1, 0.32, 1); }
+    .row-hover::before { content: ""; position: absolute; left: 0; top: 0.9rem; bottom: 0.9rem; width: 6px; background: var(--color-sign); transform: scaleY(0); transition: transform 220ms cubic-bezier(0.23, 1, 0.32, 1); }
+    .row-hover:hover { padding-left: 1.25rem; }
+    .row-hover:hover::before { transform: scaleY(1); }
+  }
+  @keyframes gate-flap {
+    0% { transform: rotateX(0); }
+    45% { transform: rotateX(-88deg); }
+    55% { transform: rotateX(88deg); }
+    100% { transform: rotateX(0); }
+  }
+}
+
 /* ---- Barre de défilement du site ---- */
 html { scrollbar-color: var(--color-ink) var(--color-concrete); }

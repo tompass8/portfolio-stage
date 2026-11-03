@@ -11,7 +11,7 @@ interface Props {
 }
 const { caption, rows } = Astro.props;
 ---
-<div data-board class="board on-dark rounded-[6px] bg-board p-4 sm:p-6 [perspective:600px]">
+<div data-board data-rise class="board on-dark rounded-[6px] bg-board p-4 sm:p-6 [perspective:600px]">
   <table class="w-full border-separate border-spacing-y-2 font-mono text-base uppercase tracking-[0.08em] sm:text-lg">
     <caption class="sr-only">{caption}</caption>
     <thead>

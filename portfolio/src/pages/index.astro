@@ -51,8 +51,8 @@ const boardRows = [
     </div>
 
     <ul class="mt-10 grid gap-4 md:grid-cols-3" aria-label="Projets">
-      {projects.map((p) => (
-        <li>
+      {projects.map((p, i) => (
+        <li data-rise style={`--d:${i}`}>
           <GateLink href={`#projet-${p.slug}`} num={p.id} title={p.title.replace(" (Groupe Immobilier)", "")} line={p.subtitle} />
         </li>
       ))}
@@ -67,8 +67,8 @@ const boardRows = [
       <div class="border-t-[6px] border-ink py-12 sm:py-16">
         <h3 class="text-3xl font-bold tracking-[-0.015em]">Autres projets</h3>
         <ul class="mt-6 divide-y-2 divide-rule border-y-2 border-rule">
-          {others.map((o) => (
-            <li class="grid gap-x-10 gap-y-2 py-5 md:grid-cols-[minmax(0,16rem)_minmax(0,1fr)]">
+          {others.map((o, i) => (
+            <li data-rise style={`--d:${i}`} class="row-hover grid gap-x-10 gap-y-2 py-5 md:grid-cols-[minmax(0,16rem)_minmax(0,1fr)]">
               <div>
                 <h4 class="text-2xl font-bold leading-tight">{o.name}</h4>
                 <p class="mt-1 text-base font-semibold text-muted">{o.kind}</p>
@@ -90,8 +90,8 @@ const boardRows = [
       <p class="mb-8 max-w-[40rem] text-xl">{experience.intro}</p>
       <DepartureBoard caption="Expériences et formation" rows={boardRows} />
       <div class="mt-10 grid gap-x-10 gap-y-8 md:grid-cols-2">
-        {experience.jobs.map((j) => (
-          <div>
+        {experience.jobs.map((j, i) => (
+          <div data-rise style={`--d:${i}`}>
             <h3 class="text-2xl font-bold">{j.company} <span class="font-normal text-muted">· {j.period}</span></h3>
             <p class="mt-1 text-lg font-semibold">{j.role}</p>
             <ul class="mt-4 space-y-2 text-lg">

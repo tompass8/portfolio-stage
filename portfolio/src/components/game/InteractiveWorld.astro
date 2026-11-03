@@ -105,24 +105,24 @@ const zonePicto: Record<string, PictoName> = {
               <div class="zone-body relative z-10 flex h-full flex-col justify-end px-10 pb-24">
                 {zone.kind === "spawn" && (
                   <div class="mt-4 grid max-w-4xl gap-4 md:grid-cols-2">
-                    <div class="rounded-[6px] bg-panel p-5 text-ink">
+                    <div class="cv-card rounded-[6px] p-5">
                       <p class="text-lg leading-relaxed">{spawn.bio}</p>
                       <ul class="mt-4 space-y-1.5 text-base font-semibold">
                         {spawn.highlights.map((h) => (
-                          <li class="flex gap-3"><span aria-hidden="true" class="mt-[0.55em] size-2 shrink-0 bg-ink"></span>{h}</li>
+                          <li class="flex gap-3"><span aria-hidden="true" class="mt-[0.55em] size-2 shrink-0 bg-sign"></span>{h}</li>
                         ))}
                       </ul>
                     </div>
                     <div class="flex flex-col gap-3">
                       {spawn.controls.map((c) => (
-                        <div data-control-hint class="flex items-center gap-3 rounded-[6px] bg-panel px-4 py-3 text-ink">
+                        <div data-control-hint class="cv-card flex items-center gap-3 rounded-[6px] px-4 py-3">
                           <span class="grid size-12 shrink-0 place-items-center rounded-[6px] bg-ink">
                             <img src={`/assets/ui/${c.icon}.png`} alt="" width="40" height="40" class="pixelated" />
                           </span>
                           <span class="text-lg font-semibold">{c.label}</span>
                         </div>
                       ))}
-                      <p class="rounded-[6px] bg-panel px-4 py-3 text-lg font-semibold text-ink">J'adore les échecs et le football !</p>
+                      <p class="cv-card rounded-[6px] px-4 py-3 text-lg font-semibold">J'adore les échecs et le football !</p>
                     </div>
                   </div>
                 )}
@@ -133,17 +133,17 @@ const zonePicto: Record<string, PictoName> = {
                       const segments = 10;
                       const lit = Math.round((g.pct / 100) * segments);
                       return (
-                        <div data-reveal class="rounded-[6px] bg-panel p-4 text-ink">
+                        <div data-reveal class="cv-card rounded-[6px] p-4">
                           <div class="flex items-baseline justify-between gap-2">
                             <h3 class="text-lg font-bold leading-tight">{g.title}</h3>
                             <span data-energy-value class="font-mono text-sm font-semibold" data-target={g.pct}>{g.pct}%</span>
                           </div>
                           <div data-energy-gauge class="mt-2 flex gap-0.5" aria-hidden="true">
                             {Array.from({ length: segments }).map((_, i) => (
-                              <span data-seg data-lit={i < lit ? "1" : "0"} class={`h-2.5 flex-1 ${i < lit ? "bg-ink" : "bg-concrete"}`}></span>
+                              <span data-seg data-lit={i < lit ? "1" : "0"} class={`h-2.5 flex-1 ${i < lit ? "bg-sign" : "bg-white/15"}`}></span>
                             ))}
                           </div>
-                          <p class="mt-1.5 text-sm font-semibold text-muted">{g.level}</p>
+                          <p class="mt-1.5 text-sm font-semibold text-board-muted">{g.level}</p>
                           <ul class="mt-2 space-y-0.5 text-base">
                             {g.items.map((it) => <li>{it.name}</li>)}
                           </ul>
@@ -156,7 +156,7 @@ const zonePicto: Record<string, PictoName> = {
                 {zone.kind === "experience" && (
                   <div class="mt-4 flex max-w-6xl flex-wrap items-end gap-4">
                     {experience.jobs.map((job) => (
-                      <div data-reveal class="on-dark w-full max-w-sm rounded-[6px] bg-board p-5 ring-4 ring-sign">
+                      <div data-reveal class="cv-card on-dark w-full max-w-sm rounded-[6px] p-5">
                         <div class="flex items-baseline justify-between gap-3">
                           <h3 class="text-2xl font-bold text-sign">{job.company}</h3>
                           <span class="font-mono text-sm uppercase tracking-[0.06em] text-flap-text">{job.period}</span>
@@ -169,13 +169,13 @@ const zonePicto: Record<string, PictoName> = {
                         </ul>
                       </div>
                     ))}
-                    <div data-reveal class="w-full max-w-xs rounded-[6px] bg-panel p-5 text-ink">
+                    <div data-reveal class="cv-card w-full max-w-xs rounded-[6px] p-5">
                       <h3 class="text-lg font-bold">Répartition des tâches</h3>
                       <dl class="mt-3 space-y-3">
                         {experience.split.map((s) => (
                           <div>
                             <div class="flex justify-between text-base"><dt>{s.label}</dt><dd class="font-mono font-semibold">{s.value}%</dd></div>
-                            <span aria-hidden="true" class="mt-1 block h-2.5 bg-concrete"><span class="block h-full bg-ink" style={`width:${s.value}%`}></span></span>
+                            <span aria-hidden="true" class="mt-1 block h-2.5 bg-white/15"><span class="block h-full bg-sign" style={`width:${s.value}%`}></span></span>
                           </div>
                         ))}
                       </dl>
@@ -186,19 +186,19 @@ const zonePicto: Record<string, PictoName> = {
                 {zone.kind === "projects" && (
                   <div data-project-row class="mt-4 flex max-w-[1900px] gap-4 overflow-visible">
                     {projects.items.map((p) => (
-                      <article data-project={p.id} data-checkpoint={p.checkpoint ? "1" : "0"} class="w-[340px] shrink-0 rounded-[6px] bg-panel p-5 text-ink">
+                      <article data-project={p.id} data-checkpoint={p.checkpoint ? "1" : "0"} class="cv-card w-[340px] shrink-0 rounded-[6px] p-5">
                         <div class="flex items-center justify-between">
-                          <span class="rounded-[4px] bg-ink px-2 py-0.5 text-sm font-semibold text-sign">{p.kind}</span>
-                          <span data-checkpoint-light class="size-3 rounded-full bg-concrete"></span>
+                          <span class="rounded-[4px] bg-sign px-2 py-0.5 text-sm font-semibold text-ink">{p.kind}</span>
+                          <span data-checkpoint-light class="size-3 rounded-full bg-white/20"></span>
                         </div>
                         <h3 class="mt-3 text-xl font-bold leading-tight">{p.name}</h3>
                         <p class="mt-2 text-base leading-relaxed">{p.summary}</p>
                         <ul class="mt-3 space-y-1 text-base">
                           {p.features.map((f) => (
-                            <li class="flex gap-2.5"><span aria-hidden="true" class="mt-[0.55em] size-1.5 shrink-0 bg-ink"></span>{f}</li>
+                            <li class="flex gap-2.5"><span aria-hidden="true" class="mt-[0.55em] size-1.5 shrink-0 bg-sign"></span>{f}</li>
                           ))}
                         </ul>
-                        <p class="mt-3 text-sm font-semibold text-muted">{p.stack.join(" · ")}</p>
+                        <p class="mt-3 text-sm font-semibold text-board-muted">{p.stack.join(" · ")}</p>
                       </article>
                     ))}
                   </div>
@@ -212,7 +212,7 @@ const zonePicto: Record<string, PictoName> = {
                     </a>
                     <div class="flex flex-col gap-3">
                       {contact.channels.filter((c) => c.label !== "Email").map((c) => (
-                        <a href={c.href} target="_blank" rel="noopener" class="flex items-center gap-3 rounded-[6px] bg-panel px-4 py-3 text-lg font-semibold text-ink no-underline hover:bg-sign">
+                        <a href={c.href} target="_blank" rel="noopener" class="cv-card flex items-center gap-3 rounded-[6px] px-4 py-3 text-lg font-semibold no-underline hover:text-sign">
                           <Picto name={c.label === "GitHub" ? "github" : "linkedin"} size="sm" />
                           {c.label} : {c.value}
                         </a>

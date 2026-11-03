@@ -59,12 +59,18 @@ const shortLabel: Record<string, string> = {
   </div>
 </header>
 
-<div
-  data-scroll-hint
-  aria-hidden="true"
-  class="pointer-events-none fixed bottom-5 left-1/2 z-40 flex -translate-x-1/2 items-center gap-3 whitespace-nowrap rounded-[6px] bg-sign py-2 pl-2 pr-4 text-lg font-semibold text-ink transition-opacity duration-300"
->
-  <Picto name="right" size="sm" />
-  <span class="sm:hidden">Glissez pour avancer</span>
-  <span class="hidden sm:inline">Glissez ou molette pour avancer</span>
+<!-- Les deux boutons de la borne : clic = un pas, appui long = on marche -->
+<div data-arcade-controls class="fixed bottom-4 left-1/2 z-40 flex -translate-x-1/2 items-end gap-5" style="margin-bottom: env(safe-area-inset-bottom, 0px);">
+  <button type="button" data-cv-step="-1" class="arcade-btn group flex cursor-pointer flex-col items-center gap-1.5" aria-label="Reculer">
+    <span class="grid size-16 place-items-center rounded-full border-4 border-ink bg-on-board text-ink">
+      <svg viewBox="0 0 24 24" class="size-7" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="square" aria-hidden="true"><path d="M20 12H5M11 5l-7 7 7 7" /></svg>
+    </span>
+    <span class="rounded-[4px] bg-ink/80 px-2 py-0.5 text-sm font-bold text-on-board">Reculer</span>
+  </button>
+  <button type="button" data-cv-step="1" class="arcade-btn group flex cursor-pointer flex-col items-center gap-1.5" aria-label="Avancer">
+    <span class="grid size-16 place-items-center rounded-full border-4 border-ink bg-sign text-ink">
+      <svg viewBox="0 0 24 24" class="size-7" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="square" aria-hidden="true"><path d="M4 12h15M13 5l7 7-7 7" /></svg>
+    </span>
+    <span class="rounded-[4px] bg-ink/80 px-2 py-0.5 text-sm font-bold text-sign">Avancer</span>
+  </button>
 </div>

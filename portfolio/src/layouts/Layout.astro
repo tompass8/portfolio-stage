@@ -27,6 +27,14 @@ const {
     <meta name="theme-color" content="#ffcc00" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     {noindex && <meta name="robots" content="noindex" />}
+    <script is:inline>
+      // Active les apparitions avant le premier rendu (pas de clignotement) ; si le script
+      // principal n'a pas démarré au bout de 3 s, on rend tout visible.
+      if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        document.documentElement.classList.add("js-motion");
+        setTimeout(function () { if (!window.__revealReady) document.documentElement.classList.remove("js-motion"); }, 3000);
+      }
+    </script>
   </head>
   <body class="bg-concrete font-sans text-[1.0625rem] leading-relaxed text-ink antialiased">
     <a href="#contenu" class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:bg-ink focus:px-4 focus:py-3 focus:text-sign">
@@ -43,6 +51,10 @@ const {
       import { initGovernanceSection } from "../scripts/governance";
       import { initRolesMatrix } from "../scripts/roles";
       import { initCopyEmail } from "../scripts/copy-email";
+      import { initReveal } from "../scripts/reveal";
+
+      (window as Window & { __revealReady?: boolean }).__revealReady = true;
+      initReveal();
 
       initWayfinding();
       initBoards();

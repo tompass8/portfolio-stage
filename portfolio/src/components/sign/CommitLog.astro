@@ -14,8 +14,8 @@ const { repoUrl } = Astro.props;
       <a href={repoUrl} target="_blank" rel="noreferrer" class="text-base text-board-muted underline hover:text-sign">Voir le dépôt sur GitHub</a>
     </figcaption>
     <ol class="mt-4 space-y-2 font-mono text-sm sm:text-base">
-      {commits.map((c) => (
-        <li class="grid gap-x-4 rounded-[4px] bg-flap px-3 py-2 sm:grid-cols-[5.5rem_7rem_1fr]">
+      {commits.map((c, i) => (
+        <li data-rise style={`--d:${i}`} class="grid gap-x-4 rounded-[4px] bg-flap px-3 py-2 sm:grid-cols-[5.5rem_7rem_1fr]">
           <span class="text-flap-text">{c.hash}</span>
           <span class="text-board-muted">{c.date}</span>
           <span class="text-on-board [overflow-wrap:anywhere]">{c.subject}</span>

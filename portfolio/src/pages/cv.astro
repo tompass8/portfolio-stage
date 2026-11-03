@@ -2,13 +2,14 @@
 import GameLayout from "../layouts/GameLayout.astro";
 import HudNavigation from "../components/game/HudNavigation.astro";
 import InteractiveWorld from "../components/game/InteractiveWorld.astro";
-import Picto from "../components/sign/Picto.astro";
+import ArcadeIntro from "../components/game/ArcadeIntro.astro";
 import { resumeData } from "../data/resumeData";
 
 const { spawn, skills, experience, projects, contact } = resumeData;
 ---
 <GameLayout title="CV interactif · Tom Passerman">
   <HudNavigation />
+  <ArcadeIntro />
   <main class="relative">
     <h1 class="sr-only">CV interactif de Tom Passerman, développeur web, IA et gouvernance numérique</h1>
     <InteractiveWorld />
@@ -57,23 +58,13 @@ const { spawn, skills, experience, projects, contact } = resumeData;
       </ul>
     </section>
   </noscript>
-
-  <section class="relative border-t-[6px] border-ink bg-sign px-4 py-16 text-ink sm:px-6">
-    <div class="mx-auto max-w-3xl text-center">
-      <h2 class="text-4xl font-bold tracking-[-0.02em]">Avez-vous aimé la balade ?</h2>
-      <p class="mt-3 text-xl">
-        Merci d'être allé jusqu'au bout. Le CV complet reste aussi disponible en version site classique, lisible sans animation.
-      </p>
-      <a href="/" class="mt-8 inline-flex items-center gap-3 rounded-[6px] bg-ink py-2 pl-2 pr-5 text-xl font-semibold text-sign no-underline">
-        <Picto name="left" size="sm" class="bg-sign! text-ink!" />
-        Voir le CV en version classique
-      </a>
-    </div>
-  </section>
-
+`n
   <script>
     import { initCvWorld } from "../scripts/cv-world";
+    import { initArcadeIntro, initArcadeControls } from "../scripts/cv-arcade";
     const disposeCvWorld = initCvWorld();
+    initArcadeControls();
+    initArcadeIntro();
     window.addEventListener("pagehide", () => disposeCvWorld?.());
   </script>
 </GameLayout>

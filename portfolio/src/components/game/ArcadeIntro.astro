@@ -1,0 +1,59 @@
+---
+// Intro du CV : une borne d'arcade dans une salle sombre. Son écran est un vrai trou
+// (masque SVG) : on voit le jeu à travers, puis le zoom l'agrandit jusqu'à remplir la fenêtre.
+// Masquée par défaut ; cv-arcade.ts ne l'affiche qu'en mode horizontal avec animations.
+---
+<div data-arcade hidden aria-hidden="true">
+  <svg viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice" overflow="visible">
+    <defs>
+      <mask id="arcade-hole" maskUnits="userSpaceOnUse" x="-3000" y="-3000" width="7600" height="7000">
+        <rect x="-3000" y="-3000" width="7600" height="7000" fill="white" />
+        <rect x="630" y="250" width="340" height="250" rx="18" fill="black" />
+      </mask>
+    </defs>
+    <g mask="url(#arcade-hole)">
+      <!-- Salle -->
+      <rect x="-3000" y="-3000" width="7600" height="3760" fill="#0d0d0d" />
+      <rect x="-3000" y="760" width="7600" height="3000" fill="#1a1a1a" />
+      <rect x="-3000" y="756" width="7600" height="6" fill="#ffcc00" />
+      <!-- Caisson -->
+      <path d="M 540 200 H 1060 V 560 L 1100 640 V 900 H 500 V 640 L 540 560 Z" fill="#0b0b0b" stroke="#2a2a2a" stroke-width="4" />
+      <rect x="540" y="200" width="16" height="360" fill="#ffcc00" />
+      <rect x="1044" y="200" width="16" height="360" fill="#ffcc00" />
+      <!-- Fronton -->
+      <rect x="560" y="80" width="480" height="120" rx="10" fill="#ffcc00" />
+      <text x="800" y="146" text-anchor="middle" fill="#0b0b0b" font-family="Source Sans 3 Variable, sans-serif" font-size="46" font-weight="700">CV · TOM PASSERMAN</text>
+      <text x="800" y="182" text-anchor="middle" fill="#4a3d00" font-family="Source Sans 3 Variable, sans-serif" font-size="22" font-weight="600">Borne d'arcade · 5 niveaux</text>
+      <!-- Cadre de l'écran -->
+      <rect x="600" y="225" width="400" height="300" rx="26" fill="#232323" />
+      <rect x="630" y="250" width="340" height="250" rx="18" fill="none" stroke="#000" stroke-width="8" />
+      <text class="arcade-attract" x="800" y="518" text-anchor="middle" fill="#ffcc00" font-family="JetBrains Mono Variable, monospace" font-size="14" font-weight="700">ENTRÉE DANS LE JEU…</text>
+      <!-- Pupitre : manette et deux boutons -->
+      <path d="M 540 560 H 1060 L 1100 640 H 500 Z" fill="#232323" stroke="#ffcc00" stroke-width="4" />
+      <ellipse cx="650" cy="612" rx="34" ry="10" fill="#111" />
+      <rect x="645" y="575" width="10" height="36" fill="#555" />
+      <circle cx="650" cy="575" r="20" fill="#ffcc00" />
+      <circle cx="860" cy="600" r="28" fill="#e6e6e6" stroke="#0b0b0b" stroke-width="4" />
+      <path d="M 872 600 H 848 M 858 590 L 848 600 L 858 610" stroke="#0b0b0b" stroke-width="5" fill="none" />
+      <circle cx="960" cy="600" r="28" fill="#ffcc00" stroke="#0b0b0b" stroke-width="4" />
+      <path d="M 948 600 H 972 M 962 590 L 972 600 L 962 610" stroke="#0b0b0b" stroke-width="5" fill="none" />
+      <text x="860" y="672" text-anchor="middle" fill="#e6e6e6" font-family="Source Sans 3 Variable, sans-serif" font-size="18" font-weight="700">RECULER</text>
+      <text x="960" y="672" text-anchor="middle" fill="#ffcc00" font-family="Source Sans 3 Variable, sans-serif" font-size="18" font-weight="700">AVANCER</text>
+      <!-- Monnayeur -->
+      <rect x="740" y="720" width="120" height="120" rx="8" fill="#1a1a1a" stroke="#333" stroke-width="3" />
+      <rect x="790" y="745" width="20" height="50" rx="3" fill="#ffcc00" />
+      <text x="800" y="825" text-anchor="middle" fill="#a3a3a3" font-family="Source Sans 3 Variable, sans-serif" font-size="16" font-weight="600">PIÈCE</text>
+      <!-- Repère invisible : la zone de l'écran, que le zoom vise -->
+      <rect data-arcade-screen x="630" y="250" width="340" height="250" fill="none" />
+    </g>
+  </svg>
+  <button
+    type="button"
+    data-arcade-skip
+    aria-hidden="false"
+    class="press absolute right-4 top-4 rounded-[6px] bg-sign px-4 py-2 text-lg font-semibold text-ink"
+    style="margin-top: env(safe-area-inset-top, 0px);"
+  >
+    Passer l'intro
+  </button>
+</div>

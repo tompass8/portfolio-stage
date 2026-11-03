@@ -40,7 +40,7 @@ Un étudiant qui a déjà fait tourner des systèmes réels (Orange : automatisa
 
 - Ne doit pas faire « site généré par IA » : Tom rejette la palette actuelle (néon cyan/violet sur quasi-noir, lueurs) pour cette raison.
 - Doit sentir l'étudiant dev passionné, **pas corporate** ni agence.
-- **Pas d'effets en surcharge** : pas de lueurs, de fonds qui bougent ni d'animations partout.
+- **Du mouvement, pas de l'esbroufe** : Tom veut des animations (apparitions au défilement, survols, intro en borne d'arcade sur le CV), mais toujours sans lueurs ni fonds animés, et désactivées en mouvement réduit.
 
 ## Evidence on Hand
 
