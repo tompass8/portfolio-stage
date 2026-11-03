@@ -1,23 +1,25 @@
 # Portfolio & CV interactif — Tom Passerman
 
-Dépôt GitHub du portfolio / CV de **Tom Passerman** (Ingénieur IT — Full-Stack, Systèmes & Réseaux, Data & IoT).
+Dépôt GitHub du portfolio / CV de **Tom Passerman** (étudiant B.Sc. Informatique, Ynov Toulouse — Full-Stack, Systèmes & Réseaux, Data & IoT).
 
-Deux expériences cohabitent dans le même projet :
+Trois pages, une même identité visuelle de **signalétique d'aérogare** (jaune balise, noir signalétique, pictogrammes, tableau des départs) :
 
-| Route | Expérience | Description |
+| Route | Page | Description |
 | :--- | :--- | :--- |
-| `/` | Portfolio « ligne de temps » | Version site classique, éditoriale et scrollable : parcours, projets, gouvernance, processus, contact. |
-| `/cv` | CV interactif gamifié | Le CV sous forme de **monde pixel-art** horizontal (8 200 px) : on « marche » dans une barre de progression, on saute sur les props, on traverse 5 zones, et un **hélicoptère de police** traverse le ciel en tirant une fusée sur le décor. |
+| `/` | Portfolio général | Trois projets en « portes » numérotées, parcours en tableau des départs, compétences, contact. |
+| `/alpha-to-omega` | Candidature dédiée | Candidature de stage chez Alpha to Omega (Toulouse) : web 75 %, méthode, gouvernance 25 % (cartographie SI, matrice IAM, RGPD). Non indexée. |
+| `/cv` | CV interactif | Le CV en **monde pixel-art** à défilement horizontal : l'avatar traverse 5 zones. |
 
-> Le code applicatif vit dans **`portfolio/`**. La documentation détaillée du projet est dans [`portfolio/README.md`](portfolio/README.md), les règles de conception et de qualité dans [`portfolio/AGENTS.md`](portfolio/AGENTS.md).
+> Le code applicatif vit dans **`portfolio/`** ([`portfolio/README.md`](portfolio/README.md)). Les règles de conception sont dans [`portfolio/AGENTS.md`](portfolio/AGENTS.md), le système visuel dans [`DESIGN.md`](DESIGN.md) et le contexte produit dans [`PRODUCT.md`](PRODUCT.md).
 
 ---
 
 ## Stack
 
-- **Astro 7** (SSR via `@astrojs/cloudflare`) · **React 19** · **TypeScript strict**
+- **Astro 7** (pages statiques, adaptateur `@astrojs/cloudflare`) · **TypeScript strict**
 - **Tailwind v4** CSS-first (tokens `@theme`, aucun `tailwind.config.*`)
-- **GSAP 3.15** (`ScrollTrigger`, `SplitText`) + **Lenis** pour le scroll fluide
+- Polices auto-hébergées : **Source Sans 3** et **JetBrains Mono** (`@fontsource-variable`)
+- Aucune bibliothèque d'animation ni framework client : quelques scripts TypeScript (3,7 à 5,9 Ko par page)
 - **Wrangler 4** pour le déploiement Cloudflare Workers
 
 ## Prérequis
@@ -49,39 +51,36 @@ npm run build
 npx wrangler deploy
 ```
 
-`astro.config.mjs` déclare `adapter: cloudflare()` et `wrangler.jsonc` sert `dist/` via le binding `ASSETS`.
-La route `src/pages/api/contact.ts` reste en SSR (`prerender = false`) : l'envoi d'e-mail n'est volontairement pas
-branché (la route répond `501` et bascule vers un `mailto:` affiché à l'utilisateur).
+`astro.config.mjs` déclare `adapter: cloudflare()` et `wrangler.jsonc` sert `dist/` via le binding `ASSETS`. Le contact se fait par lien `mailto:` direct ; aucun service d'envoi n'est branché.
 
 ## Arborescence
 
 ```text
 site stage/
-├── .gitignore            # artefacts Astro générés à la racine du dépôt
-├── README.md             # ce fichier (page d'accueil du dépôt)
+├── .gitignore
+├── README.md             # ce fichier
+├── PRODUCT.md            # public, objectif, contraintes du site
+├── DESIGN.md             # système visuel (tokens, règles)
 └── portfolio/            # application Astro
-    ├── public/           # assets statiques (pixel-art, photos, illustrations IoT)
+    ├── public/           # assets statiques (pixel-art du CV, illustrations IoT, favicon)
     ├── src/
-    │   ├── components/   # Astro (structure & contenu) + React (widgets interactifs)
-    │   ├── data/         # tout le contenu éditorial, data-driven
+    │   ├── components/   # sign/ (signalétique), governance/, game/ (CV)
+    │   ├── data/         # contenu éditorial, data-driven
     │   ├── layouts/      # Layout.astro (site) et GameLayout.astro (CV)
-    │   ├── lib/          # motion.ts (GSAP + prefersReducedMotion), utils.ts
-    │   ├── pages/        # index.astro, cv.astro, api/contact.ts
-    │   ├── scripts/      # orchestration : init*() GSAP
+    │   ├── lib/          # motion.ts (prefersReducedMotion), utils.ts
+    │   ├── pages/        # index.astro, alpha-to-omega.astro, cv.astro
+    │   ├── scripts/      # comportements : init*() en TypeScript
     │   └── styles/       # global.css (tokens @theme) + sprites.css (pixel-art)
     ├── astro.config.mjs
     ├── wrangler.jsonc
-    └── AGENTS.md         # règles de conception / qualité (source de vérité)
+    └── AGENTS.md         # règles de conception / qualité
 ```
 
 ## Principes
 
-- **DOM-first** : le DOM est la source de vérité (SEO, accessibilité, fonctionnement sans JS) ; le décor visuel n'est qu'une couche posée par-dessus.
-- **Mouvement réduit** : chaque animation possède un fallback `prefers-reduced-motion` affichant l'état final visible.
-- **Animations propres** : uniquement `transform` / `opacity`, cibles via attributs `data-*`, nettoyage complet des tweens et listeners.
-
-Le détail de ces règles, les budgets de performance et la dette technique connue sont documentés dans
-[`portfolio/README.md`](portfolio/README.md) et [`portfolio/AGENTS.md`](portfolio/AGENTS.md).
+- **DOM-first** : tout le contenu est lisible sans JavaScript ; les scripts n'ajoutent que de l'interaction.
+- **Mouvement réduit** : chaque animation a un repli `prefers-reduced-motion` qui affiche l'état final.
+- **Sobriété** : pas de lueurs, de dégradés ni de fonds animés ; le jaune est réservé à l'orientation.
 
 ---
 

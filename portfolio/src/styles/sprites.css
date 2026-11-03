@@ -201,7 +201,7 @@
   [data-zone] .zone-sign {
     left: 1.25rem;
     right: 1.25rem;
-    top: 4.75rem;
+    top: 6rem;
   }
   [data-zone] .zone-sign h2 { font-size: 1.5rem; }
   [data-zone] .zone-subtitle { font-size: 0.9375rem; }

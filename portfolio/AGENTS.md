@@ -35,12 +35,12 @@ Consult these guides before working on related tasks:
 
 ## 2. Stack & dépendances
 
-**Verrouillées** : Astro 7 · React 19 · TypeScript strict · Tailwind v4 **CSS-first** (tokens dans `@theme` de `src/styles/global.css`, aucun `tailwind.config.*`) · GSAP 3.15 (`ScrollTrigger`, `SplitText`) · Lenis · fonts `@fontsource-variable/source-sans-3` et `jetbrains-mono`. GSAP, Lenis et React restent installés mais ne sont plus chargés par aucune page : n'en réimporter un que s'il est justifié (budget §4).
+**Verrouillées** : Astro 7 · TypeScript strict · Tailwind v4 **CSS-first** (tokens dans `@theme` de `src/styles/global.css`, aucun `tailwind.config.*`) · fonts `@fontsource-variable/source-sans-3` et `jetbrains-mono`. GSAP, Lenis et React ont été désinstallés (plus aucun usage) : en réintroduire un doit être justifié (budget §4).
 
 **3D — seul ajout autorisé** : `three` + `@react-three/fiber` + `@react-three/drei` + `@types/three`. Toute autre dépendance doit être justifiée avant ajout.
 
 **Interdits** :
-- Une seule lib d'animation : **GSAP**. Ne jamais faire cohabiter `motion` (ou autre) pour des animations.
+- Animations en CSS (transitions déclenchées par une classe) ou `element.style.transform` ; si une lib d'animation devient nécessaire, une seule (GSAP), jamais deux.
 - Aucune boucle `requestAnimationFrame` permanente aujourd'hui : le CV réagit à l'événement `scroll` et calcule les positions à partir de mesures mises en cache (`measure()` dans `cv-world.ts`), jamais de `getBoundingClientRect()` par frame.
 - Pas de scroll-hijacking (cf. §7).
 
@@ -59,7 +59,7 @@ src/data/             # contenu éditable (projects, stats, roles, network, scen
 
 - **Registre unique** `src/data/scene.ts` : chaque « pièce » correspond à une section existante (`#hero`, `#dev`, `#process`, `#governance`, `#contact`). Ajouter une section = 1 entrée ici + un `SectionShell` avec ses props `hash/message/zone`.
 - State centralisé et fonctionnel (pattern Samsy) : pas de mutable global partagé, un seul store/contexte pour l'état de la scène et des transitions.
-- Séparation stricte des responsabilités : Astro = structure & contenu ; React (`client:*`) = widgets ; `src/three` = rendu ; `src/scripts` = animation.
+- Séparation stricte des responsabilités : Astro = structure & contenu ; `src/scripts` (TS vanilla) = interaction ; `src/three` = rendu ; `src/scripts` = animation.
 
 ## 4. Budgets de performance (contraintes mesurables)
 
@@ -130,5 +130,4 @@ Dégradation toujours dans le sens riche → sobre, **jamais** d'erreur affiché
 
 - **`npm run build` est vert** ; toutes les pages sont statiques (`/`, `/alpha-to-omega`, `/cv`).
 - **Contact = `mailto:` direct** : l'ancienne route `api/contact` (qui répondait toujours 501) a été retirée. Brancher un vrai service d'envoi suppose une variable d'environnement jamais exposée côté client.
-- `lenis` reste dans `package.json` mais n'est plus importé.
 - Captures de projets : aucune pour l'instant (les photos de banque d'images ont été retirées) ; à ajouter en WebP ≤ 1600 px.

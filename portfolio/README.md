@@ -1,17 +1,16 @@
-# Portfolio « monde 3D » — Tom Passerman
+# Portfolio — Tom Passerman
 
-Site portfolio / CV de Tom Passerman (Ingénieur IT — Full-Stack, Systèmes & Réseaux, Data & IoT), construit avec **Astro 7**, **React 19**, **Tailwind v4** (CSS-first), **GSAP 3.15** et **Lenis**, déployé sur **Cloudflare Workers** via l'adaptateur `@astrojs/cloudflare`.
+Site portfolio / CV de Tom Passerman (étudiant B.Sc. Informatique, Ynov Toulouse — Full-Stack, Systèmes & Réseaux, Data & IoT), construit avec **Astro 7** et **Tailwind v4** (CSS-first), déployé sur **Cloudflare Workers** via l'adaptateur `@astrojs/cloudflare`.
 
-Deux expériences cohabitent :
-
-| Route | Expérience | Description |
+| Route | Page | Description |
 | :--- | :--- | :--- |
-| `/` | Portfolio « ligne de temps » | Version site classique, éditoriale et scrollable : parcours, projets, gouvernance, processus, contact. |
-| `/cv` | CV interactif gamifié | Le CV sous forme de **monde pixel-art** horizontal (8 200 px) : on « marche » dans une barre de progression, on saute sur les props, on traverse 5 zones, et un **hélicoptère de police** traverse le ciel en tirant une fusée sur le décor. |
+| `/` | Portfolio général | Portes projets, tableau des départs du parcours, annuaire des compétences, contact. |
+| `/alpha-to-omega` | Candidature dédiée | Textes de candidature Alpha to Omega, module CI/CD, méthode, démos de gouvernance. `noindex`. |
+| `/cv` | CV interactif | Monde pixel-art horizontal de 5 zones (8 200 px). `noindex`. |
 
 ### Positionnement éditorial
 
-Les contenus du site décrivent une **candidature chez Alpha to Omega** (Toulouse) : les missions évoquées sont présentées comme le terrain visé, jamais comme des postes occupés. Les seuls employeurs réellement exercés sont ITL (2025–2026) et Orange (2023).
+Les missions de la page `/alpha-to-omega` sont présentées comme le terrain visé, jamais comme des postes occupés. Les seuls employeurs réellement exercés sont ITL (2025–2026) et Orange (2023).
 
 ---
 
@@ -29,7 +28,6 @@ npm run dev          # serveur de dev sur http://localhost:4321
 npm run build        # build de production dans ./dist/
 npm run preview      # prévisualise le build (avec l'adaptateur Cloudflare)
 npm run check        # vérification TypeScript + Astro (astro check)
-npm run astro -- --help
 npm run generate-types   # wrangler types → types des bindings Cloudflare
 ```
 
@@ -40,39 +38,35 @@ npm run generate-types   # wrangler types → types des bindings Cloudflare
 
 ```text
 portfolio/
-├── public/                  # assets statiques servis tels quels (pixel-art, photos, icônes)
+├── public/                  # pixel-art du CV (assets/), illustrations IoT, favicon
 ├── src/
 │   ├── components/
-│   │   ├── contact/         # ContactTerminal.tsx (terminal de contact React)
-│   │   ├── dev/             # section « Dev », explorateur de projets, pipeline CI/CD
-│   │   ├── game/            # InteractiveWorld, HudNavigation, HeliSprite, CvGameCta…
-│   │   ├── governance/      # gouvernance, RGPD, matrice des rôles, carte réseau
-│   │   ├── hero/            # Hero.astro + Particles.tsx
-│   │   ├── media/           # PhotoMarquee.astro
-│   │   ├── nav/             # SectionNav, FixedCta
-│   │   ├── process/         # ProcessSection.astro
-│   │   ├── stats/           # StatsBand.astro
-│   │   └── timeline/        # GitTimeline, SectionShell
-│   ├── data/                # contenu éditable : projects, stats, roles, network, resumeData
+│   │   ├── sign/            # signalétique : SignBand, GateLink, SectionSign, ProjectGate,
+│   │   │                    #   Route, DepartureBoard, Directory, ContactPanel, Picto, SiteFooter
+│   │   ├── governance/      # NetworkMap, GdprLock, RolesMatrix (démos de gouvernance)
+│   │   └── game/            # InteractiveWorld, HudNavigation (CV)
+│   ├── data/                # contenu éditable : projects, roles, network, resumeData
 │   ├── layouts/             # Layout.astro (site) et GameLayout.astro (CV)
-│   ├── lib/                 # motion.ts (GSAP + prefersReducedMotion), utils.ts
-│   ├── pages/               # index.astro, cv.astro, api/contact.ts
-│   ├── scripts/             # orchestration : init*() (smooth-scroll, reveal, cv-world…)
+│   ├── lib/                 # motion.ts (prefersReducedMotion), utils.ts (cn)
+│   ├── pages/               # index.astro, alpha-to-omega.astro, cv.astro
+│   ├── scripts/             # wayfinding, board, governance, roles, cv-world, cv-avatar
 │   └── styles/              # global.css (tokens @theme) + sprites.css (pixel-art)
-├── astro.config.mjs         # react() + cloudflare() + @tailwindcss/vite
-├── wrangler.jsonc           # Worker Cloudflare, bindings ASSETS, observability
-└── AGENTS.md                # règles de conception / qualité (source de vérité du projet)
+├── astro.config.mjs         # cloudflare() + @tailwindcss/vite
+├── wrangler.jsonc           # Worker Cloudflare, binding ASSETS, observability
+└── AGENTS.md                # règles de conception / qualité
 ```
 
 ## 4. Architecture
 
-Le projet applique le principe **DOM-first** : le DOM est la source de vérité (SEO, accessibilité, fonctionnement sans JS), le décor visuel n'est qu'une couche posée par-dessus.
+Le projet est **DOM-first** : tout le contenu est rendu en HTML par Astro et reste lisible sans JavaScript.
 
-- **Astro** = structure & contenu (`.astro`), statique par défaut.
-- **React** = widgets interactifs isolés (`client:visible` par défaut) : terminal de contact, jeu pare-feu, explorateur de projets, matrice des rôles.
-- **`src/scripts/*.ts`** = animations. Convention stricte : chaque module exporte un `init*()` appelé depuis le layout, cible le DOM via des attributs `data-*` (jamais une classe CSS), et fait un **early-return** sur `prefersReducedMotion()`.
-- **`src/data/*.ts`** = tout le contenu éditorial (CV, projets, stats, rôles, réseau) est data-driven et modifiable sans toucher au markup.
-- **`src/styles/global.css`** = tokens Tailwind v4 déclarés en `@theme static` (aucun `tailwind.config.*`).
+- **Astro** = structure & contenu, entièrement statique. Aucun framework client ni îlot hydraté.
+- **`src/scripts/*.ts`** = comportements en TypeScript sans dépendance. Chaque module exporte un `init*()` appelé depuis le layout, cible le DOM via des attributs `data-*` (jamais une classe CSS) et respecte `prefersReducedMotion()`.
+  - `wayfinding.ts` : le bandeau d'orientation surligne la section visible (`aria-current`).
+  - `board.ts` : le tableau des départs se met à jour en volet à sa première apparition.
+  - `governance.ts` / `roles.ts` : cartographie réseau inspectable, cadenas RGPD, matrice IAM.
+- **`src/data/*.ts`** = tout le contenu éditorial est data-driven et modifiable sans toucher au markup.
+- **`src/styles/global.css`** = tokens Tailwind v4 en `@theme static` ; le système visuel est documenté dans `../DESIGN.md`.
 
 ### Le monde du CV (`/cv`)
 
@@ -83,53 +77,27 @@ Le projet applique le principe **DOM-first** : le DOM est la source de vérité 
 | `zone-spawn` | `#intro` | 1 400 px | Biographie, points forts, commandes |
 | `zone-skills` | `#competences` | 1 600 px | Matrice des compétences (jauges à segments) |
 | `zone-experience` | `#experiences` | 1 600 px | Expériences ITL & Orange, répartition des tâches |
-| `zone-projects` | `#projets` | 2 200 px | Cartes projets + prototype IoT |
-| `zone-contact` | `#contact` | 1 400 px | Terminal de contact + canaux |
+| `zone-projects` | `#projets` | 2 200 px | Cartes projets |
+| `zone-contact` | `#contact` | 1 400 px | E-mail et canaux |
 
-Le monde défile sur un **axe horizontal natif** : `[data-hscroll]` est un vrai scroller (`overflow-x: auto`) et `cv-world.ts` lit son `scrollLeft` pour déplacer `data-world-container` en `transform` via GSAP. Le viewport (`data-viewport`) reste `sticky left-0` pendant que le monde défile ; les calques de fond suivent à des vitesses différentes (parallaxe via `.world-layer` dimensionnées en `calc(100% + var(--world-w))`) et les props décoratifs sont cliquables (« saut »).
+Le monde défile sur un **axe horizontal natif** : `[data-hscroll]` est un vrai scroller (`overflow-x: auto`) et `cv-world.ts` lit son `scrollLeft` pour déplacer `data-world-container` en `transform`. Les positions des décors sont **mesurées une fois** (chargement, redimensionnement, polices prêtes) puis déduites par calcul à chaque scroll, sans relire le layout. Les calques de fond suivent à des vitesses différentes (parallaxe via `.world-layer` dimensionnées en `calc(100% + var(--world-w))`).
 
-**Entrées** : trackpad horizontal, swipe tactile, et **molette verticale remappée** sur l'axe horizontal (avec passage au footer vertical aux extrémités) ; flèches ← → au clavier. La barre de défilement est masquée. Le footer « Fin de la balade » reste sous le monde, atteint en scroll vertical une fois la course terminée.
+**Entrées** : trackpad horizontal, swipe tactile, **molette verticale remappée** sur l'axe horizontal (avec passage au footer aux extrémités), flèches ← → au clavier, et boutons de téléportation du HUD (la zone courante est exposée via `aria-current`).
 
-**Monde horizontal sur mobile** : l'axe horizontal est conservé sur **toutes les largeurs**, téléphone compris. Sous `1024px`, le contenu des zones est simplement **compacté** (grilles multi-colonnes façon desktop, cartes projets ~300px, paddings réduits) pour tenir dans `100vh` sans casser la piste horizontale.
-
-**Seuil « empilé »** : le layout vertical (zones les unes sous les autres, décors masqués) n'est conservé que pour `prefers-reduced-motion: reduce` **ou** une fenêtre très courte — `(max-height: 640px)` (paysage téléphone). Ce seuil est défini **à l'identique** dans `sprites.css` et dans `isStacked()` (`cv-world.ts`) : toute modification doit garder les deux alignés.
-
-### L'hélicoptère de police (`HeliSprite.astro` + `cv-helicopter.ts` + `sprites.css`)
-
-Animation **100 % CSS** (aucun binaire, aucun canvas) pilotée par une timeline de 20 s (`--heli-cycle`) :
-
-1. l'hélico entre par la gauche et stabilise son altitude ;
-2. à ~52 % du cycle, une **fusée** se détache de la coque et pique vers le sol ;
-3. à ~59–61 %, **explosion** (flamme, blast, fumée, débris) ;
-4. selon la variante tirée au sort :
-   - **`hit`** — la fusée percute la coque : l'hélico est détruit (`opacity: 0`), puis le cycle redémarre à 62 % ;
-   - **`ground`** — la fusée explose au sol : l'hélico survit, secoué, puis sort par la droite et le cycle repart à 100 %.
-5. la variante est tirée au sort à chaque cycle par `initCvHelicopter()` (`data-heli-variant`), qui relance les animations CSS en réinitialisant `animation` sur chaque nœud.
-
-Le sprite est **orienté vers la droite** : le conteneur `.arcade-heli__flip` applique un `scaleX(-1)` à l'ensemble coque + fusée + stabilisateur, ce qui laisse le nez, la verrière et le gyrophare du côté de la progression.
-
-> **Piège de rendu connu** : les animations `transform` compositées ne sont **pas** rasterisées à leur position animée par Chrome en mode headless (`--headless=new --disable-gpu`) — l'hélico y apparaît à `x = -180`, hors écran. Ce n'est pas un bug du site : en navigateur réel (ou via CDP) le rendu est correct. Pour vérifier des frames animées, utiliser Chrome réel + DevTools Protocol.
-
-### Illustrations IoT (`public/assets/iot/`)
-
-- `esp32-board.svg` et `rm3100-sensor.svg` : planches de Fritzing **transparentes**, share le même `viewBox` (`38 18 224 172`) pour que les deux cartes décoratives de la zone Projets ait exactement la même taille ; elles sont posées sur un voile `bg-white/5` pour que le décor du monde reste visible derrière (pas de fond opaque).
-- `esp32-chip.svg` et `rm3100-chip.svg` : **icônes 16 × 16 transparentes** utilisées dans la liste des compétences, pour rester alignées avec les `devicon` (le SVG complet de la planche aurait été rendu en 16 × 11 et aurait-filled la zone).
+**Seuil « empilé »** : le layout vertical (zones les unes sous les autres, décors masqués) n'est utilisé que pour `prefers-reduced-motion: reduce` **ou** une fenêtre très courte `(max-height: 640px)`. Ce seuil est défini **à l'identique** dans `sprites.css` et dans `isStacked()` (`cv-world.ts`) : les garder alignés.
 
 ## 5. Accessibilité & mouvement réduit
 
-- `prefers-reduced-motion: reduce` → **early-return** de tous les `init*()` : aucune animation, **contenu intégralement visible**.
-- Sur `/cv`, le monde passe en **layout empilé** (zones les unes sous les autres) uniquement en reduced-motion ou sous le seuil `(max-height: 640px)` — ce qui couvre le **paysage téléphone** ; l'hélico est alors masqué. En portrait mobile, le monde horizontal est conservé.
-- `/cv` reste lisible **sans JavaScript** grâce au bloc `<noscript>` qui rend biographie, compétences, expériences, projets et contacts en HTML simple.
-- Canvas et décors purement ornementaux sont `aria-hidden="true"` ; tout le contenu utile vit dans le DOM.
-- Navigation clavier complète, focus visible, contrastes conformes AA sur fond `#05060d`.
+- Contenu complet sans JavaScript : `/cv` a aussi un bloc `<noscript>` ; la matrice IAM affiche ses quatre rôles empilés.
+- Lien d'évitement « Aller au contenu », navigation clavier complète, focus visible (cadre noir de 3 px), boutons bascule en `aria-pressed`.
+- Contrastes WCAG AA (souvent AAA) ; texte secondaire teinté de son fond.
+- `prefers-reduced-motion: reduce` : pas de volet sur le tableau, cadenas déjà verrouillé, CV empilé, sprites figés.
 
 ## 6. Performance
 
-- Animations restreintes à `transform` / `opacity` (pas de `filter: blur` ni de `background-position` animé).
-- Parallaxe par `transform` uniquement (repaint par frame évité).
-- `ScrollTrigger.refresh()` sur `load` après ajout/suppression de sections.
-- Mesures du build courant : `dist` ≈ 5,6 Mo (assets inclus), `dist/client/_astro` ≈ 810 Ko, React ≈ 208 Ko, GSAP ≈ 68 Ko. `npm audit --omit=dev` : 0 vulnérabilité.
-- Budgets à respecter : 60 fps desktop / ≥ 45 fps mobile, DPR clampé à 1,75, LCP < 2 s.
+- JavaScript par page : ≈ 3,7 Ko (`/`, `/alpha-to-omega`) et ≈ 5,9 Ko (`/cv`).
+- Aucune animation infinie hors sprites du CV ; aucun `filter: blur`, ombre colorée ni fond animé.
+- Parallaxe et monde du CV en `transform` uniquement.
 
 ## 7. Déploiement (Cloudflare Workers)
 
@@ -138,27 +106,21 @@ npm run build
 npx wrangler deploy
 ```
 
-- `astro.config.mjs` déclare `adapter: cloudflare()` ; `wrangler.jsonc` pointe `main` sur `@astrojs/cloudflare/entrypoints/server` et sert `dist/` via le binding `ASSETS` (avec `Cache-Control` immuable injecté sur `/_astro/*`).
-- L'observabilité est activée dans `wrangler.jsonc`.
-- La route `src/pages/api/contact.ts` reste en SSR (`prerender = false`) : elle est indispensable à l'adaptateur Cloudflare.
+`astro.config.mjs` déclare `adapter: cloudflare()` ; `wrangler.jsonc` sert `dist/` via le binding `ASSETS` (avec `Cache-Control` immuable injecté sur `/_astro/*`). L'observabilité est activée.
 
-## 8. Dette technique connue
+## 8. À compléter
 
-- **Envoi d'e-mail non branché** : `src/pages/api/contact.ts` répond volontairement `501` et bascule vers un `mailto:` affiché à l'utilisateur (bandeau « MODE MAIL »). Brancher un service d'envoi suppose d'ajouter une variable d'environnement côté serveur, jamais exposée au client.
-- **Contenu placeholder** : les valeurs de `src/data/stats.ts` et les libellés tronqués de `HudNavigation.astro` sont à remplacer par les données réelles.
-- **Vérification de types** : `npm run check` (`@astrojs/check` + `typescript`) est câblé et passe à **0 erreur** sur les 51 fichiers ; à relancer après chaque modification de `.ts`/`.tsx`.
-- **Boucles RAF isolées** : `Particles.tsx` et `PacketFirewallGame.tsx` ont leur propre `requestAnimationFrame` ; à migrer vers `gsap.ticker` lors d'une refonte (ne jamais créer de 4ᵉ boucle).
-- `session: false` et `imageService` (optimisations Astro) sont des pistes d'amélioration non activées.
+- **Captures des projets** : aucune image de projet pour l'instant (les photos de banque d'images ont été retirées). À ajouter en WebP ≤ 1600 px.
+- **Envoi d'e-mail** : le contact est un `mailto:` direct. Brancher un service d'envoi suppose une route serveur et une variable d'environnement jamais exposée au client.
 
 ## 9. Conventions
 
-Le détail des règles (vision, budgets, tiering, a11y, motion, nettoyage, checklist de livraison, dette connue) se trouve dans **`AGENTS.md`**. En résumé :
+Le détail des règles se trouve dans **`AGENTS.md`**, le système visuel dans **`../DESIGN.md`**. En résumé :
 
 - scripts < ~120 lignes, composants < 300 lignes ;
 - TypeScript strict, aucun `any` non justifié ;
 - tout nouveau style passe par un token `@theme` ;
-- classes conditionnelles via `cn()` (`src/lib/utils.ts`) ;
-- nettoyage complet des tweens, ScrollTriggers, listeners et observers ;
+- cibles JS via attributs `data-*` ;
 - `npm run check` à 0 erreur et `npm run build` vert avant toute livraison.
 
 ---

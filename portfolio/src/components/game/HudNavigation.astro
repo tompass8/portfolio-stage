@@ -1,30 +1,52 @@
 ---
+// HUD du CV : sous 1024 px, barre d'onglets (pictogramme au-dessus d'un libellé court)
+// pour que les cinq zones restent visibles, comme le bandeau du site.
 import { resumeData } from "../../data/resumeData";
-import Picto from "../sign/Picto.astro";
+import Picto, { type PictoName } from "../sign/Picto.astro";
 
 const { zones } = resumeData;
+
+const zonePicto: Record<string, PictoName> = {
+  spawn: "pin",
+  skills: "grid",
+  experience: "briefcase",
+  projects: "gate",
+  contact: "mail",
+};
+const shortLabel: Record<string, string> = {
+  competences: "Stack",
+  experiences: "Parcours",
+};
 ---
 <header class="fixed inset-x-0 top-0 z-50 border-b-[6px] border-ink bg-sign text-ink" style="padding-top: env(safe-area-inset-top, 0px);" data-hud>
-  <div class="mx-auto flex max-w-[90rem] items-center gap-2 px-4 py-2 sm:px-6">
-    <a href="/" class="flex shrink-0 items-center gap-2.5 rounded-[6px] py-1 pr-3 text-lg font-semibold no-underline">
+  <div class="mx-auto flex max-w-[90rem] items-center gap-1 px-2 py-1.5 sm:px-6 lg:gap-2 lg:py-2">
+    <a href="/" class="flex shrink-0 items-center gap-2.5 rounded-[6px] py-1 pr-1 text-lg font-semibold no-underline lg:pr-3">
       <Picto name="left" size="sm" />
-      <span class="hidden sm:inline">Site classique</span>
-      <span class="sr-only sm:hidden">Retour au site classique</span>
+      <span class="hidden lg:inline">Site classique</span>
+      <span class="sr-only lg:hidden">Retour au site classique</span>
     </a>
 
-    <nav class="flex min-w-0 flex-1 gap-1 overflow-x-auto [scrollbar-width:none]" aria-label="Téléportation par niveau">
+    <nav class="flex min-w-0 flex-1 justify-between gap-0.5 sm:justify-start sm:gap-2 lg:gap-1" aria-label="Téléportation par niveau">
       {zones.map((z) => (
         <button
           type="button"
           data-teleport={z.hash}
-          class="inline-flex min-h-11 shrink-0 cursor-pointer items-center rounded-[6px] px-3 text-lg font-semibold transition-colors duration-150 hover:bg-sign-press"
+          class="inline-flex min-h-11 min-w-0 flex-1 cursor-pointer flex-col items-center justify-center gap-1 rounded-[6px] px-1 py-1 text-[0.8125rem] font-semibold leading-none transition-colors duration-150 hover:bg-sign-press sm:flex-none sm:px-3 lg:flex-row lg:px-3 lg:text-lg"
         >
-          {z.short}
+          <Picto name={zonePicto[z.kind]} size="sm" class="size-8 lg:hidden" />
+          {shortLabel[z.hash] ? (
+            <>
+              <span class="truncate lg:hidden">{shortLabel[z.hash]}</span>
+              <span class="hidden lg:inline">{z.short}</span>
+            </>
+          ) : (
+            <span class="truncate">{z.short}</span>
+          )}
         </button>
       ))}
     </nav>
 
-    <div class="hidden shrink-0 items-center gap-3 md:flex">
+    <div class="hidden shrink-0 items-center gap-3 lg:flex">
       <span class="text-base font-semibold">Progression</span>
       <span class="relative block h-3 w-28 bg-ink/15" aria-hidden="true">
         <span data-progress-bar class="absolute inset-y-0 left-0 w-0 bg-ink"></span>
@@ -32,7 +54,7 @@ const { zones } = resumeData;
       <span data-progress-label class="w-11 font-mono text-base font-semibold tabular-nums">0%</span>
     </div>
   </div>
-  <div class="h-1 w-full bg-ink/15 md:hidden" aria-hidden="true">
+  <div class="h-1 w-full bg-ink/15 lg:hidden" aria-hidden="true">
     <span data-progress-bar class="block h-full w-0 bg-ink"></span>
   </div>
 </header>
