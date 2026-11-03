@@ -10,12 +10,9 @@ const badgeStyles: Record<RolePermission["permissions"][number]["access"], strin
 };
 ---
 <div data-roles class="rounded-[6px] bg-panel p-5 sm:p-8">
-  <div class="flex flex-wrap items-baseline justify-between gap-2">
-    <h3 class="text-3xl font-bold leading-tight tracking-[-0.015em]">
-      Gestion des comptes, authentifications &amp; moindre privilège
-    </h3>
-    <span class="font-mono text-sm text-muted">RBAC Policy v2.6</span>
-  </div>
+  <h3 class="text-3xl font-bold leading-tight tracking-[-0.015em]">
+    Gestion des comptes, authentifications &amp; moindre privilège
+  </h3>
   <p class="mt-2 max-w-[40rem] text-lg text-muted">
     Matrice IAM &amp; droits d'accès. Matrice cible proposée : le rôle « Développeur Web / Stagiaire » est ma future position, pas un poste occupé aujourd'hui.
   </p>
@@ -28,7 +25,7 @@ const badgeStyles: Record<RolePermission["permissions"][number]["access"], strin
         data-role-tab={idx}
         aria-pressed={idx === 0 ? "true" : "false"}
         aria-controls={`role-${idx}`}
-        class="role-tab min-h-11 cursor-pointer rounded-[6px] border-2 border-ink bg-panel px-4 py-2 text-lg font-semibold text-ink transition-colors duration-150 hover:bg-sign"
+        class="role-tab press min-h-11 cursor-pointer rounded-[6px] border-2 border-ink bg-panel px-4 py-2 text-lg font-semibold text-ink hover:bg-sign"
       >
         {item.role}
       </button>

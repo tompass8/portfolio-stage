@@ -17,13 +17,13 @@ const zonePicto: Record<string, PictoName> = {
   <!-- Piste de scroll horizontale (largeur = largeur du monde) -->
   <div
     data-hscroll
-    class="relative h-screen w-full overflow-x-auto overflow-y-hidden overscroll-x-contain"
+    class="relative h-svh w-full overflow-x-auto overflow-y-hidden overscroll-x-contain"
     tabindex="0"
     role="region"
     aria-label="CV interactif, défilement horizontal"
   >
-    <div data-hscroll-inner class="relative h-screen" style={`width:${worldWidth}px`}>
-      <div data-viewport class="sticky left-0 top-0 h-screen overflow-hidden" style={`--world-w:${worldWidth}px`}>
+    <div data-hscroll-inner class="relative h-svh" style={`width:${worldWidth}px`}>
+      <div data-viewport class="sticky left-0 top-0 h-svh overflow-hidden" style={`--world-w:${worldWidth}px`}>
         <!-- Fonds parallaxe -->
         <div class="absolute inset-0 overflow-hidden" aria-hidden="true">
           <div class="world-layer layer-sky" data-layer="sky"></div>
@@ -115,14 +115,14 @@ const zonePicto: Record<string, PictoName> = {
                     </div>
                     <div class="flex flex-col gap-3">
                       {spawn.controls.map((c) => (
-                        <div class="flex items-center gap-3 rounded-[6px] bg-panel px-4 py-3 text-ink">
+                        <div data-control-hint class="flex items-center gap-3 rounded-[6px] bg-panel px-4 py-3 text-ink">
                           <span class="grid size-12 shrink-0 place-items-center rounded-[6px] bg-ink">
                             <img src={`/assets/ui/${c.icon}.png`} alt="" width="40" height="40" class="pixelated" />
                           </span>
                           <span class="text-lg font-semibold">{c.label}</span>
                         </div>
                       ))}
-                      <p class="rounded-[6px] bg-sign px-4 py-3 text-lg font-semibold text-ink">J'adore les échecs et le football !</p>
+                      <p class="rounded-[6px] bg-panel px-4 py-3 text-lg font-semibold text-ink">J'adore les échecs et le football !</p>
                     </div>
                   </div>
                 )}

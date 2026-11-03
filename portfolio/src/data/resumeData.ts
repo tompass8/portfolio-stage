@@ -92,7 +92,7 @@ export interface ResumeData {
 export const resumeData: ResumeData = {
   meta: {
     name: "Tom Passerman",
-    headline: "Passionné d'IT : Full-Stack, Systèmes & Réseaux, Data & IoT",
+    headline: "Passionné d'IT : Systèmes & Réseaux, IoT, Data & Full-Stack",
     location: "Toulouse, France",
   },
 
@@ -148,7 +148,7 @@ export const resumeData: ResumeData = {
       level: "NIVEAU 04 // BOSS FINAL",
       title: "Le Terminal de Contact",
       short: "Contact",
-      subtitle: "Borne d'arcade : envoie ton message",
+      subtitle: "Borne d'arcade : écris-moi par e-mail",
       kind: "contact",
       width: 1400,
       hasTerminal: true,

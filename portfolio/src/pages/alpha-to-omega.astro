@@ -3,8 +3,10 @@ import Layout from "../layouts/Layout.astro";
 import GateLink from "../components/sign/GateLink.astro";
 import SectionSign from "../components/sign/SectionSign.astro";
 import Route from "../components/sign/Route.astro";
+import CommitLog from "../components/sign/CommitLog.astro";
 import ContactPanel from "../components/sign/ContactPanel.astro";
 import SiteFooter from "../components/sign/SiteFooter.astro";
+import Picto from "../components/sign/Picto.astro";
 import NetworkMap from "../components/governance/NetworkMap.astro";
 import GdprLock from "../components/governance/GdprLock.astro";
 import RolesMatrix from "../components/governance/RolesMatrix.astro";
@@ -32,12 +34,13 @@ const reasons = [
   },
 ];
 
-const features = [
-  { tag: "CI", title: "Analyse & correction automatique", desc: "À chaque commit ou PR, l'agent analyse les erreurs de build et de tests, puis génère des propositions de correctifs de code ciblées, prêtes à revue." },
-  { tag: "Tests", title: "Génération automatique de tests", desc: "Suites de tests unitaires et d'intégration créées pour le nouveau code détecté : cas nominaux et edge cases couverts dès l'ouverture de la PR." },
-  { tag: "Review", title: "Revue de code intelligente", desc: "Audit des PR en expert sécurité & architecture : détection de failles, vulnérabilités OWASP et problèmes de performance avant validation." },
-  { tag: "Healing", title: "Auto-réparation du pipeline", desc: "Erreurs de configuration ou de dépendances détectées (Dockerfile, YAML de workflow) et patch appliqué de manière autonome par l'agent." },
-  { tag: "Docs", title: "Documentation automatisée", desc: "CHANGELOG, documentation API et README mis à jour dynamiquement à chaque fusion de code, sans intervention manuelle." },
+// Proposition (non réalisée) : ce que l'agent ferait à chaque étape du pipeline
+const agentSteps = [
+  { title: "Analyser les échecs", desc: "À chaque commit ou PR, lire les erreurs de build et de tests et proposer un correctif ciblé, prêt à relire." },
+  { title: "Écrire les tests manquants", desc: "Générer des tests unitaires et d'intégration pour le nouveau code, cas nominaux et cas limites compris." },
+  { title: "Relire les PR", desc: "Signaler failles, vulnérabilités OWASP et problèmes de performance avant validation." },
+  { title: "Réparer le pipeline", desc: "Repérer une erreur de configuration ou de dépendance (Dockerfile, YAML de workflow) et proposer le patch." },
+  { title: "Tenir la doc à jour", desc: "Mettre à jour CHANGELOG, documentation d'API et README à chaque fusion." },
 ];
 
 const flow = [
@@ -49,8 +52,8 @@ const flow = [
 
 const steps = [
   { title: "Cadrage", sub: "vos besoins", points: ["Ateliers de recueil du besoin & user-stories", "Choix de la stack et des livrables", "Jalons, budget et critères d'acceptation"] },
-  { title: "Build", sub: "itératif & testé", points: ["Développement par sprints avec démos régulières", "Revue de code et tests automatisés", "Intégration continue dès le premier commit"] },
-  { title: "Deploy", sub: "en production", points: ["Pipeline CI/CD reproductible", "Conteneurisation & mise en ligne sans downtime", "Logs, métriques et alertes en place"] },
+  { title: "Développement", sub: "itératif & testé", points: ["Développement par sprints avec démos régulières", "Revue de code et tests automatisés", "Intégration continue dès le premier commit"] },
+  { title: "Mise en production", sub: "sans interruption", points: ["Pipeline CI/CD reproductible", "Conteneurisation & mise en ligne sans interruption de service", "Logs, métriques et alertes en place"] },
   { title: "Suivi", sub: "après la mise en ligne", points: ["Monitoring, correctifs et évolutions", "Optimisation des performances", "Transfert de compétences & documentation"] },
 ];
 
@@ -68,21 +71,25 @@ const synthesis = [
   noindex
 >
   <section aria-labelledby="candidature" class="mx-auto max-w-[90rem] px-4 pb-12 pt-10 sm:px-6 sm:pt-14">
-    <h1 id="candidature" class="max-w-[18ch] text-display font-bold tracking-[-0.03em]">
-      Développement Web, IA &amp; Gouvernance Numérique
-    </h1>
-    <p class="mt-4 text-2xl text-muted">Tom Passerman, étudiant Bachelor Informatique (Ynov Toulouse)</p>
-    <p class="mt-5 inline-flex flex-wrap items-center gap-x-3 gap-y-1 rounded-[6px] bg-ink px-4 py-2 text-lg font-semibold text-sign">
-      Candidature Alpha to Omega (A2Ω) · Toulouse · Stage 2 à 6 mois · Dispo immédiate
-    </p>
+    <div class="grid gap-x-12 gap-y-6 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:items-end">
+      <div>
+        <h1 id="candidature" class="text-display font-bold tracking-[-0.03em]">Candidature Alpha to Omega</h1>
+        <p class="mt-4 text-2xl leading-snug">
+          Développement web, IA &amp; gouvernance numérique · Tom Passerman, étudiant Bachelor Informatique (Ynov Toulouse)
+        </p>
+      </div>
+      <p class="inline-flex flex-wrap items-center gap-x-3 gap-y-1 self-end justify-self-start rounded-[6px] bg-ink px-4 py-2 text-lg font-semibold text-sign lg:justify-self-end">
+        Toulouse · Stage de 2 à 6 mois · Disponible immédiatement
+      </p>
+    </div>
     <p class="mt-6 max-w-[40rem] text-xl leading-relaxed">
       Ce site interactif est ma candidature pour rejoindre <strong>Alpha to Omega</strong>. Il illustre ma compréhension de vos deux piliers : <strong>75% d'ingénierie web sur mesure</strong> (du cadrage besoin au déploiement Cloudflare avec Astro, Git et APIs) et <strong>25% de gouvernance numérique</strong> (cartographie SI, gestion des accès IAM, conformité RGPD et processus d'exploitation).
     </p>
 
     <ul class="mt-10 grid gap-4 md:grid-cols-3" aria-label="Accès rapide">
-      <li><GateLink href="#web" num="75 %" title="Fil conducteur web" line="Ingénierie web sur mesure, APIs & CI/CD" /></li>
+      <li><GateLink href="#web" num="75 %" title="Ingénierie web" line="Sur mesure, APIs & CI/CD" /></li>
       <li><GateLink href="#gouvernance" num="25 %" title="Gouvernance" line="Cartographie SI, IAM, RGPD" /></li>
-      <li><GateLink href="#contact" num="A2Ω" title="Mon parcours & contact" line="Synthèse de candidature" /></li>
+      <li><GateLink href="#contact" num="2–6" title="Mois de stage" line="Disponible immédiatement : parcours et contact" /></li>
     </ul>
 
     <div class="mt-14 grid gap-x-10 gap-y-8 border-t-[6px] border-ink pt-10 md:grid-cols-3">
@@ -98,38 +105,25 @@ const synthesis = [
   <section id="web" aria-label="Ingénierie web">
     <SectionSign title="Ingénierie web" picto="code" aside="75 %" />
     <div class="mx-auto max-w-[90rem] px-4 py-12 sm:px-6 sm:py-16">
-      <h3 class="max-w-[24ch] text-4xl font-bold leading-[1.05] tracking-[-0.02em]">Ingénierie Web, APIs &amp; Systèmes Distribués</h3>
-      <p class="mt-4 max-w-[40rem] text-xl leading-relaxed">
+      <p class="max-w-[40rem] text-xl leading-relaxed">
         Du microcontrôleur embarqué aux conteneurs Docker en passant par des APIs .NET découplées :
         chaque brique est versionnée, testée et déployée via un pipeline reproductible.
       </p>
+      <div class="mt-8"><CommitLog repoUrl="https://github.com/tompass8/portfolio-stage" /></div>
 
-      <pre class="on-dark mt-8 overflow-x-auto rounded-[6px] bg-board p-5 font-mono text-sm leading-relaxed text-on-board sm:text-base"><code><span class="text-flap-text">tom@architect:~/core$</span> git push origin main --tags
-Enumerating objects: 42, done. Counting objects: 100% (42/42), done.
-Delta compression using up to 16 threads, Compressing objects: 100% (38/38).
-remote: [CI/CD] Building multi-tier containers &amp; Edge bundles...
-<span class="text-flap-text">✔</span> To https://github.com/tompass8/portfolio-stage.git  [new tag] v2.4.0 -&gt; production</code></pre>
-
-      <h3 class="mt-16 text-3xl font-bold tracking-[-0.015em]">Automatiser et sécuriser le cycle de vie du code</h3>
+      <h3 class="mt-16 text-3xl font-bold tracking-[-0.015em]">Proposition : un agent IA dans le pipeline</h3>
       <p class="mt-3 max-w-[40rem] text-xl leading-relaxed">
-        Module proposé pour accompagner les équipes dans l'usage concret de l'IA : un agent branché sur le pipeline
-        existant qui analyse, teste, révise, répare et documente le code. Chaque action reste soumise à validation humaine.
+        Module que je propose pour accompagner vos équipes dans l'usage concret de l'IA : un agent branché sur le pipeline
+        existant. Il propose, l'humain décide : chaque action reste soumise à validation.
       </p>
-      <dl class="mt-8 grid gap-x-10 gap-y-8 md:grid-cols-2 lg:grid-cols-3">
-        {features.map((f) => (
-          <div class="border-t-[3px] border-ink pt-3">
-            <dt class="text-xl font-bold">{f.title} <span class="ml-1 rounded-[4px] bg-ink px-2 py-0.5 align-middle font-mono text-sm font-normal text-sign">{f.tag}</span></dt>
-            <dd class="mt-2 text-lg leading-relaxed">{f.desc}</dd>
-          </div>
+      <ol class="mt-8 max-w-[52rem] divide-y-2 divide-rule border-y-2 border-rule">
+        {agentSteps.map((s) => (
+          <li class="grid gap-x-8 gap-y-1 py-4 md:grid-cols-[minmax(0,16rem)_minmax(0,1fr)]">
+            <h4 class="text-xl font-bold">{s.title}</h4>
+            <p class="text-lg leading-relaxed">{s.desc}</p>
+          </li>
         ))}
-        <div class="rounded-[6px] bg-sign p-5">
-          <dt class="text-xl font-bold">Gain équipe</dt>
-          <dd class="mt-2 text-lg leading-relaxed">
-            Moins de temps sur les tâches répétitives, plus de focus sur l'architecture et le métier.
-            Le pipeline devient un copilote : il propose, l'humain décide.
-          </dd>
-        </div>
-      </dl>
+      </ol>
 
       <div class="mt-10 rounded-[6px] bg-panel p-5 sm:p-8">
         <h4 class="text-lg font-bold">Architecture : agent LLM + Function Calling</h4>
@@ -140,9 +134,17 @@ remote: [CI/CD] Building multi-tier containers &amp; Edge bundles...
       </div>
 
       <h3 class="mt-16 text-3xl font-bold tracking-[-0.015em]">Projets réalisés</h3>
-      <ul class="mt-6 grid gap-4 md:grid-cols-3">
+      <ul class="mt-6 divide-y-2 divide-rule border-y-2 border-rule">
         {projects.map((p) => (
-          <li><GateLink href={`/#projet-${p.slug}`} num={p.id} title={p.title.replace(" (Groupe Immobilier)", "")} line={p.subtitle} arrow="up-right" /></li>
+          <li>
+            <a href={`/#projet-${p.slug}`} class="press group flex min-h-16 items-center gap-4 py-3 no-underline">
+              <span class="min-w-0 flex-1">
+                <span class="block text-2xl font-bold leading-tight group-hover:underline">{p.title}</span>
+                <span class="block text-lg text-muted">{p.subtitle}</span>
+              </span>
+              <Picto name="up-right" size="sm" class="transition-transform duration-200 ease-out group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+            </a>
+          </li>
         ))}
       </ul>
     </div>
@@ -151,9 +153,8 @@ remote: [CI/CD] Building multi-tier containers &amp; Edge bundles...
   <section id="methode" aria-label="Méthode de travail">
     <SectionSign title="Méthode" picto="right" aside="4 étapes" />
     <div class="mx-auto max-w-[90rem] px-4 py-12 sm:px-6 sm:py-16">
-      <h3 class="text-4xl font-bold leading-[1.05] tracking-[-0.02em]">De l'idée à la production en quatre étapes</h3>
-      <p class="mt-4 max-w-[40rem] text-xl leading-relaxed">
-        Une méthode de livraison continue, transparente et mesurable : le même niveau d'exigence
+      <p class="max-w-[40rem] text-xl leading-relaxed">
+        De l'idée à la production : une méthode de livraison continue, transparente et mesurable, le même niveau d'exigence
         que j'applique déjà sur mes projets et mes missions d'accompagnement, et que je mettrai
         en pratique chez Alpha to Omega.
       </p>
@@ -161,7 +162,7 @@ remote: [CI/CD] Building multi-tier containers &amp; Edge bundles...
         {steps.map((s, i) => (
           <li class="relative border-t-[6px] border-ink pt-6">
             <span aria-hidden="true" class="absolute -top-[1.1rem] left-0 size-7 rounded-full border-[6px] border-ink bg-sign"></span>
-            <h4 class="text-4xl font-bold tracking-[-0.02em]"><span class="tabular-nums">{i + 1}.</span> {s.title}</h4>
+            <h3 class="text-3xl font-bold tracking-[-0.02em]"><span class="tabular-nums">{i + 1}.</span> {s.title}</h3>
             <p class="text-lg text-muted">{s.sub}</p>
             <ul class="mt-4 space-y-2 text-lg">
               {s.points.map((p) => (
@@ -177,13 +178,10 @@ remote: [CI/CD] Building multi-tier containers &amp; Edge bundles...
   <section id="gouvernance" aria-label="Gouvernance numérique">
     <SectionSign title="Gouvernance" picto="shield" aside="25 %" tone="ink" />
     <div class="mx-auto max-w-[90rem] px-4 py-12 sm:px-6 sm:py-16">
-      <h3 class="max-w-[28ch] text-4xl font-bold leading-[1.05] tracking-[-0.02em]">
-        Du flux de code à un environnement structuré, auditable et résilient
-      </h3>
-      <p class="mt-4 max-w-[40rem] text-xl leading-relaxed">
-        Les missions d'accompagnement que vous menez chez Alpha to Omega (recensement des actifs,
-        cartographie des flux, contrôle des habilitations (IAM), conformité RGPD et formalisation des
-        procédures d'exploitation) sont le terrain que je vise : voici comment je m'y intégrerais.
+      <p class="max-w-[40rem] text-xl leading-relaxed">
+        Recensement des actifs, cartographie des flux, contrôle des habilitations (IAM), conformité RGPD et formalisation des
+        procédures d'exploitation : les missions d'accompagnement que vous menez chez Alpha to Omega sont le terrain que je vise.
+        Voici comment je m'y intégrerais.
       </p>
       <div class="mt-10"><NetworkMap /></div>
       <div class="mt-4 grid gap-4 lg:grid-cols-3">
@@ -196,10 +194,9 @@ remote: [CI/CD] Building multi-tier containers &amp; Edge bundles...
   <section id="contact" aria-label="Contact">
     <SectionSign title="Contact" picto="mail" aside="Toulouse" />
     <div class="mx-auto max-w-[90rem] px-4 py-12 sm:px-6 sm:py-16">
-      <h3 class="max-w-[24ch] text-4xl font-bold leading-[1.05] tracking-[-0.02em]">Échangeons sur vos prochains projets Web &amp; Gouvernance</h3>
-      <div class="mt-10 grid gap-x-10 gap-y-8 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
+      <div class="grid gap-x-10 gap-y-8 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
         <div>
-          <h4 class="text-2xl font-bold">Prêt à démarrer chez Alpha to Omega</h4>
+          <h3 class="text-3xl font-bold tracking-[-0.015em]">Prêt à démarrer chez Alpha to Omega</h3>
           <p class="mt-2 text-lg leading-relaxed">
             Basé à Toulouse, disponible immédiatement pour un stage de 2 à 6 mois (35h/semaine, 9h30-18h30), avec perspective d'alternance.
           </p>

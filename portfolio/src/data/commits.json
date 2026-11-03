@@ -1,0 +1,32 @@
+[
+  {
+    "hash": "0e8e390",
+    "date": "2026-11-03",
+    "subject": "content: remplacement des tirets cadratins"
+  },
+  {
+    "hash": "5385cf9",
+    "date": "2026-11-03",
+    "subject": "chore: retrait du code et des assets inutilises"
+  },
+  {
+    "hash": "17f8a44",
+    "date": "2026-11-03",
+    "subject": "fix(cv): HUD en barre d'onglets sur mobile et retrait des dependances inutilisees"
+  },
+  {
+    "hash": "0152f55",
+    "date": "2026-11-03",
+    "subject": "perf(a11y): corrections de l'audit Impeccable post-refonte"
+  },
+  {
+    "hash": "e47bc16",
+    "date": "2026-11-03",
+    "subject": "feat(design): refonte complete en signaletique d'aerogare"
+  },
+  {
+    "hash": "09ec673",
+    "date": "2026-10-23",
+    "subject": "feat(cv): defilement horizontal natif gauche-droite avec molette mappee"
+  }
+]

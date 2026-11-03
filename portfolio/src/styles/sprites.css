@@ -112,7 +112,7 @@
 /* ---------- Scroller horizontal natif du monde (/cv) ---------- */
 [data-hscroll] {
   position: relative;
-  height: 100vh;
+  height: 100svh;
   width: 100%;
   overflow-x: auto;
   overflow-y: hidden;
@@ -127,7 +127,7 @@
 }
 [data-hscroll-inner] {
   position: relative;
-  height: 100vh;
+  height: 100svh;
 }
 /* Largeur calée sur le clientWidth réel du scroller (évite le décalage de la scrollbar page). */
 [data-viewport] {
@@ -159,11 +159,15 @@
   [data-zone] {
     width: 100% !important;
     height: auto !important;
-    min-height: 100svh;
-    padding-top: 10rem;
-    scroll-margin-top: 4rem;
+    min-height: 0;
+    padding-top: 13rem;
+    scroll-margin-top: 5rem;
   }
   [data-zone] > .zone-body { padding-bottom: 6rem; }
+  /* Les consignes du monde horizontal (molette, flèches, progression) n'ont plus de sens ici */
+  [data-control-hint],
+  [data-scroll-hint],
+  [data-progress-wrap] { display: none !important; }
   [data-avatar],
   [data-decor] { display: none; }
   [data-project-row] {
@@ -229,5 +233,20 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 0.85rem;
   }
-  [data-zone="intro"] .zone-body p { font-size: 0.9375rem; }
+  [data-zone="intro"] .zone-body p { font-size: 1rem; }
+}
+
+/* ---------- Écran tactile : ni molette ni flèches clavier, ces consignes ne s'appliquent pas ---------- */
+@media (pointer: coarse) {
+  [data-control-hint] { display: none; }
+}
+
+/* ---------- Téléphone : le panneau d'accueil tient dans l'écran, texte à 16 px ---------- */
+@media (max-width: 639px) {
+  [data-zone="intro"] .zone-body > div:nth-of-type(1) {
+    grid-template-columns: minmax(0, 1fr);
+    max-width: calc(100vw - 2.5rem);
+  }
+  [data-zone] .zone-body p,
+  [data-zone] .zone-body li { font-size: 1rem; }
 }

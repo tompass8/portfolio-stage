@@ -6,9 +6,11 @@ interface Props {
   groups: SkillGroup[];
 }
 const { groups } = Astro.props;
+// Du niveau le plus solide au plus récent : on lit d'abord ce que Tom maîtrise le mieux
+const ordered = [...groups].sort((a, b) => b.pct - a.pct);
 ---
 <ul class="divide-y-2 divide-concrete rounded-[6px] bg-panel">
-  {groups.map((g) => (
+  {ordered.map((g) => (
     <li class="grid gap-x-8 gap-y-3 p-5 sm:p-7 md:grid-cols-[minmax(0,16rem)_minmax(0,1fr)_auto] md:items-baseline">
       <h3 class="text-2xl font-bold leading-tight tracking-[-0.01em]">{g.title}</h3>
       <p class="text-lg leading-relaxed">{g.items.map((it) => it.name).join(" · ")}</p>

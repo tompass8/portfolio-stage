@@ -1,5 +1,6 @@
 ---
-// Dernier panneau : l'action principale est l'e-mail, en clair
+// Dernier panneau : l'action principale est l'e-mail, en clair, avec une copie de secours
+// pour qui n'a pas de client mail configuré (webmail seul).
 import Picto from "./Picto.astro";
 import { resumeData } from "../../data/resumeData";
 
@@ -10,11 +11,13 @@ const { subject = "Proposition de stage / alternance" } = Astro.props;
 const email = "tompasserman5@gmail.com";
 const github = resumeData.contact.channels.find((c) => c.label === "GitHub")!;
 const linkedin = resumeData.contact.channels.find((c) => c.label === "LinkedIn")!;
+const secondary = "press group flex h-full min-h-16 items-center gap-4 rounded-[6px] bg-panel p-5 text-xl font-semibold no-underline";
+const arrowNudge = "ml-auto transition-transform duration-200 ease-out group-hover:translate-x-0.5 group-hover:-translate-y-0.5";
 ---
 <div class="grid gap-4 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)]">
   <a
     href={`mailto:${email}?subject=${encodeURIComponent(subject)}`}
-    class="group flex min-h-[16rem] flex-col justify-between rounded-[6px] bg-sign p-6 text-ink no-underline transition-colors duration-150 hover:bg-sign-press sm:p-8"
+    class="press-lg group flex min-h-[16rem] flex-col justify-between rounded-[6px] bg-sign p-6 text-ink no-underline hover:bg-sign-press sm:p-8"
   >
     <span class="flex items-center gap-4">
       <Picto name="mail" size="lg" />
@@ -27,18 +30,28 @@ const linkedin = resumeData.contact.channels.find((c) => c.label === "LinkedIn")
   </a>
   <ul class="grid gap-4">
     <li>
-      <a href={linkedin.href} target="_blank" rel="noreferrer" class="flex h-full items-center gap-4 rounded-[6px] bg-panel p-5 text-xl font-semibold no-underline transition-colors hover:bg-sign">
+      <a href={linkedin.href} target="_blank" rel="noreferrer" class={secondary}>
         <Picto name="linkedin" />
-        <span>LinkedIn<span class="block text-base font-normal text-muted">{linkedin.value}</span></span>
-        <Picto name="up-right" size="sm" class="ml-auto" />
+        <span class="group-hover:underline">LinkedIn<span class="block text-base font-normal text-muted">{linkedin.value}</span></span>
+        <Picto name="up-right" size="sm" class={arrowNudge} />
       </a>
     </li>
     <li>
-      <a href={github.href} target="_blank" rel="noreferrer" class="flex h-full items-center gap-4 rounded-[6px] bg-panel p-5 text-xl font-semibold no-underline transition-colors hover:bg-sign">
+      <a href={github.href} target="_blank" rel="noreferrer" class={secondary}>
         <Picto name="github" />
-        <span>GitHub<span class="block text-base font-normal text-muted">@{github.value}</span></span>
-        <Picto name="up-right" size="sm" class="ml-auto" />
+        <span class="group-hover:underline">GitHub<span class="block text-base font-normal text-muted">@{github.value}</span></span>
+        <Picto name="up-right" size="sm" class={arrowNudge} />
       </a>
+    </li>
+    <li data-copy-wrap hidden>
+      <button type="button" data-copy-email={email} class={`${secondary} w-full cursor-pointer text-left`}>
+        <Picto name="mail" />
+        <span>
+          <span data-copy-label class="group-hover:underline">Copier l'adresse</span>
+          <span class="block text-base font-normal text-muted">Si votre messagerie ne s'ouvre pas</span>
+        </span>
+      </button>
+      <p data-copy-status role="status" class="sr-only"></p>
     </li>
   </ul>
 </div>

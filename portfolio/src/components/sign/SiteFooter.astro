@@ -7,6 +7,9 @@ const { note } = Astro.props;
 <footer class="on-dark bg-ink text-on-board" style="padding-bottom: env(safe-area-inset-bottom, 0px);">
   <div class="mx-auto flex max-w-[90rem] flex-wrap items-baseline justify-between gap-4 px-4 py-8 text-base sm:px-6">
     <p>Tom Passerman · Développé sur mesure avec Astro et Tailwind v4, déployé sur Cloudflare</p>
-    {note && <p class="text-board-muted">{note}</p>}
+    <p class="flex flex-wrap gap-x-6 gap-y-1">
+      {note && <span class="text-board-muted">{note}</span>}
+      <a href="https://github.com/tompass8/portfolio-stage" target="_blank" rel="noreferrer" class="text-board-muted underline hover:text-sign">Code source du site</a>
+    </p>
   </div>
 </footer>

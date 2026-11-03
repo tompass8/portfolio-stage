@@ -65,9 +65,22 @@ p, li, dd { text-wrap: pretty; }
   color: var(--color-ink);
 }
 
-/* ---- Cartographie : nœud inspecté ---- */
-[data-node-ring] { fill: var(--color-panel); stroke: var(--color-ink); }
+/* ---- Retour à la pression : sur tactile, c'est le seul signe que le tap a porté ---- */
+.press, .press-lg { transition: background-color 150ms ease-out, transform 150ms cubic-bezier(0.23, 1, 0.32, 1); }
+.press:active { transform: scale(0.97); }
+.press-lg:active { transform: scale(0.985); }
+@media (prefers-reduced-motion: reduce) {
+  .press:active, .press-lg:active { transform: none; }
+}
+
+/* ---- Cartographie : nœud inspecté, survolé, focalisé ---- */
+[data-node-ring] { fill: var(--color-panel); stroke: var(--color-ink); transition: fill 150ms ease-out, stroke-width 150ms ease-out; }
+@media (hover: hover) {
+  [data-net-node]:hover [data-node-ring] { fill: var(--color-concrete); }
+}
 [data-net-node][aria-pressed="true"] [data-node-ring] { fill: var(--color-sign); }
+[data-net-node]:focus { outline: none; }
+[data-net-node]:focus-visible [data-node-ring] { stroke-width: 9; }
 
 /* ---- Cadenas RGPD : verrouillé par défaut, s'ouvre seulement si le JS l'anime ---- */
 [data-lock-shackle] { transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
@@ -76,10 +89,11 @@ p, li, dd { text-wrap: pretty; }
 /* ---- Tableau des départs : mise à jour en volet ---- */
 .flap { display: inline-block; transform-origin: 50% 0; }
 @media (prefers-reduced-motion: no-preference) {
-  [data-board].is-pending .flap { transform: rotateX(90deg); }
+  /* Le volet tombe d'au-dessus : courbe douce pour que la chute se voie */
+  [data-board].is-pending .flap { transform: rotateX(-90deg); opacity: 0; }
   [data-board] .flap {
-    transition: transform 0.42s cubic-bezier(0.16, 1, 0.3, 1);
-    transition-delay: calc(var(--i, 0) * 45ms);
+    transition: transform 360ms cubic-bezier(0.32, 0.72, 0, 1), opacity 200ms ease-out;
+    transition-delay: calc(var(--i, 0) * 35ms);
   }
 }
 

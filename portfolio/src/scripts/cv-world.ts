@@ -169,16 +169,37 @@ export function initCvWorld() {
   });
 
   let currentZone = "";
-  function updateCurrentZone(x: number) {
-    // La zone courante est celle sous l'avatar (20 % de la largeur)
-    const probe = -x + viewportWidth() * 0.2;
-    const zone = [...zoneOrder].reverse().find((z) => z.start <= probe)?.hash ?? zoneOrder[0]?.hash ?? "";
+  // Pendant une téléportation, le HUD affiche directement la destination (pas les zones traversées)
+  let teleportLock: string | null = null;
+  let teleportTimer = 0;
+
+  function setCurrentZone(zone: string) {
     if (zone === currentZone) return;
     currentZone = zone;
     teleports.forEach((btn) => {
       if (btn.dataset.teleport === zone) btn.setAttribute("aria-current", "true");
       else btn.removeAttribute("aria-current");
     });
+  }
+
+  function updateCurrentZone(x: number) {
+    if (teleportLock) return;
+    // La zone courante est celle sous l'avatar (20 % de la largeur)
+    const probe = -x + viewportWidth() * 0.2;
+    setCurrentZone([...zoneOrder].reverse().find((z) => z.start <= probe)?.hash ?? zoneOrder[0]?.hash ?? "");
+  }
+
+  function lockTeleport(hash: string) {
+    teleportLock = hash;
+    setCurrentZone(hash);
+    window.clearTimeout(teleportTimer);
+    const release = () => {
+      teleportLock = null;
+      window.clearTimeout(teleportTimer);
+    };
+    scroller?.addEventListener("scrollend", release, { once: true });
+    window.addEventListener("scrollend", release, { once: true });
+    teleportTimer = window.setTimeout(release, 1200);
   }
 
   function render(p: number, x = -p * distance()) {
@@ -270,15 +291,17 @@ export function initCvWorld() {
     const handler = () => {
       const hash = btn.dataset.teleport;
       if (!hash) return;
+      const behavior: ScrollBehavior = prefersReducedMotion() ? "auto" : "smooth";
+      lockTeleport(hash);
       if (staticMode()) {
         const zone = world.querySelector<HTMLElement>(`[data-zone="${hash}"]`);
-        zone?.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" });
+        zone?.scrollIntoView({ behavior, block: "start" });
         return;
       }
       if (!scroller) return;
       const worldDistance = distance();
       const ratio = worldDistance > 0 ? (zoneOffsets[hash] ?? 0) / worldDistance : 0;
-      scroller.scrollTo({ left: ratio * maxScroll(), behavior: "smooth" });
+      scroller.scrollTo({ left: ratio * maxScroll(), behavior });
     };
     btn.addEventListener("click", handler);
     teleportHandlers.push([btn, handler]);

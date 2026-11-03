@@ -21,7 +21,7 @@ function Save-Png($bmp, [string]$path) {
 
 $C = @{
   skin   = "#e8b18c"; body = "#f5a524"; dark = "#2b1a08"; visor = "#fbbf24"
-  leg    = "#3b2a12"; shoe = "#241a0c"; neon = "#a855f7"; accent = "#22c55e"
+  leg    = "#3b2a12"; shoe = "#241a0c"; neon = "#ffcc00"; accent = "#22c55e"
   skyA   = "#160f08"; skyB = "#2a1a0c"; cityA = "#3a2410"; cityB = "#2a1b0d"
   win    = "#fde68a"; ground = "#3a3128"; ground2 = "#2a241d"; edge = "#4d4436"
   metal  = "#4a4238"; screen = "#241a10"; ok = "#22c55e"; warn = "#f59e0b"
@@ -95,10 +95,10 @@ function New-Teammate() {
     FillPx $g "#2b2b3d" ($ox + 26) (36 + $bob) 5 7
     FillPx $g "#1a1a28" ($ox + 16) (43 + $bob) 7 3
     FillPx $g "#1a1a28" ($ox + 25) (43 + $bob) 7 3
-    FillPx $g "#7c3aed" ($ox + 16) (24 + $bob) 16 13
+    FillPx $g "#1f4e8c" ($ox + 16) (24 + $bob) 16 13
     FillPx $g "#f59e0b" ($ox + 20) (30 + $bob) 8 2
-    FillPx $g "#7c3aed" ($ox + 12) (26 + $bob) 4 9
-    FillPx $g "#7c3aed" ($ox + 32) (26 + $bob) 4 9
+    FillPx $g "#1f4e8c" ($ox + 12) (26 + $bob) 4 9
+    FillPx $g "#1f4e8c" ($ox + 32) (26 + $bob) 4 9
     FillPx $g $C.skin ($ox + 17) (12 + $bob) 14 12
     FillPx $g "#111827" ($ox + 16) (10 + $bob) 16 4
     FillPx $g "#22c55e" ($ox + 18) (16 + $bob) 12 4
@@ -127,7 +127,7 @@ function New-BgLayer([string]$name, [int]$w, [int]$h, [string]$top, [string]$bot
     for ($wy = $y + 6; $wy -lt $h - 8; $wy += 9) {
       for ($wx = $x + 4; $wx -lt $x + $bw - 4; $wx += 8) {
         if ($rng.Next(0, 100) -lt 45) {
-          $col = if ($rng.Next(0,100) -lt 20) { $C.neon } else { $C.win }
+          $col = $C.win
           FillPx $g $col $wx $wy 3 3
         }
       }
