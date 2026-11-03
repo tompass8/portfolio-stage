@@ -1,78 +1,50 @@
 ---
 import "../styles/global.css";
-import "@fontsource-variable/inter";
+import "@fontsource-variable/source-sans-3";
 import "@fontsource-variable/jetbrains-mono";
-import GitTimeline from "../components/timeline/GitTimeline.astro";
-import SectionNav from "../components/nav/SectionNav.astro";
-import FixedCta from "../components/nav/FixedCta.astro";
+import SignBand, { type SignItem } from "../components/sign/SignBand.astro";
 
-interface Props { title: string; description?: string; }
+interface Props {
+  title: string;
+  description?: string;
+  nav: SignItem[];
+  noindex?: boolean;
+}
 const {
   title,
-  description = "Candidature Tom Passerman — Alpha to Omega (Développement Web, IA & Gouvernance Numérique)",
+  description = "Tom Passerman — étudiant en informatique à Ynov Toulouse : développement web & API, systèmes & réseaux, IoT. Projets, parcours et contact.",
+  nav,
+  noindex = false,
 } = Astro.props;
 ---
 <!doctype html>
 <html lang="fr">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>{title}</title>
     <meta name="description" content={description} />
-    <meta name="theme-color" content="#05060d" />
+    <meta name="theme-color" content="#ffcc00" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    {noindex && <meta name="robots" content="noindex" />}
   </head>
-  <body class="bg-bg font-sans antialiased selection:bg-neon-violet/40">
-    <div aria-hidden="true" class="pointer-events-none fixed inset-0 -z-20 overflow-hidden">
-      <img
-        src="/images/ambient-code.webp"
-        alt=""
-        width="1600"
-        height="1067"
-        loading="lazy"
-        decoding="async"
-        class="ambient-photo left-[-12%] top-[-18%] h-[70vh] w-[70vw] -rotate-6"
-      />
-      <img
-        src="/images/hero-bg.webp"
-        alt=""
-        width="1600"
-        height="1067"
-        loading="lazy"
-        decoding="async"
-        class="ambient-photo ambient-photo--b bottom-[-22%] right-[-14%] h-[75vh] w-[65vw] rotate-3"
-      />
-      <div class="absolute inset-0 bg-linear-to-b from-bg/25 via-transparent to-bg/45"></div>
-    </div>
-    <div aria-hidden="true" class="bg-grid pointer-events-none fixed inset-0 -z-10"></div>
-    <main id="timeline" class="relative overflow-x-clip">
-      <GitTimeline />
+  <body class="bg-concrete font-sans text-[1.0625rem] leading-relaxed text-ink antialiased">
+    <a href="#contenu" class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:bg-ink focus:px-4 focus:py-3 focus:text-sign">
+      Aller au contenu
+    </a>
+    <SignBand items={nav} />
+    <main id="contenu">
       <slot />
     </main>
-    <SectionNav />
-    <FixedCta />
+    <slot name="footer" />
     <script>
-      import { ScrollTrigger } from "gsap/ScrollTrigger";
-      import { initSmoothScroll } from "../scripts/smooth-scroll";
-      import { initTimeline } from "../scripts/timeline";
-      import { initHero } from "../scripts/hero";
-      import { initReveal } from "../scripts/reveal";
-      import { initDevSection } from "../scripts/dev";
+      import { initWayfinding } from "../scripts/wayfinding";
+      import { initBoards } from "../scripts/board";
       import { initGovernanceSection } from "../scripts/governance";
-      import { initProcess } from "../scripts/process";
-      import { initCounters } from "../scripts/counters";
-      import { initSectionNav } from "../scripts/section-nav";
 
-      initSmoothScroll();
-      initTimeline();
-      initHero();
-      initReveal();
-      initDevSection();
+      initWayfinding();
+      initBoards();
       initGovernanceSection();
-      initProcess();
-      initCounters();
-      initSectionNav();
-      window.addEventListener("load", () => ScrollTrigger.refresh());
     </script>
   </body>
 </html>

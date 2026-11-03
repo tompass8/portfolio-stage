@@ -1,13 +1,19 @@
 ---
 import { resumeData } from "../../data/resumeData";
-import HeliSprite from "./HeliSprite.astro";
+import Picto, { type PictoName } from "../sign/Picto.astro";
 
 const { zones, spawn, skills, experience, projects, contact } = resumeData;
 const worldWidth = zones.reduce((s, z) => s + z.width, 0);
-const devicon = (name: string) =>
-  `https://cdn.jsdelivr.net/gh/devicons/devicon/icons/${name}/${name}-original.svg`;
+
+const zonePicto: Record<string, PictoName> = {
+  spawn: "pin",
+  skills: "grid",
+  experience: "briefcase",
+  projects: "gate",
+  contact: "mail",
+};
 ---
-<div id="cv-world" class="relative bg-bg" data-world>
+<div id="cv-world" class="relative bg-board" data-world>
   <!-- Piste de scroll horizontale (largeur = largeur du monde) -->
   <div
     data-hscroll
@@ -18,300 +24,214 @@ const devicon = (name: string) =>
   >
     <div data-hscroll-inner class="relative h-screen" style={`width:${worldWidth}px`}>
       <div data-viewport class="sticky left-0 top-0 h-screen overflow-hidden" style={`--world-w:${worldWidth}px`}>
-    <!-- Fonds parallaxe -->
-    <div class="absolute inset-0 overflow-hidden" aria-hidden="true">
-      <div class="world-layer layer-sky" data-layer="sky"></div>
-      <div class="arcade-stars"></div>
-      <div class="arcade-constell"></div>
-      <div class="arcade-rocket arcade-rocket--forward"></div>
-      <div class="arcade-rocket arcade-rocket--backward"></div>
-      <div class="arcade-sun"></div>
-      <HeliSprite />
-      <div class="world-layer layer-far" data-layer="far"></div>
-      <div class="world-layer layer-mid" data-layer="mid"></div>
-      <div class="arcade-neon-row"></div>
-      <div class="arcade-cars"></div>
-      <div class="absolute inset-x-0 bottom-0 h-64 bg-linear-to-t from-black/70 to-transparent"></div>
-    </div>
+        <!-- Fonds parallaxe -->
+        <div class="absolute inset-0 overflow-hidden" aria-hidden="true">
+          <div class="world-layer layer-sky" data-layer="sky"></div>
+          <div class="world-layer layer-far" data-layer="far"></div>
+          <div class="world-layer layer-mid" data-layer="mid"></div>
+        </div>
 
-    <!-- Le monde (translation horizontale par GSAP) -->
-    <div
-      data-world-container
-      class="absolute inset-y-0 left-0 flex items-end pb-16 will-change-transform"
-      style={`width:${worldWidth}px`}
-    >
-      {zones.map((zone) => (
-        <section
-          id={zone.id}
-          data-zone={zone.hash}
-          data-zone-width={zone.width}
-          class="relative h-full shrink-0 overflow-hidden"
-          style={`width:${zone.width}px`}
-          aria-label={zone.title}
+        <!-- Le monde (translation horizontale) -->
+        <div
+          data-world-container
+          class="absolute inset-y-0 left-0 flex items-end pb-16"
+          style={`width:${worldWidth}px`}
         >
-          <div class="ground-strip" aria-hidden="true"></div>
+          {zones.map((zone) => (
+            <section
+              id={zone.id}
+              data-zone={zone.hash}
+              data-zone-width={zone.width}
+              class="relative h-full shrink-0 overflow-hidden"
+              style={`width:${zone.width}px`}
+              aria-labelledby={`${zone.id}-title`}
+            >
+              <div class="ground-strip" aria-hidden="true"></div>
 
-          {zone.kind === "experience" && (
-            <div data-decor class="absolute bottom-16 left-0 right-0 z-0 flex items-end justify-around px-8" aria-hidden="true">
-              <img src="/assets/props/security-cam.png" alt="" width="170" height="230" class="pixelated opacity-95 drop-shadow-[0_8px_20px_rgba(0,0,0,0.8)]" data-jump-prop />
-              <img src="/assets/props/server-rack.png" alt="" width="170" height="230" class="pixelated opacity-95 drop-shadow-[0_8px_20px_rgba(0,0,0,0.8)]" data-jump-prop />
-              <img src="/assets/props/telecom-tower.png" alt="" width="190" height="250" class="pixelated opacity-95 drop-shadow-[0_8px_20px_rgba(0,0,0,0.8)]" data-jump-prop />
-              <img src="/assets/props/control-screen.png" alt="" width="170" height="230" class="pixelated opacity-95 drop-shadow-[0_8px_20px_rgba(0,0,0,0.8)]" data-jump-prop />
-            </div>
-          )}
-
-          {zone.kind === "projects" && (
-            <div data-decor class="absolute inset-0 z-0" aria-hidden="true">
-              <img src="/assets/props/floating-platform.png" alt="" width="130" height="173" class="pixelated absolute left-[6%] bottom-44 drop-shadow-[0_6px_16px_rgba(0,0,0,0.7)]" data-jump-platform />
-              <img src="/assets/props/floating-platform.png" alt="" width="130" height="173" class="pixelated absolute left-[44%] bottom-60 drop-shadow-[0_6px_16px_rgba(0,0,0,0.7)]" data-jump-platform />
-              <img src="/assets/props/floating-platform.png" alt="" width="130" height="173" class="pixelated absolute left-[80%] bottom-48 drop-shadow-[0_6px_16px_rgba(0,0,0,0.7)]" data-jump-platform />
-              <img src="/assets/props/server-rack.png" alt="" width="120" height="160" class="pixelated absolute left-[26%] bottom-16 opacity-95 drop-shadow-[0_6px_16px_rgba(0,0,0,0.7)]" data-jump-prop data-avatar-use-target />
-              <img src="/assets/props/server-rack.png" alt="" width="120" height="160" class="pixelated absolute left-[66%] bottom-16 opacity-95 drop-shadow-[0_6px_16px_rgba(0,0,0,0.7)]" data-jump-prop />
-              <img src="/assets/props/telecom-tower.png" alt="" width="120" height="160" class="pixelated absolute right-[3%] bottom-16 opacity-95 drop-shadow-[0_6px_16px_rgba(0,0,0,0.7)]" />
-            </div>
-          )}
-
-            {zone.kind === "projects" && (
-              <div data-decor class="pointer-events-none absolute inset-0 z-20" aria-hidden="true">
-                <div class="absolute right-[6%] top-[6%] rotate-3 rounded-lg border border-white/15 bg-white/5 p-2.5 shadow-[0_10px_30px_rgba(0,0,0,0.45)]">
-                  <img src="/assets/iot/esp32-board.svg" alt="" width="190" height="146" class="h-auto w-full max-w-[190px]" />
+              {zone.kind === "experience" && (
+                <div data-decor class="absolute bottom-16 left-0 right-0 z-0 flex items-end justify-around px-8" aria-hidden="true">
+                  <img src="/assets/props/security-cam.png" alt="" width="170" height="230" class="pixelated" data-jump-prop />
+                  <img src="/assets/props/server-rack.png" alt="" width="170" height="230" class="pixelated" data-jump-prop />
+                  <img src="/assets/props/telecom-tower.png" alt="" width="190" height="250" class="pixelated" data-jump-prop />
+                  <img src="/assets/props/control-screen.png" alt="" width="170" height="230" class="pixelated" data-jump-prop />
                 </div>
-                <div class="absolute right-[26%] top-[4%] -rotate-3 rounded-lg border border-white/15 bg-white/5 p-2.5 shadow-[0_10px_30px_rgba(0,0,0,0.45)]">
-                  <img src="/assets/iot/rm3100-sensor.svg" alt="" width="190" height="146" class="h-auto w-full max-w-[190px]" />
+              )}
+
+              {zone.kind === "projects" && (
+                <div data-decor class="absolute inset-0 z-0" aria-hidden="true">
+                  <img src="/assets/props/floating-platform.png" alt="" width="130" height="173" class="pixelated absolute bottom-44 left-[6%]" data-jump-platform />
+                  <img src="/assets/props/floating-platform.png" alt="" width="130" height="173" class="pixelated absolute bottom-60 left-[44%]" data-jump-platform />
+                  <img src="/assets/props/floating-platform.png" alt="" width="130" height="173" class="pixelated absolute bottom-48 left-[80%]" data-jump-platform />
+                  <img src="/assets/props/server-rack.png" alt="" width="120" height="160" class="pixelated absolute bottom-16 left-[26%]" data-jump-prop data-avatar-use-target />
+                  <img src="/assets/props/server-rack.png" alt="" width="120" height="160" class="pixelated absolute bottom-16 left-[66%]" data-jump-prop />
+                  <img src="/assets/props/telecom-tower.png" alt="" width="120" height="160" class="pixelated absolute bottom-16 right-[3%]" />
                 </div>
+              )}
+
+              {zone.kind === "skills" && (
+                <div data-decor class="absolute bottom-16 left-0 right-0 z-0 flex items-end justify-between px-16" aria-hidden="true">
+                  <img src="/assets/props/server-rack.png" alt="" width="180" height="240" class="pixelated" data-avatar-use-target />
+                  <img src="/assets/props/control-screen.png" alt="" width="190" height="255" class="pixelated" />
+                  <img src="/assets/props/server-rack.png" alt="" width="180" height="240" class="pixelated" data-avatar-use-target />
+                  <img src="/assets/npc/teammate-idle.png" alt="" width="190" height="190" class="pixelated" />
+                </div>
+              )}
+
+              {zone.kind === "contact" && (
+                <img
+                  data-decor
+                  src="/assets/props/arcade-terminal.png"
+                  alt=""
+                  width="180"
+                  height="240"
+                  class="pixelated absolute bottom-16 left-[14%] z-0"
+                  data-avatar-use-target
+                  aria-hidden="true"
+                />
+              )}
+
+              <!-- Panneau suspendu de la zone -->
+              <div class="zone-sign absolute left-10 right-10 top-[5.5rem] z-10 flex max-w-max items-center gap-4 rounded-[6px] bg-sign px-4 py-3 text-ink">
+                <Picto name={zonePicto[zone.kind]} />
+                <div>
+                  <h2 id={`${zone.id}-title`} class="text-3xl font-bold leading-tight tracking-[-0.015em] sm:text-4xl">{zone.title}</h2>
+                  <p class="zone-subtitle text-lg font-semibold">{zone.subtitle}</p>
+                </div>
+                <p class="zone-level ml-2 self-start rounded-[4px] bg-ink px-3 py-2 font-mono text-sm leading-snug text-sign max-md:hidden">{zone.level}</p>
               </div>
-            )}
 
-          {zone.kind === "contact" && (
-            <img
-              data-decor
-              src="/assets/props/arcade-terminal.png"
-              alt=""
-              width="180"
-              height="240"
-              class="pixelated absolute bottom-16 left-[14%] z-0 drop-shadow-[0_8px_20px_rgba(0,0,0,0.75)]"
-              data-avatar-use-target
-              aria-hidden="true"
-            />
-          )}
+              <div data-checkpoint-dot class="pointer-events-none absolute bottom-24 left-1/2 z-10 size-3 -translate-x-1/2 rounded-full bg-panel/20"></div>
 
-          <div data-checkpoint-dot class="pointer-events-none absolute bottom-24 left-1/2 z-10 size-3 -translate-x-1/2 rounded-full bg-white/15 transition-all"></div>
-
-          <div class="relative z-10 flex h-full flex-col justify-end px-10 pb-24">
-            <p class="font-mono text-xs uppercase tracking-widest text-amber-400">{zone.level}</p>
-            <h2 data-reveal-title class="mt-2 max-w-3xl font-sans text-3xl font-bold text-white sm:text-5xl">
-              {zone.title}
-            </h2>
-            <p class="mt-2 font-mono text-sm text-slate-400">{zone.subtitle}</p>
-
-            {zone.kind === "spawn" && (
-              <div class="mt-6 grid max-w-4xl gap-5 md:grid-cols-2">
-                <div class="rounded-2xl border border-white/10 bg-bg/92 p-5 backdrop-blur-xl">
-                  <p class="text-sm leading-relaxed text-slate-300">{spawn.bio}</p>
-                  <ul class="mt-4 space-y-2 font-mono text-xs text-slate-300">
-                    {spawn.highlights.map((h) => (
-                      <li><span class="text-amber-400">▸</span> {h}</li>
-                    ))}
-                  </ul>
-                </div>
-                <div class="flex flex-col gap-3">
-                  {spawn.controls.map((c) => (
-                    <div class="flex items-center gap-3 rounded-xl border border-white/10 bg-bg/90 px-4 py-3">
-                      <img src={`/assets/ui/${c.icon}.png`} alt="" width="56" height="56" class="pixelated" />
-                      <span class="font-mono text-xs text-slate-300">{c.label}</span>
-                    </div>
-                  ))}
-                  <!-- clins d'oeil décor : ballon + échiquier -->
-                  <div class="flex items-center gap-4 font-mono text-[11px] text-slate-400">
-                    <span title="Football" class="text-xl animate-bounce" data-ball>⚽</span>
-                    <span title="Échecs" class="text-xl animate-pulse" data-chess>♟️</span>
-                    <span class="rounded border border-amber-400/40 px-2 py-1 text-amber-300 animate-pulse">Bienvenue à bord</span>
-                    <span class="text-amber-300 animate-pulse">J'adore les échecs et le football !</span>
-                  </div>
-                </div>
-              </div>
-            )}
-
-          {zone.kind === "skills" && (
-            <div class="mt-6 grid max-w-6xl gap-4 sm:grid-cols-2 lg:grid-cols-4" style="position:relative;z-index:5">
-                {skills.groups.map((g) => {
-                  const levelPct = g.pct;
-                  const segments = 10;
-                  const lit = Math.round((levelPct / 100) * segments);
-                  return (
-                    <div data-reveal class="rounded-2xl border border-white/10 bg-bg/92 p-4 backdrop-blur-xl">
-                      <div class="flex items-center justify-between">
-                        <h3 class="font-sans text-sm font-bold text-white">{g.title}</h3>
-                        <span data-energy-value class="font-mono text-[10px] text-amber-400" data-target={levelPct}>0%</span>
-                      </div>
-                      <div data-energy-gauge class="mt-2 flex gap-0.5" aria-hidden="true">
-                        {Array.from({ length: segments }).map((_, i) => (
-                          <span
-                            data-seg
-                            data-lit={i < lit ? "1" : "0"}
-                            class={`h-2.5 flex-1 rounded-[1px] border border-white/15 ${i < lit ? "bg-bg" : "bg-white/5"}`}
-                          ></span>
-                        ))}
-                      </div>
-                      <p class="mt-1 font-mono text-[10px] uppercase tracking-widest text-slate-500">{g.level}</p>
-                      <ul class="mt-3 space-y-1.5">
-                        {g.items.map((it) => (
-                          <li class="flex items-center gap-2 font-mono text-[11px] text-slate-300">
-                            {it.icon && (
-                              <img
-                                src={it.icon.startsWith("/") ? it.icon : devicon(it.icon)}
-                                alt=""
-                                width="16"
-                                height="16"
-                                loading="lazy"
-                                class="pixelated"
-                                onerror={`this.style.display='none'`}
-                              />
-                            )}
-                            {it.name}
-                          </li>
+              <div class="zone-body relative z-10 flex h-full flex-col justify-end px-10 pb-24">
+                {zone.kind === "spawn" && (
+                  <div class="mt-4 grid max-w-4xl gap-4 md:grid-cols-2">
+                    <div class="rounded-[6px] bg-panel p-5 text-ink">
+                      <p class="text-lg leading-relaxed">{spawn.bio}</p>
+                      <ul class="mt-4 space-y-1.5 text-base font-semibold">
+                        {spawn.highlights.map((h) => (
+                          <li class="flex gap-3"><span aria-hidden="true" class="mt-[0.55em] size-2 shrink-0 bg-ink"></span>{h}</li>
                         ))}
                       </ul>
                     </div>
-                  );
-                })}
-              </div>
-            )}
-
-          {zone.kind === "skills" && (
-            <div data-decor class="absolute bottom-16 left-0 right-0 z-0 flex items-end justify-between px-16" aria-hidden="true">
-              <img src="/assets/props/server-rack.png" alt="" width="180" height="240" class="pixelated opacity-95 drop-shadow-[0_8px_20px_rgba(0,0,0,0.8)]" data-avatar-use-target />
-              <img src="/assets/props/control-screen.png" alt="" width="190" height="255" class="pixelated opacity-95 drop-shadow-[0_8px_20px_rgba(0,0,0,0.8)]" />
-              <img src="/assets/props/server-rack.png" alt="" width="180" height="240" class="pixelated opacity-95 drop-shadow-[0_8px_20px_rgba(0,0,0,0.8)]" data-avatar-use-target />
-              <img src="/assets/npc/teammate-idle.png" alt="" width="190" height="190" class="pixelated opacity-95 drop-shadow-[0_8px_20px_rgba(0,0,0,0.8)]" />
-            </div>
-          )}
-
-          {zone.kind === "experience" && (
-              <div class="mt-6 flex max-w-6xl flex-wrap items-end gap-6">
-                {experience.jobs.map((job) => (
-                <div data-reveal class="w-full max-w-sm rounded-2xl border border-yellow-400/80 bg-[#0a0a0a] p-5 shadow-[0_0_40px_rgba(255,215,0,0.2)]">
-                  <div class="flex items-baseline justify-between">
-                    <h3 class="font-sans text-lg font-bold text-[#ffcc00]">{job.company}</h3>
-                    <span class="font-mono text-[11px] text-yellow-300">{job.period}</span>
-                  </div>
-                  <p class="mt-1 font-mono text-xs text-amber-200">{job.role}</p>
-                  <ul class="mt-3 space-y-2 text-sm text-white">
-                    {job.missions.map((m) => (
-                      <li class="flex gap-2"><span class="text-[#ffcc00]">▸</span>{m}</li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
-              <div data-reveal class="w-full max-w-xs rounded-2xl border border-yellow-400/80 bg-[#0a0a0a] p-5 shadow-[0_0_40px_rgba(255,215,0,0.2)]">
-                  <h3 class="font-mono text-xs uppercase tracking-widest text-[#ffcc00]">Répartition des tâches</h3>
-                  <div class="mt-4 space-y-3">
-                    {experience.split.map((s) => (
-                      <div>
-                        <div class="flex justify-between font-mono text-[11px] text-amber-100">
-                          <span>{s.label}</span><span>{s.value}%</span>
+                    <div class="flex flex-col gap-3">
+                      {spawn.controls.map((c) => (
+                        <div class="flex items-center gap-3 rounded-[6px] bg-panel px-4 py-3 text-ink">
+                          <span class="grid size-12 shrink-0 place-items-center rounded-[6px] bg-ink">
+                            <img src={`/assets/ui/${c.icon}.png`} alt="" width="40" height="40" class="pixelated" />
+                          </span>
+                          <span class="text-lg font-semibold">{c.label}</span>
                         </div>
-                        <span class="mt-1 block h-2 overflow-hidden rounded-full bg-black/60">
-                          <span class="block h-full rounded-full bg-linear-to-r from-[#ffcc00] to-[#ffe599]" style={`width:${s.value}%`}></span>
-                        </span>
+                      ))}
+                      <p class="rounded-[6px] bg-sign px-4 py-3 text-lg font-semibold text-ink">J'adore les échecs et le football !</p>
+                    </div>
+                  </div>
+                )}
+
+                {zone.kind === "skills" && (
+                  <div class="mt-4 grid max-w-6xl gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                    {skills.groups.map((g) => {
+                      const segments = 10;
+                      const lit = Math.round((g.pct / 100) * segments);
+                      return (
+                        <div data-reveal class="rounded-[6px] bg-panel p-4 text-ink">
+                          <div class="flex items-baseline justify-between gap-2">
+                            <h3 class="text-lg font-bold leading-tight">{g.title}</h3>
+                            <span data-energy-value class="font-mono text-sm font-semibold" data-target={g.pct}>{g.pct}%</span>
+                          </div>
+                          <div data-energy-gauge class="mt-2 flex gap-0.5" aria-hidden="true">
+                            {Array.from({ length: segments }).map((_, i) => (
+                              <span data-seg data-lit={i < lit ? "1" : "0"} class={`h-2.5 flex-1 ${i < lit ? "bg-ink" : "bg-concrete"}`}></span>
+                            ))}
+                          </div>
+                          <p class="mt-1.5 text-sm font-semibold text-muted">{g.level}</p>
+                          <ul class="mt-2 space-y-0.5 text-base">
+                            {g.items.map((it) => <li>{it.name}</li>)}
+                          </ul>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+
+                {zone.kind === "experience" && (
+                  <div class="mt-4 flex max-w-6xl flex-wrap items-end gap-4">
+                    {experience.jobs.map((job) => (
+                      <div data-reveal class="on-dark w-full max-w-sm rounded-[6px] bg-board p-5 ring-4 ring-sign">
+                        <div class="flex items-baseline justify-between gap-3">
+                          <h3 class="text-2xl font-bold text-sign">{job.company}</h3>
+                          <span class="font-mono text-sm uppercase tracking-[0.06em] text-flap-text">{job.period}</span>
+                        </div>
+                        <p class="mt-1 text-lg font-semibold text-on-board">{job.role}</p>
+                        <ul class="mt-3 space-y-1.5 text-base text-on-board">
+                          {job.missions.map((m) => (
+                            <li class="flex gap-3"><span aria-hidden="true" class="mt-[0.55em] size-2 shrink-0 bg-sign"></span>{m}</li>
+                          ))}
+                        </ul>
                       </div>
                     ))}
+                    <div data-reveal class="w-full max-w-xs rounded-[6px] bg-panel p-5 text-ink">
+                      <h3 class="text-lg font-bold">Répartition des tâches</h3>
+                      <dl class="mt-3 space-y-3">
+                        {experience.split.map((s) => (
+                          <div>
+                            <div class="flex justify-between text-base"><dt>{s.label}</dt><dd class="font-mono font-semibold">{s.value}%</dd></div>
+                            <span aria-hidden="true" class="mt-1 block h-2.5 bg-concrete"><span class="block h-full bg-ink" style={`width:${s.value}%`}></span></span>
+                          </div>
+                        ))}
+                      </dl>
+                    </div>
                   </div>
-                </div>
-              </div>
-            )}
+                )}
 
-            {zone.kind === "projects" && (
-              <div data-project-row class="mt-6 flex max-w-[1900px] gap-5 overflow-visible">
-                {projects.items.map((p) => (
-                  <article
-                    data-project={p.id}
-                    data-checkpoint={p.checkpoint ? "1" : "0"}
-                    class="w-[340px] shrink-0 rounded-2xl border border-zinc-600 bg-zinc-950 p-5 shadow-[0_8px_30px_rgba(0,0,0,0.9)]"
-                  >
-                    <div class="flex items-center justify-between font-mono text-[11px]">
-                      <span class="text-zinc-300">{p.kind}</span>
-                      <span data-checkpoint-light class="size-2 rounded-full bg-zinc-400"></span>
-                    </div>
-                    <h3 class="mt-2 font-sans text-base font-bold text-white">{p.name}</h3>
-                    <p class="mt-2 text-xs leading-relaxed text-zinc-300">{p.summary}</p>
-                    <ul class="mt-3 space-y-1.5 text-[11px] text-zinc-200">
-                      {p.features.map((f) => (
-                        <li class="flex gap-2"><span class="text-zinc-500">-</span>{f}</li>
-                      ))}
-                    </ul>
-                    <div class="mt-3 flex flex-wrap gap-1.5">
-                      {p.stack.map((s) => (
-                        <span class="rounded border border-zinc-600 px-1.5 py-0.5 font-mono text-[10px] text-zinc-300">{s}</span>
-                      ))}
-                    </div>
-                  </article>
-                ))}
-              </div>
-            )}
+                {zone.kind === "projects" && (
+                  <div data-project-row class="mt-4 flex max-w-[1900px] gap-4 overflow-visible">
+                    {projects.items.map((p) => (
+                      <article data-project={p.id} data-checkpoint={p.checkpoint ? "1" : "0"} class="w-[340px] shrink-0 rounded-[6px] bg-panel p-5 text-ink">
+                        <div class="flex items-center justify-between">
+                          <span class="rounded-[4px] bg-ink px-2 py-0.5 text-sm font-semibold text-sign">{p.kind}</span>
+                          <span data-checkpoint-light class="size-3 rounded-full bg-concrete"></span>
+                        </div>
+                        <h3 class="mt-3 text-xl font-bold leading-tight">{p.name}</h3>
+                        <p class="mt-2 text-base leading-relaxed">{p.summary}</p>
+                        <ul class="mt-3 space-y-1 text-base">
+                          {p.features.map((f) => (
+                            <li class="flex gap-2.5"><span aria-hidden="true" class="mt-[0.55em] size-1.5 shrink-0 bg-ink"></span>{f}</li>
+                          ))}
+                        </ul>
+                        <p class="mt-3 text-sm font-semibold text-muted">{p.stack.join(" · ")}</p>
+                      </article>
+                    ))}
+                  </div>
+                )}
 
-            {zone.kind === "contact" && (
-              <div class="mt-6 flex max-w-5xl flex-wrap gap-6">
-                <div class="w-full max-w-md rounded-2xl border border-zinc-600 bg-zinc-950 p-5">
-                  <h3 class="font-mono text-xs uppercase tracking-widest text-amber-400">Terminal de contact</h3>
-                  <form data-contact-form class="mt-4 space-y-3" novalidate>
-                    <div>
-                      <label for="cv-name" class="sr-only">Nom ou organisation</label>
-                      <input id="cv-name" name="name" required placeholder="Nom" class="w-full rounded-md border border-zinc-600 bg-zinc-900 px-3 py-2 font-mono text-xs text-white focus:border-amber-400/70" />
-                    </div>
-                    <div>
-                      <label for="cv-email" class="sr-only">Email de réponse</label>
-                      <input id="cv-email" name="email" type="email" required placeholder="Email" class="w-full rounded-md border border-zinc-600 bg-zinc-900 px-3 py-2 font-mono text-xs text-white focus:border-amber-400/70" />
-                    </div>
-                    <div>
-                      <label for="cv-message" class="sr-only">Message</label>
-                      <textarea id="cv-message" name="message" required rows="3" placeholder="Message" class="w-full resize-none rounded-md border border-zinc-600 bg-zinc-900 px-3 py-2 font-mono text-xs text-white focus:border-amber-400/70"></textarea>
-                    </div>
-                    <p data-form-error role="status" aria-live="polite" class="hidden font-mono text-[11px] text-red-400"></p>
-                    <a data-form-mailto href="#" class="hidden rounded-md border border-amber-400/50 bg-amber-400/10 px-3 py-2 font-mono text-xs text-amber-300 transition-colors hover:bg-amber-400/20">
-                      Ouvrir mon client mail →
+                {zone.kind === "contact" && (
+                  <div class="mt-4 flex max-w-5xl flex-wrap items-stretch gap-4">
+                    <a href="mailto:tompasserman5@gmail.com?subject=Proposition%20de%20stage%20%2F%20alternance" class="flex w-full max-w-md flex-col justify-between gap-6 rounded-[6px] bg-sign p-5 text-ink no-underline hover:bg-sign-press">
+                      <span class="flex items-center gap-3"><Picto name="mail" /><span class="text-2xl font-bold">Écrire à Tom</span></span>
+                      <span class="break-all text-xl font-semibold underline">tompasserman5@gmail.com</span>
                     </a>
-                    <button type="submit" class="w-full rounded-md border border-amber-400/50 bg-amber-400/15 px-3 py-2 font-mono text-xs font-semibold text-white transition-colors hover:bg-amber-400/30">
-                      Envoyer
-                    </button>
-                  </form>
-                </div>
-                <div class="flex flex-col gap-2">
-                  {contact.channels.map((c) => (
-                    <a href={c.href} target="_blank" rel="noopener" class="rounded-xl border border-zinc-600 bg-zinc-950 px-4 py-3 font-mono text-xs text-zinc-200 transition-colors hover:border-amber-400/60 hover:text-amber-300">
-                      {c.label} — {c.value}
-                    </a>
-                  ))}
-                </div>
+                    <div class="flex flex-col gap-3">
+                      {contact.channels.filter((c) => c.label !== "Email").map((c) => (
+                        <a href={c.href} target="_blank" rel="noopener" class="flex items-center gap-3 rounded-[6px] bg-panel px-4 py-3 text-lg font-semibold text-ink no-underline hover:bg-sign">
+                          <Picto name={c.label === "GitHub" ? "github" : "linkedin"} size="sm" />
+                          {c.label} — {c.value}
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
-            )}
+            </section>
+          ))}
+        </div>
+
+        <!-- Avatar fixe -->
+        <div data-avatar class="pointer-events-none absolute bottom-16 z-30" style="left:20%" aria-hidden="true">
+          <div data-avatar-shell class="sprite-shell is-right">
+            <div data-avatar-sprite class="sprite sprite--idle"></div>
           </div>
-        </section>
-      ))}
-
-      <!-- Props décoratifs (contrôle-screen, floating-platform, etc.) -->
-    </div>
-
-    <!-- Avatar fixe -->
-    <div
-      data-avatar
-      class="pointer-events-none absolute bottom-16 z-30"
-      style="left:20%"
-      aria-hidden="true"
-    >
-      <div data-avatar-shell class="sprite-shell is-right">
-        <div data-avatar-sprite class="sprite sprite--idle"></div>
+        </div>
       </div>
-    </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Overlay LEVEL COMPLETE -->
-  <div data-level-complete aria-hidden="true" class="pointer-events-none fixed inset-0 z-[60] flex items-center justify-center bg-black/70 opacity-0 transition-opacity duration-500">
-    <div class="text-center">
-      <p class="font-mono text-sm text-amber-400">LEVEL COMPLETE</p>
-      <p class="mt-2 font-sans text-4xl font-black text-white">Message transmis à votre messagerie</p>
     </div>
   </div>
 </div>

@@ -1,0 +1,62 @@
+---
+// Fiche d'un projet : la porte (numéro, nom) puis ce qui s'y trouve
+import type { Project } from "../../data/projects";
+import Route from "./Route.astro";
+import Picto from "./Picto.astro";
+
+interface Props {
+  project: Project;
+}
+const { project: p } = Astro.props;
+
+const statusLabel: Record<Project["status"], string> = {
+  production: "En production",
+  prototype: "Prototype",
+  containerized: "Conteneurisé",
+};
+---
+<article id={`projet-${p.slug}`} class="grid gap-x-10 gap-y-8 border-b-2 border-rule py-12 last:border-b-0 sm:py-16 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
+  <header class="self-start rounded-[6px] bg-sign p-6 sm:p-8 lg:sticky lg:top-28">
+    <p class="text-gate font-bold tracking-[-0.03em] tabular-nums" aria-hidden="true">{p.id}</p>
+    <h3 class="mt-6 text-4xl font-bold leading-[1.05] tracking-[-0.02em] sm:text-5xl">
+      <span class="sr-only">Projet {p.id} : </span>{p.title}
+    </h3>
+    <p class="mt-3 text-xl leading-snug text-ink-soft">{p.subtitle}</p>
+    <p class="mt-6 inline-flex items-center gap-2 rounded-[4px] bg-ink px-3 py-1.5 text-base font-semibold text-sign">
+      {statusLabel[p.status]}
+    </p>
+  </header>
+
+  <div class="min-w-0 max-w-[40rem]">
+    <p class="text-xl leading-relaxed">{p.description}</p>
+
+    <h4 class="mt-10 text-lg font-bold">Le trajet des données</h4>
+    <div class="mt-4 rounded-[6px] bg-panel p-5 sm:p-6">
+      <Route stops={p.route} label={`Architecture de ${p.title}`} />
+      <p class="mt-5 border-t-2 border-concrete pt-3 font-mono text-sm text-muted [overflow-wrap:anywhere]">{p.architecture}</p>
+    </div>
+
+    <dl class="mt-8 grid gap-x-8 gap-y-4 sm:grid-cols-2">
+      {p.metrics.map((m) => (
+        <div class="border-t-[3px] border-ink pt-2">
+          <dt class="text-base text-muted">{m.label}</dt>
+          <dd class="text-2xl font-bold leading-tight">{m.value}</dd>
+        </div>
+      ))}
+    </dl>
+
+    <h4 class="mt-10 text-lg font-bold">Stack</h4>
+    <ul class="mt-3 flex flex-wrap gap-2" aria-label={`Technologies de ${p.title}`}>
+      {p.stack.map((t) => (
+        <li class="rounded-[4px] border-2 border-ink px-3 py-1 text-base font-semibold">{t}</li>
+      ))}
+    </ul>
+
+    {p.repoUrl && (
+      <a href={p.repoUrl} target="_blank" rel="noreferrer" class="mt-8 inline-flex items-center gap-3 text-lg font-semibold underline">
+        <Picto name="github" size="sm" />
+        Voir le code sur GitHub
+      </a>
+    )}
+  </div>
+</article>

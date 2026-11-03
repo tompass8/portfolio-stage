@@ -15,3 +15,6 @@ Thumbs.db
 
 # Configuration locale opencode
 .opencode/
+
+# Artefacts de travail Impeccable (maquettes, captures de revue, état local)
+.impeccable/

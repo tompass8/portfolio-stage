@@ -1,0 +1,35 @@
+---
+// Bandeau d'orientation collant : chaque entrée annonce une destination et sa flèche
+import Picto, { type PictoName } from "./Picto.astro";
+
+export interface SignItem {
+  href: string;
+  label: string;
+  picto: PictoName;
+}
+interface Props {
+  items: SignItem[];
+  home?: string;
+}
+const { items, home = "/" } = Astro.props;
+---
+<header class="sticky top-0 z-50 border-b-[6px] border-ink bg-sign" style="padding-top: env(safe-area-inset-top, 0px);">
+  <div class="mx-auto flex max-w-[90rem] items-stretch gap-1 overflow-x-auto px-4 sm:px-6 [scrollbar-width:none]">
+    <a href={home} class="flex shrink-0 items-center gap-3 py-3 pr-4 font-bold no-underline sm:pr-8">
+      <span aria-hidden="true" class="grid size-11 place-items-center rounded-[6px] bg-ink text-lg font-bold tracking-tight text-sign">TP</span>
+      <span class="hidden text-xl leading-none tracking-tight lg:inline">Tom Passerman</span>
+    </a>
+    <nav aria-label="Orientation" class="flex items-stretch gap-1">
+      {items.map((item) => (
+        <a
+          href={item.href}
+          data-sign-link={item.href.startsWith("#") ? item.href.slice(1) : undefined}
+          class="flex shrink-0 items-center gap-2.5 rounded-[6px] px-2.5 py-2 text-lg font-semibold leading-none no-underline transition-colors duration-150 hover:bg-sign-press sm:gap-3 sm:px-3 sm:text-xl"
+        >
+          <Picto name={item.picto} size="sm" />
+          <span>{item.label}</span>
+        </a>
+      ))}
+    </nav>
+  </div>
+</header>

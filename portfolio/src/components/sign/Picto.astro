@@ -1,0 +1,40 @@
+---
+// Pictogramme blanc sur carré noir (grammaire de signalétique)
+export type PictoName =
+  | "left" | "right" | "up" | "down" | "up-right"
+  | "gate" | "briefcase" | "grid" | "play" | "mail"
+  | "shield" | "pin" | "code" | "github" | "linkedin" | "clock";
+
+interface Props {
+  name: PictoName;
+  size?: "sm" | "md" | "lg";
+  class?: string;
+}
+const { name, size = "md", class: className = "" } = Astro.props;
+
+const box = { sm: "size-9", md: "size-12", lg: "size-16 sm:size-20" }[size];
+---
+<span
+  data-picto
+  aria-hidden="true"
+  class:list={["inline-grid shrink-0 place-items-center rounded-[6px] bg-ink text-panel", box, className]}
+>
+  <svg viewBox="0 0 24 24" class="size-[62%]" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square" stroke-linejoin="miter">
+    {name === "left" && <path d="M20 12H5M11 5l-7 7 7 7" />}
+    {name === "right" && <path d="M4 12h15M13 5l7 7-7 7" />}
+    {name === "up" && <path d="M12 20V5M5 11l7-7 7 7" />}
+    {name === "down" && <path d="M12 4v15M5 13l7 7 7-7" />}
+    {name === "up-right" && <path d="M6 18 18 6M8 6h10v10" />}
+    {name === "gate" && <><path d="M6.5 21V3.5h11V21M3.5 21h17" /><path d="M14 12.5v1" /></>}
+    {name === "briefcase" && <><rect x="3" y="7" width="18" height="13" /><path d="M9 7V4h6v3M3 13h18" /></>}
+    {name === "grid" && <><rect x="4" y="4" width="6.5" height="6.5" /><rect x="13.5" y="4" width="6.5" height="6.5" /><rect x="4" y="13.5" width="6.5" height="6.5" /><rect x="13.5" y="13.5" width="6.5" height="6.5" /></>}
+    {name === "play" && <path d="M7 4.5v15l12-7.5z" fill="currentColor" stroke="none" />}
+    {name === "mail" && <><rect x="3" y="5.5" width="18" height="13" /><path d="m3.5 6.5 8.5 7 8.5-7" /></>}
+    {name === "shield" && <path d="M12 3 4.5 6v5.5c0 4.4 3.2 8 7.5 9.5 4.3-1.5 7.5-5.1 7.5-9.5V6z" />}
+    {name === "pin" && <><path d="M12 21s-6.5-6.2-6.5-11.5a6.5 6.5 0 0 1 13 0C18.5 14.8 12 21 12 21z" /><circle cx="12" cy="9.5" r="2.2" /></>}
+    {name === "code" && <path d="M8.5 7 3.5 12l5 5M15.5 7l5 5-5 5" />}
+    {name === "github" && <path d="M12 2.5a9.5 9.5 0 0 0-3 18.5c.5.1.7-.2.7-.5v-1.8c-2.7.6-3.3-1.2-3.3-1.2-.4-1.1-1.1-1.4-1.1-1.4-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.4 1.1 3 .8.1-.6.3-1.1.6-1.3-2.1-.2-4.4-1.1-4.4-4.8 0-1 .4-1.9 1-2.6-.1-.3-.4-1.2.1-2.6 0 0 .8-.3 2.6 1a9 9 0 0 1 4.8 0c1.8-1.3 2.6-1 2.6-1 .5 1.4.2 2.3.1 2.6.6.7 1 1.6 1 2.6 0 3.7-2.3 4.6-4.4 4.8.3.3.6.9.6 1.8v2.7c0 .3.2.6.7.5A9.5 9.5 0 0 0 12 2.5z" fill="currentColor" stroke="none" />}
+    {name === "linkedin" && <><path d="M6 10v9M6 6v.5M10.5 19v-9M10.5 13.5c0-2 1.3-3.5 3.3-3.5s3.2 1.4 3.2 3.6V19" /></>}
+    {name === "clock" && <><circle cx="12" cy="12" r="8.5" /><path d="M12 7v5l3.5 2" /></>}
+  </svg>
+</span>

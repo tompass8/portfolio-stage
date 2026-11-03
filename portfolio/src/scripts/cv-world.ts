@@ -109,10 +109,9 @@ export function initCvWorld() {
         segs.forEach((seg, i) => {
           const lit = seg.dataset.lit === "1";
           window.setTimeout(() => {
-            seg.style.background = lit
-              ? "linear-gradient(180deg, #fbbf24, #f59e0b)"
-              : "rgba(255,255,255,0.05)";
-            seg.style.boxShadow = lit ? "0 0 6px rgba(251,191,36,0.7)" : "none";
+            seg.style.background = lit ? "var(--color-sign)" : "var(--color-concrete)";
+            seg.style.outline = lit ? "2px solid var(--color-ink)" : "none";
+            seg.style.outlineOffset = "-2px";
           }, i * 60);
         });
         const card = gauge.closest<HTMLElement>("[data-reveal]");
@@ -159,16 +158,15 @@ export function initCvWorld() {
     checkpoints.forEach((cp) => {
       const r = cp.getBoundingClientRect();
       const on = r.left > 0 && r.left < window.innerWidth;
-      cp.style.background = on ? "#fbbf24" : "rgba(255,255,255,0.15)";
-      cp.style.boxShadow = on ? "0 0 12px rgba(251,191,36,0.9)" : "none";
+      cp.style.background = on ? "var(--color-sign)" : "rgb(255 255 255 / 0.2)";
     });
     projectCards.forEach((card) => {
       const r = card.getBoundingClientRect();
       const on = r.left < window.innerWidth && r.right > 0;
       const light = card.querySelector<HTMLElement>("[data-checkpoint-light]");
       if (!light) return;
-      light.style.background = on ? "#fbbf24" : "rgba(255,255,255,0.2)";
-      light.style.boxShadow = on ? "0 0 8px rgba(251,191,36,0.9)" : "none";
+      light.style.background = on ? "var(--color-sign)" : "var(--color-concrete)";
+      light.style.outline = on ? "2px solid var(--color-ink)" : "none";
     });
   }
 

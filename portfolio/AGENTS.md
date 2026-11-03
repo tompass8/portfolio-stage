@@ -90,18 +90,16 @@ Dégradation toujours dans le sens riche → sobre, **jamais** d'erreur affiché
 - Chaque animation possède un fallback `prefers-reduced-motion` affichant l'**état final visible** (modèle : early-return dans les `init*()` de `src/scripts/`).
 - Canvas : `aria-hidden="true"` ; tout le contenu réel vit dans le DOM (le SEO ne voit pas la 3D).
 - Navigation clavier complète (sections, onglets, filtres, pièces) ; aucun piège de focus ; `tabindex` seulement sur widgets interactifs ; focus visible.
-- Contrastes WCAG AA sur fond `#05060d` (texte secondaire minimum `slate-400`, idéal `slate-300`).
+- Contrastes WCAG AA : système visuel décrit dans `../DESIGN.md` (signalétique d'aérogare) ; texte secondaire `muted` sur béton, `ink-soft` sur jaune.
 - 100 % lisible sans JS : aucun contenu essentiel produit uniquement par React ou la 3D ; pas de texte embarqué dans les images.
 
 ## 7. Motion & scroll
 
 - Conventions existantes à respecter : `init*()` exportés par `src/scripts/*.ts` et appelés depuis `Layout.astro` ; cibles via attributs `data-*` (**jamais** une classe CSS comme sélecteur JS) ; `prefersReducedMotion()` importé de `src/lib/motion.ts` en early-return.
-- `gsap.registerPlugin(ScrollTrigger)` reste centralisé dans `src/lib/motion.ts` (`ScrollToPlugin`, propre au CV, dans `cv-world.ts`) ; `SplitText` dans `reveal.ts`.
-- Entrées → `once: true` ; scroll-driven → `scrub` ou `onUpdate` ; Lenis `lerp ≤ 0.12` ; **aucun scroll-hijacking** (ne jamais bloquer molette/espace/flèches).
-- Durées : micro-interactions 0.15–0.2 s, entrées 0.5–0.9 s ; easing `power3.out` par défaut, `back.out(2)` pour les snaps.
-- SplitText réservé aux titres `[data-reveal-title]` ; le typewriter est réservé au hero.
+- `gsap.registerPlugin(ScrollTrigger)` reste centralisé dans `src/lib/motion.ts`.
+- Un seul moment de motion par page : la mise à jour en volet du tableau des départs (`src/scripts/board.ts`). Le bandeau suit la section courante (`src/scripts/wayfinding.ts`). Pas de lueurs, fonds animés ni entrées répétées (voir `../DESIGN.md`).
+- Durées : micro-interactions 0.15–0.2 s ; easing `power3.out` par défaut ; **aucun scroll-hijacking** hors monde horizontal du CV.
 - Parallaxe CV : les calques `.world-layer` sont dimensionnés `calc(100% + var(--world-w))` (largeur du monde exposée par `InteractiveWorld.astro`) et déplacés par `transform` via `moveLayers()` (`cv-world.ts`). Ne jamais repasser à `background-position` (repaint par frame, §4) ni à une largeur auto (calque invisible) ; en `prefers-reduced-motion` la parallaxe est figée (`transform: none`).
-- Après ajout/suppression d'une section : `ScrollTrigger.refresh()` sur `load` (déjà en place) et vérifier `src/scripts/timeline.ts` (variable `--gov`).
 
 ## 8. Qualité de code
 
@@ -130,6 +128,7 @@ Dégradation toujours dans le sens riche → sobre, **jamais** d'erreur affiché
 
 ## 11. Dette technique connue
 
-- **`npm run build` est vert** : `adapter: cloudflare()` est rétabli dans `astro.config.mjs`, la route `src/pages/api/contact.ts` reste en SSR (`prerender = false`).
-- **Envoi d'e-mail non branché** : `src/pages/api/contact.ts` répond volontairement `501` avec un lien `mailto:` — aucun secret ni service tiers n'est exposé. Le client (`ContactTerminal.tsx`, `cv-contact.ts`) bascule sur ce `mailto:` et l'affiche à l'utilisateur (bandeau « ● MODE MAIL »). Brancher un vrai service d'envoi suppose d'ajouter la variable d'environnement correspondante et de ne jamais l'exposer côté client.
-- `Particles.tsx` et `PacketFirewallGame.tsx` possèdent leur propre RAF → à migrer sur `gsap.ticker` lors d'une refonte, sinon les garder isolés (jamais d'une nouvelle boucle).
+- **`npm run build` est vert** ; toutes les pages sont statiques (`/`, `/alpha-to-omega`, `/cv`).
+- **Contact = `mailto:` direct** : l'ancienne route `api/contact` (qui répondait toujours 501) a été retirée. Brancher un vrai service d'envoi suppose une variable d'environnement jamais exposée côté client.
+- `lenis` reste dans `package.json` mais n'est plus importé.
+- Captures de projets : aucune pour l'instant (les photos de banque d'images ont été retirées) ; à ajouter en WebP ≤ 1600 px.

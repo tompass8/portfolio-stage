@@ -1,29 +1,36 @@
 import { gsap } from "gsap";
-import { prefersReducedMotion } from "./smooth-scroll";
+import { prefersReducedMotion } from "../lib/motion";
 import { networkNodes } from "../data/network";
 
 export function initGovernanceSection() {
-  const section = document.querySelector<HTMLElement>("#governance");
+  const section = document.querySelector<HTMLElement>("#gouvernance");
   if (!section) return;
 
-  // Interaction clic/clavier sur les nœuds de la cartographie SVG
-  const nodeEls = section.querySelectorAll<SVGGElement>("[data-net-node]");
-  const titleEl = section.querySelector<HTMLElement>("[data-node-title]");
-  const roleEl = section.querySelector<HTMLElement>("[data-node-role]");
-  const ownerEl = section.querySelector<HTMLElement>("[data-node-owner]");
-  const dataEl = section.querySelector<HTMLElement>("[data-node-data]");
-  const backupEl = section.querySelector<HTMLElement>("[data-node-backup]");
-  const gdprEl = section.querySelector<HTMLElement>("[data-node-gdpr]");
+  // Inspection des nœuds de la cartographie (clic et clavier)
+  const nodeEls = Array.from(section.querySelectorAll<SVGGElement>("[data-net-node]"));
+  const fields = {
+    title: section.querySelector<HTMLElement>("[data-node-title]"),
+    role: section.querySelector<HTMLElement>("[data-node-role]"),
+    owner: section.querySelector<HTMLElement>("[data-node-owner]"),
+    data: section.querySelector<HTMLElement>("[data-node-data]"),
+    backup: section.querySelector<HTMLElement>("[data-node-backup]"),
+    gdpr: section.querySelector<HTMLElement>("[data-node-gdpr]"),
+  };
 
   const selectNode = (id: string) => {
     const found = networkNodes.find((n) => n.id === id);
     if (!found) return;
-    if (titleEl) titleEl.textContent = found.label;
-    if (roleEl) roleEl.textContent = found.role;
-    if (ownerEl) ownerEl.textContent = found.owner;
-    if (dataEl) dataEl.textContent = found.dataTypes;
-    if (backupEl) backupEl.textContent = found.backupPolicy;
-    if (gdprEl) gdprEl.textContent = found.gdprStatus;
+    if (fields.title) fields.title.textContent = found.label;
+    if (fields.role) fields.role.textContent = found.role;
+    if (fields.owner) fields.owner.textContent = found.owner;
+    if (fields.data) fields.data.textContent = found.dataTypes;
+    if (fields.backup) fields.backup.textContent = found.backupPolicy;
+    if (fields.gdpr) fields.gdpr.textContent = found.gdprStatus;
+    nodeEls.forEach((el) => {
+      const on = el.dataset.netNode === id;
+      el.setAttribute("aria-pressed", String(on));
+      el.querySelector("[data-node-ring]")?.setAttribute("fill", on ? "#ffcc00" : "#ffffff");
+    });
   };
 
   nodeEls.forEach((el) => {
@@ -36,34 +43,17 @@ export function initGovernanceSection() {
     });
   });
 
-  // Verrouillage du cadenas RGPD et flux réseau au scroll
+  // Le cadenas RGPD se verrouille une fois, à la première vue
   const shackle = section.querySelector<SVGPathElement>("[data-lock-shackle]");
-  const links = section.querySelectorAll<SVGPathElement>("[data-net-link]");
-
+  if (!shackle) return;
   if (prefersReducedMotion()) {
-    if (shackle) shackle.style.transform = "translateY(0)";
+    shackle.style.transform = "translateY(0)";
     return;
   }
-
-  if (shackle) {
-    gsap.to(shackle, {
-      y: 0,
-      duration: 0.7,
-      ease: "back.out(2)",
-      scrollTrigger: {
-        trigger: "[data-gdpr-card]",
-        start: "top 75%",
-        once: true,
-      },
-    });
-  }
-
-  if (links.length > 0) {
-    gsap.to(links, {
-      strokeDashoffset: -48,
-      duration: 2.5,
-      ease: "none",
-      repeat: -1,
-    });
-  }
+  gsap.to(shackle, {
+    y: 0,
+    duration: 0.5,
+    ease: "power3.out",
+    scrollTrigger: { trigger: "[data-gdpr-card]", start: "top 75%", once: true },
+  });
 }

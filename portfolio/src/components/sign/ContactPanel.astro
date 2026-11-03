@@ -1,0 +1,44 @@
+---
+// Dernier panneau : l'action principale est l'e-mail, en clair
+import Picto from "./Picto.astro";
+import { resumeData } from "../../data/resumeData";
+
+interface Props {
+  subject?: string;
+}
+const { subject = "Proposition de stage / alternance" } = Astro.props;
+const email = "tompasserman5@gmail.com";
+const github = resumeData.contact.channels.find((c) => c.label === "GitHub")!;
+const linkedin = resumeData.contact.channels.find((c) => c.label === "LinkedIn")!;
+---
+<div class="grid gap-4 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)]">
+  <a
+    href={`mailto:${email}?subject=${encodeURIComponent(subject)}`}
+    class="group flex min-h-[16rem] flex-col justify-between rounded-[6px] bg-sign p-6 text-ink no-underline transition-colors duration-150 hover:bg-sign-press sm:p-8"
+  >
+    <span class="flex items-center gap-4">
+      <Picto name="mail" size="lg" />
+      <span class="text-3xl font-bold leading-tight tracking-[-0.015em] sm:text-4xl">Écrire à Tom</span>
+    </span>
+    <span class="mt-8 flex flex-wrap items-end justify-between gap-4">
+      <span class="break-all text-2xl font-semibold underline decoration-[3px] underline-offset-[0.2em] sm:text-3xl">{email}</span>
+      <Picto name="right" class="transition-transform duration-200 ease-out group-hover:translate-x-1" />
+    </span>
+  </a>
+  <ul class="grid gap-4">
+    <li>
+      <a href={linkedin.href} target="_blank" rel="noreferrer" class="flex h-full items-center gap-4 rounded-[6px] bg-panel p-5 text-xl font-semibold no-underline transition-colors hover:bg-sign">
+        <Picto name="linkedin" />
+        <span>LinkedIn<span class="block text-base font-normal text-muted">{linkedin.value}</span></span>
+        <Picto name="up-right" size="sm" class="ml-auto" />
+      </a>
+    </li>
+    <li>
+      <a href={github.href} target="_blank" rel="noreferrer" class="flex h-full items-center gap-4 rounded-[6px] bg-panel p-5 text-xl font-semibold no-underline transition-colors hover:bg-sign">
+        <Picto name="github" />
+        <span>GitHub<span class="block text-base font-normal text-muted">@{github.value}</span></span>
+        <Picto name="up-right" size="sm" class="ml-auto" />
+      </a>
+    </li>
+  </ul>
+</div>

@@ -1,0 +1,19 @@
+---
+// En-tête de section : panneau suspendu, pictogramme + destination (+ indication à droite)
+import Picto, { type PictoName } from "./Picto.astro";
+
+interface Props {
+  title: string;
+  picto: PictoName;
+  aside?: string;
+  tone?: "sign" | "ink";
+}
+const { title, picto, aside, tone = "sign" } = Astro.props;
+---
+<div class:list={["border-y-[6px] border-ink", tone === "sign" ? "bg-sign text-ink" : "bg-ink text-sign"]}>
+  <div class="mx-auto flex max-w-[90rem] flex-wrap items-center gap-x-5 gap-y-2 px-4 py-5 sm:px-6 sm:py-6">
+    <Picto name={picto} size="lg" class={tone === "ink" ? "bg-sign! text-ink!" : ""} />
+    <h2 class="text-[2.25rem] font-bold leading-none tracking-[-0.02em] sm:text-5xl">{title}</h2>
+    {aside && <p class="ml-auto text-xl font-semibold sm:text-2xl">{aside}</p>}
+  </div>
+</div>

@@ -1,0 +1,46 @@
+---
+// Tableau des départs : vraies données tabulaires, cellules en volets
+interface Row {
+  when: string;
+  where: string;
+  what: string;
+}
+interface Props {
+  caption: string;
+  rows: Row[];
+}
+const { caption, rows } = Astro.props;
+---
+<div data-board class="board on-dark rounded-[6px] bg-board p-4 sm:p-6 [perspective:600px]">
+  <table class="w-full border-separate border-spacing-y-2 font-mono text-base uppercase tracking-[0.08em] sm:text-lg">
+    <caption class="sr-only">{caption}</caption>
+    <thead>
+      <tr class="text-left text-sm font-normal text-board-muted">
+        <th scope="col" class="px-3 pb-2 font-normal">Période</th>
+        <th scope="col" class="px-3 pb-2 font-normal">Escale</th>
+        <th scope="col" class="px-3 pb-2 font-normal">Poste</th>
+      </tr>
+    </thead>
+    <tbody>
+      {rows.map((r) => (
+        <tr>
+          <td class="whitespace-nowrap rounded-l-[4px] bg-flap px-3 py-3 text-flap-text"><span class="flap">{r.when}</span></td>
+          <th scope="row" class="bg-flap px-3 py-3 text-left font-semibold text-on-board"><span class="flap">{r.where}</span></th>
+          <td class="rounded-r-[4px] bg-flap px-3 py-3 text-on-board"><span class="flap">{r.what}</span></td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+
+<style>
+  /* Sur téléphone, chaque départ devient une carte de trois lignes */
+  @media (max-width: 639px) {
+    .board thead { display: none; }
+    .board tr { display: grid; margin-bottom: 0.5rem; }
+    .board td, .board th { border-radius: 0 !important; }
+    .board tr > :first-child { border-radius: 4px 4px 0 0 !important; padding-bottom: 0.25rem; }
+    .board tr > :last-child { border-radius: 0 0 4px 4px !important; padding-top: 0.25rem; }
+    .board th[scope="row"] { padding-block: 0.25rem; }
+  }
+</style>

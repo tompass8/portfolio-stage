@@ -1,62 +1,48 @@
 ---
 import { resumeData } from "../../data/resumeData";
+import Picto from "../sign/Picto.astro";
 
 const { zones } = resumeData;
 ---
-<header
-  class="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-bg/80 backdrop-blur-md"
-  data-hud
->
-  <div class="mx-auto flex max-w-7xl flex-wrap items-center gap-x-4 gap-y-2 px-4 py-2.5">
-    <a
-      href="/"
-      class="font-mono text-xs text-amber-400 transition-colors hover:text-white"
-      aria-label="Retour au site classique"
-    >
-      ← SITE CLASSIQUE
+<header class="fixed inset-x-0 top-0 z-50 border-b-[6px] border-ink bg-sign text-ink" style="padding-top: env(safe-area-inset-top, 0px);" data-hud>
+  <div class="mx-auto flex max-w-[90rem] items-center gap-2 px-4 py-2 sm:px-6">
+    <a href="/" class="flex shrink-0 items-center gap-2.5 rounded-[6px] py-1 pr-3 text-lg font-semibold no-underline">
+      <Picto name="left" size="sm" />
+      <span class="hidden sm:inline">Site classique</span>
+      <span class="sr-only sm:hidden">Retour au site classique</span>
     </a>
 
-    <span class="hidden font-mono text-[11px] text-slate-500 sm:inline">/cv</span>
-
-    <nav class="order-3 flex w-full gap-1 overflow-x-auto sm:order-2 sm:w-auto" aria-label="Téléportation par niveau">
+    <nav class="flex min-w-0 flex-1 gap-1 overflow-x-auto [scrollbar-width:none]" aria-label="Téléportation par niveau">
       {zones.map((z) => (
         <button
           type="button"
           data-teleport={z.hash}
-          class="inline-flex min-h-11 shrink-0 items-center rounded-md border border-zinc-600 px-2.5 py-1 font-mono text-[11px] text-zinc-200 transition-colors hover:border-amber-400/60 hover:text-amber-300"
+          class="inline-flex min-h-11 shrink-0 cursor-pointer items-center rounded-[6px] px-3 text-lg font-semibold transition-colors duration-150 hover:bg-sign-press"
         >
           {z.short}
         </button>
       ))}
     </nav>
 
-    <div class="order-2 ml-auto flex items-center gap-3 sm:order-3">
-      <div class="hidden items-center gap-2 sm:flex">
-        <span class="font-mono text-[10px] uppercase tracking-widest text-slate-500">Progression</span>
-        <span class="relative block h-2 w-28 overflow-hidden rounded-full border border-white/15 bg-black/50">
-          <span
-            data-progress-bar
-            class="absolute inset-y-0 left-0 w-0 rounded-full bg-linear-to-r from-amber-400 to-amber-600"
-          ></span>
-        </span>
-        <span data-progress-label class="w-9 font-mono text-[11px] text-amber-400">0%</span>
-      </div>
-
+    <div class="hidden shrink-0 items-center gap-3 md:flex">
+      <span class="text-base font-semibold">Progression</span>
+      <span class="relative block h-3 w-28 bg-ink/15" aria-hidden="true">
+        <span data-progress-bar class="absolute inset-y-0 left-0 w-0 bg-ink"></span>
+      </span>
+      <span data-progress-label class="w-11 font-mono text-base font-semibold tabular-nums">0%</span>
     </div>
   </div>
-
-  <div class="h-0.5 w-full bg-white/5 sm:hidden">
-    <span
-      data-progress-bar
-      class="block h-full w-0 bg-linear-to-r from-amber-400 to-amber-600"
-    ></span>
+  <div class="h-1 w-full bg-ink/15 md:hidden" aria-hidden="true">
+    <span data-progress-bar class="block h-full w-0 bg-ink"></span>
   </div>
 </header>
 
 <div
   data-scroll-hint
   aria-hidden="true"
-  class="pointer-events-none fixed bottom-4 left-1/2 z-40 -translate-x-1/2 rounded-full border border-white/15 bg-black/70 px-4 py-2 font-mono text-[11px] text-slate-300 backdrop-blur-md transition-opacity duration-500"
+  class="pointer-events-none fixed bottom-5 left-1/2 z-40 flex -translate-x-1/2 items-center gap-3 whitespace-nowrap rounded-[6px] bg-sign py-2 pl-2 pr-4 text-lg font-semibold text-ink transition-opacity duration-300"
 >
-  Glissez ou molette pour avancer →
+  <Picto name="right" size="sm" />
+  <span class="sm:hidden">Glissez pour avancer</span>
+  <span class="hidden sm:inline">Glissez ou molette pour avancer</span>
 </div>
