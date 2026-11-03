@@ -2,6 +2,7 @@
 // Fiche d'un projet : la porte (numéro, nom) puis ce qui s'y trouve
 import type { Project } from "../../data/projects";
 import Route from "./Route.astro";
+import ProjectPlan from "./ProjectPlan.astro";
 import Picto from "./Picto.astro";
 
 interface Props {
@@ -23,6 +24,7 @@ const statusLabel: Record<Project["status"], string> = {
     <p class="mt-6 inline-flex items-center gap-2 rounded-[4px] bg-ink px-3 py-1.5 text-base font-semibold text-sign">
       {statusLabel[p.status]}
     </p>
+    <ProjectPlan slug={p.slug} title={p.title} />
   </header>
 
   <div class="min-w-0 max-w-[40rem]">

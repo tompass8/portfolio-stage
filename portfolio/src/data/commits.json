@@ -1,5 +1,10 @@
 [
   {
+    "hash": "16f0ac4",
+    "date": "2026-11-03",
+    "subject": "feat: corrections de la critique (Impeccable, Taste, Emil)"
+  },
+  {
     "hash": "0e8e390",
     "date": "2026-11-03",
     "subject": "content: remplacement des tirets cadratins"
@@ -23,10 +28,5 @@
     "hash": "e47bc16",
     "date": "2026-11-03",
     "subject": "feat(design): refonte complete en signaletique d'aerogare"
-  },
-  {
-    "hash": "09ec673",
-    "date": "2026-10-23",
-    "subject": "feat(cv): defilement horizontal natif gauche-droite avec molette mappee"
   }
 ]
