@@ -24,7 +24,7 @@ const reasons = [
   },
   {
     title: "Pourquoi Alpha to Omega ?",
-    body: "Au-delà de composants isolés, je vise le cycle complet : <strong>recueil du besoin</strong>, architecture Astro, CI/CD, DNS/Cloudflare, diagnostic de logs — et la <strong>gouvernance IT</strong> des organisations que vous accompagnez.",
+    body: "Au-delà de composants isolés, je vise le cycle complet : <strong>recueil du besoin</strong>, architecture Astro, CI/CD, DNS/Cloudflare, diagnostic de logs, et la <strong>gouvernance IT</strong> des organisations que vous accompagnez.",
   },
   {
     title: "L'IA comme outil critique",
@@ -56,14 +56,14 @@ const steps = [
 
 const synthesis = [
   ["Candidat", "Tom Passerman"],
-  ["Formation", "Bachelor Info — Ynov Toulouse"],
+  ["Formation", "Bachelor Info, Ynov Toulouse"],
   ["Stages précédents", "Orange & ITL"],
-  ["Anglais technique", "Courant — oral & écrit"],
+  ["Anglais technique", "Courant, oral & écrit"],
 ];
 ---
 <Layout
-  title="Tom Passerman — Candidature Alpha to Omega | Web, IA & Gouvernance Numérique"
-  description="Candidature Tom Passerman — Alpha to Omega (Développement Web, IA & Gouvernance Numérique)"
+  title="Tom Passerman · Candidature Alpha to Omega | Web, IA & Gouvernance Numérique"
+  description="Candidature de Tom Passerman chez Alpha to Omega (Développement Web, IA & Gouvernance Numérique)"
   nav={nav}
   noindex
 >
@@ -71,7 +71,7 @@ const synthesis = [
     <h1 id="candidature" class="max-w-[18ch] text-display font-bold tracking-[-0.03em]">
       Développement Web, IA &amp; Gouvernance Numérique
     </h1>
-    <p class="mt-4 text-2xl text-muted">Tom Passerman — Étudiant Bachelor Informatique (Ynov Toulouse)</p>
+    <p class="mt-4 text-2xl text-muted">Tom Passerman, étudiant Bachelor Informatique (Ynov Toulouse)</p>
     <p class="mt-5 inline-flex flex-wrap items-center gap-x-3 gap-y-1 rounded-[6px] bg-ink px-4 py-2 text-lg font-semibold text-sign">
       Candidature Alpha to Omega (A2Ω) · Toulouse · Stage 2 à 6 mois · Dispo immédiate
     </p>
@@ -106,14 +106,14 @@ const synthesis = [
 
       <pre class="on-dark mt-8 overflow-x-auto rounded-[6px] bg-board p-5 font-mono text-sm leading-relaxed text-on-board sm:text-base"><code><span class="text-flap-text">tom@architect:~/core$</span> git push origin main --tags
 Enumerating objects: 42, done. Counting objects: 100% (42/42), done.
-Delta compression using up to 16 threads — Compressing objects: 100% (38/38).
+Delta compression using up to 16 threads, Compressing objects: 100% (38/38).
 remote: [CI/CD] Building multi-tier containers &amp; Edge bundles...
-<span class="text-flap-text">✔</span> To https://github.com/tompass8/portfolio-stage.git — [new tag] v2.4.0 -&gt; production</code></pre>
+<span class="text-flap-text">✔</span> To https://github.com/tompass8/portfolio-stage.git  [new tag] v2.4.0 -&gt; production</code></pre>
 
       <h3 class="mt-16 text-3xl font-bold tracking-[-0.015em]">Automatiser et sécuriser le cycle de vie du code</h3>
       <p class="mt-3 max-w-[40rem] text-xl leading-relaxed">
         Module proposé pour accompagner les équipes dans l'usage concret de l'IA : un agent branché sur le pipeline
-        existant qui analyse, teste, révise, répare et documente le code — chaque action reste soumise à validation humaine.
+        existant qui analyse, teste, révise, répare et documente le code. Chaque action reste soumise à validation humaine.
       </p>
       <dl class="mt-8 grid gap-x-10 gap-y-8 md:grid-cols-2 lg:grid-cols-3">
         {features.map((f) => (
@@ -132,7 +132,7 @@ remote: [CI/CD] Building multi-tier containers &amp; Edge bundles...
       </dl>
 
       <div class="mt-10 rounded-[6px] bg-panel p-5 sm:p-8">
-        <h4 class="text-lg font-bold">Architecture — agent LLM + Function Calling</h4>
+        <h4 class="text-lg font-bold">Architecture : agent LLM + Function Calling</h4>
         <div class="mt-5"><Route stops={flow} label="Flux de l'agent CI/CD" /></div>
         <p class="mt-5 border-t-2 border-concrete pt-3 text-lg text-muted">
           Chaque push/PR déclenche l'agent via webhook → diagnostic → patchs proposés en Pull Request → revue humaine → merge.
@@ -142,7 +142,7 @@ remote: [CI/CD] Building multi-tier containers &amp; Edge bundles...
       <h3 class="mt-16 text-3xl font-bold tracking-[-0.015em]">Projets réalisés</h3>
       <ul class="mt-6 grid gap-4 md:grid-cols-3">
         {projects.map((p) => (
-          <li><GateLink href={`/#projet-${p.slug}`} num={p.id} title={p.title.replace(" — Groupe Immobilier", "")} line={p.subtitle} arrow="up-right" /></li>
+          <li><GateLink href={`/#projet-${p.slug}`} num={p.id} title={p.title.replace(" (Groupe Immobilier)", "")} line={p.subtitle} arrow="up-right" /></li>
         ))}
       </ul>
     </div>
@@ -153,7 +153,7 @@ remote: [CI/CD] Building multi-tier containers &amp; Edge bundles...
     <div class="mx-auto max-w-[90rem] px-4 py-12 sm:px-6 sm:py-16">
       <h3 class="text-4xl font-bold leading-[1.05] tracking-[-0.02em]">De l'idée à la production en quatre étapes</h3>
       <p class="mt-4 max-w-[40rem] text-xl leading-relaxed">
-        Une méthode de livraison continue, transparente et mesurable — le même niveau d'exigence
+        Une méthode de livraison continue, transparente et mesurable : le même niveau d'exigence
         que j'applique déjà sur mes projets et mes missions d'accompagnement, et que je mettrai
         en pratique chez Alpha to Omega.
       </p>
@@ -181,9 +181,9 @@ remote: [CI/CD] Building multi-tier containers &amp; Edge bundles...
         Du flux de code à un environnement structuré, auditable et résilient
       </h3>
       <p class="mt-4 max-w-[40rem] text-xl leading-relaxed">
-        Les missions d'accompagnement que vous menez chez Alpha to Omega — recensement des actifs,
+        Les missions d'accompagnement que vous menez chez Alpha to Omega (recensement des actifs,
         cartographie des flux, contrôle des habilitations (IAM), conformité RGPD et formalisation des
-        procédures d'exploitation — sont le terrain que je vise : voici comment je m'y intégrerais.
+        procédures d'exploitation) sont le terrain que je vise : voici comment je m'y intégrerais.
       </p>
       <div class="mt-10"><NetworkMap /></div>
       <div class="mt-4 grid gap-4 lg:grid-cols-3">
@@ -212,10 +212,10 @@ remote: [CI/CD] Building multi-tier containers &amp; Edge bundles...
             ))}
           </dl>
         </div>
-        <ContactPanel subject="Candidature stage — Alpha to Omega" />
+        <ContactPanel subject="Candidature de stage chez Alpha to Omega" />
       </div>
     </div>
   </section>
 
-  <SiteFooter slot="footer" note="Candidature Stage Alpha to Omega (A2Ω) — Toulouse" />
+  <SiteFooter slot="footer" note="Candidature Stage Alpha to Omega (A2Ω), Toulouse" />
 </Layout>

@@ -20,7 +20,7 @@ const zonePicto: Record<string, PictoName> = {
     class="relative h-screen w-full overflow-x-auto overflow-y-hidden overscroll-x-contain"
     tabindex="0"
     role="region"
-    aria-label="CV interactif — défilement horizontal"
+    aria-label="CV interactif, défilement horizontal"
   >
     <div data-hscroll-inner class="relative h-screen" style={`width:${worldWidth}px`}>
       <div data-viewport class="sticky left-0 top-0 h-screen overflow-hidden" style={`--world-w:${worldWidth}px`}>
@@ -214,7 +214,7 @@ const zonePicto: Record<string, PictoName> = {
                       {contact.channels.filter((c) => c.label !== "Email").map((c) => (
                         <a href={c.href} target="_blank" rel="noopener" class="flex items-center gap-3 rounded-[6px] bg-panel px-4 py-3 text-lg font-semibold text-ink no-underline hover:bg-sign">
                           <Picto name={c.label === "GitHub" ? "github" : "linkedin"} size="sm" />
-                          {c.label} — {c.value}
+                          {c.label} : {c.value}
                         </a>
                       ))}
                     </div>

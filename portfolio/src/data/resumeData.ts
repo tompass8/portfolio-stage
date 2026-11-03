@@ -92,7 +92,7 @@ export interface ResumeData {
 export const resumeData: ResumeData = {
   meta: {
     name: "Tom Passerman",
-    headline: "Passionné d'IT — Full-Stack, Systèmes & Réseaux, Data & IoT",
+    headline: "Passionné d'IT : Full-Stack, Systèmes & Réseaux, Data & IoT",
     location: "Toulouse, France",
   },
 
@@ -126,7 +126,7 @@ export const resumeData: ResumeData = {
       level: "NIVEAU 02 // LES QG",
       title: "Quartiers généraux professionnels",
       short: "Expériences",
-      subtitle: "ITL & Orange — infrastructures critiques",
+      subtitle: "ITL & Orange : infrastructures critiques",
       kind: "experience",
       width: 1600,
     },
@@ -148,7 +148,7 @@ export const resumeData: ResumeData = {
       level: "NIVEAU 04 // BOSS FINAL",
       title: "Le Terminal de Contact",
       short: "Contact",
-      subtitle: "Borne d'arcade — envoie ton message",
+      subtitle: "Borne d'arcade : envoie ton message",
       kind: "contact",
       width: 1400,
       hasTerminal: true,
@@ -158,13 +158,13 @@ export const resumeData: ResumeData = {
   spawn: {
     bio: "Étudiant en informatique et passionné d'IT, je m'intéresse au développement Full-Stack, aux systèmes & réseaux, à la data et à l'IoT. B.Sc. Informatique à Ynov Campus Toulouse. J'apprends en construisant : des applications web & mobiles, du prototype au déploiement, et l'infrastructure qui les fait tourner.",
     highlights: [
-      "B.Sc. Informatique — Ynov Campus Toulouse",
+      "B.Sc. Informatique, Ynov Campus Toulouse",
       "Bilingue Français / Anglais (anglais technique courant)",
       "Full-Stack · Systèmes & Réseaux · Data · IoT",
     ],
     controls: [
       { icon: "mouse-scroll", label: "Molette pour avancer dans le monde" },
-      { icon: "arrow-keys", label: "Flèches clavier — le héros suit ton scroll" },
+      { icon: "arrow-keys", label: "Flèches clavier : le héros suit ton scroll" },
     ],
   },
 
@@ -274,7 +274,7 @@ export const resumeData: ResumeData = {
     items: [
       {
         id: "spark",
-        name: "Spark — Smart Parking IoT",
+        name: "Spark (Smart Parking IoT)",
         kind: "IoT",
         summary:
           "Détection temps réel de présence de véhicules par variation de champ magnétique, présenté aux YDays. Infrastructure conteneurisée isolée avec MQTT chiffré, stockage time-series et supervision Grafana.",
@@ -334,7 +334,7 @@ export const resumeData: ResumeData = {
         name: "Moodle Jump",
         kind: "Game",
         summary:
-          "Jeu de plateforme 2D développé sous Unity — intégré au décor sous forme de plateformes flottantes sur lesquelles l'avatar saute lors du scroll.",
+          "Jeu de plateforme 2D développé sous Unity, intégré au décor sous forme de plateformes flottantes sur lesquelles l'avatar saute lors du scroll.",
         features: [
           "Développement de jeu 2D sous Unity",
           "Physique et contrôles de plateforme",

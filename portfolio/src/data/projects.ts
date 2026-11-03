@@ -38,7 +38,7 @@ export const projects: Project[] = [
   {
     id: "02",
     slug: "ymmo",
-    title: "YMMO — Groupe Immobilier",
+    title: "YMMO (Groupe Immobilier)",
     subtitle: "Plateforme web d'achat, vente et analyse de biens immobiliers avec IA",
     architecture: "Vue 3 ─► Nginx ─► (.NET 10 ─► PostgreSQL 16) + (FastAPI ─► 2M biens)",
     route: ["Vue 3", "Nginx", [".NET 10 → PostgreSQL 16", "FastAPI → 2M biens"]],
