@@ -135,11 +135,71 @@
 .arcade-btn:active,
 .arcade-btn.is-held { transform: translateY(3px) scale(0.96); box-shadow: inset 0 -2px 0 rgb(0 0 0 / 0.35); }
 
-/* ---------- Intro : la borne d'arcade, puis le zoom dans l'écran ---------- */
+/* ---------- Intro : la borne d'arcade, puis le zoom jusqu'à l'écran de la borne de jeu ---------- */
 [data-arcade] { position: fixed; inset: 0; z-index: 70; overflow: hidden; }
 [data-arcade] svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; transform-origin: 0 0; }
 .arcade-attract { animation: arcade-attract 1.1s steps(2, end) infinite; }
 @keyframes arcade-attract { 50% { opacity: 0; } }
+
+/* ---------- La borne reste à l'écran : le HUD sert de fronton, le jeu tourne dans l'écran,
+   les boutons sont sur le pupitre. data-cabinet est posé par cv-arcade.ts (mode horizontal). ---------- */
+@media (min-height: 641px) and (prefers-reduced-motion: no-preference) {
+  html:has(main[data-cabinet]),
+  body:has(main[data-cabinet]) { background: #0d0d0d; overflow: hidden; }
+  body:has(main[data-cabinet]) {
+    --cab-w: min(100vw - 2 * clamp(0.75rem, 3vw, 3rem), 110rem);
+    --deck-h: 6.75rem;
+  }
+  main[data-cabinet] {
+    position: fixed;
+    top: var(--hud-h, 4.5rem);
+    bottom: var(--deck-h);
+    left: 0;
+    right: 0;
+    width: var(--cab-w);
+    margin-inline: auto;
+    padding: 1.75rem;
+    background: #0b0b0b;
+    border-inline: 16px solid #ffcc00;
+  }
+  main[data-cabinet] [data-world] {
+    height: 100%;
+    border-radius: 18px;
+    overflow: hidden;
+    /* Cadre de l'écran : joint noir puis bezel gris, comme le dessin de l'intro */
+    box-shadow: 0 0 0 8px #000, 0 0 0 22px #232323;
+  }
+  main[data-cabinet] [data-hscroll],
+  main[data-cabinet] [data-hscroll-inner],
+  main[data-cabinet] [data-viewport] { height: 100%; }
+  /* Plus de HUD par-dessus le monde : les panneaux remontent */
+  main[data-cabinet] [data-zone] .zone-sign { top: 1.25rem; }
+
+  body:has(main[data-cabinet]) [data-arcade-controls] {
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: var(--cab-w);
+    height: var(--deck-h);
+    margin: 0 auto !important;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    translate: none;
+    transform: none;
+    align-items: center;
+    justify-content: center;
+    gap: 2.5rem;
+    background: #232323;
+    border-top: 4px solid #ffcc00;
+    border-inline: 16px solid #ffcc00;
+  }
+}
+/* Téléphone : cadre fin pour laisser la largeur au jeu */
+@media (min-height: 641px) and (prefers-reduced-motion: no-preference) and (max-width: 639px) {
+  body:has(main[data-cabinet]) { --cab-w: 100vw; }
+  main[data-cabinet] { padding: 0.625rem; border-inline-width: 6px; }
+  main[data-cabinet] [data-world] { border-radius: 10px; box-shadow: 0 0 0 3px #000, 0 0 0 8px #232323; }
+  body:has(main[data-cabinet]) [data-arcade-controls] { border-inline-width: 6px; }
+}
 
 /* ---------- Scroller horizontal natif du monde (/cv) ---------- */
 [data-hscroll] {

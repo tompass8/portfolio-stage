@@ -84,13 +84,17 @@ export function initCvWorld() {
     return { left, right: left + b.width, center: left + b.width / 2 };
   }
 
+  // Le monde peut être plus petit que la fenêtre (écran de la borne) : tout se mesure par rapport à lui
+  const onScreen = (r: { left: number; right: number }) =>
+    r.left < viewportLeft + viewportWidth() && r.right > viewportLeft;
+
   function nearAvatar(el: HTMLElement, tolerance = 80) {
-    return Math.abs(screenBox(el).center - window.innerWidth * 0.2) < tolerance;
+    return Math.abs(screenBox(el).center - (viewportLeft + viewportWidth() * 0.2)) < tolerance;
   }
 
   function nearViewportCenter(el: HTMLElement) {
     const r = screenBox(el);
-    return r.left < window.innerWidth / 2 && r.right > 0;
+    return r.left < viewportLeft + viewportWidth() / 2 && r.right > viewportLeft;
   }
 
   function applyAvatarFromVelocity(direction: number, velocity: number) {
@@ -212,12 +216,11 @@ export function initCvWorld() {
     if (scrollHint) scrollHint.style.opacity = p > 0.02 ? "0" : "1";
     checkpoints.forEach((cp) => {
       const r = screenBox(cp);
-      const on = r.left > 0 && r.left < window.innerWidth;
+      const on = onScreen({ left: r.left, right: r.left });
       cp.style.background = on ? "var(--color-sign)" : "rgb(255 255 255 / 0.2)";
     });
     projectCards.forEach((card) => {
-      const r = screenBox(card);
-      const on = r.left < window.innerWidth && r.right > 0;
+      const on = onScreen(screenBox(card));
       const light = card.querySelector<HTMLElement>("[data-checkpoint-light]");
       if (!light) return;
       light.style.background = on ? "var(--color-sign)" : "rgb(255 255 255 / 0.2)";

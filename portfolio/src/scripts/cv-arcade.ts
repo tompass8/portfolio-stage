@@ -1,8 +1,19 @@
-// src/scripts/cv-arcade.ts — intro de la borne (zoom dans l'écran) et boutons Reculer / Avancer
+// src/scripts/cv-arcade.ts — la borne (cadre du jeu), son intro et les boutons Reculer / Avancer
 import { prefersReducedMotion } from "../lib/motion";
 
 const isStacked = () =>
   prefersReducedMotion() || window.matchMedia("(max-height: 640px)").matches;
+
+// Met le jeu dans la borne (styles dans sprites.css). À appeler avant initCvWorld, qui mesure le monde.
+export function initCabinet() {
+  const main = document.querySelector<HTMLElement>("main");
+  const hud = document.querySelector<HTMLElement>("[data-hud]");
+  if (!main || !hud) return;
+  main.dataset.cabinet = "";
+  const syncHud = () => document.body.style.setProperty("--hud-h", `${hud.offsetHeight}px`);
+  syncHud();
+  new ResizeObserver(syncHud).observe(hud);
+}
 
 export function initArcadeIntro() {
   const root = document.querySelector<HTMLElement>("[data-arcade]");
@@ -42,15 +53,17 @@ export function initArcadeIntro() {
   };
 
   const zoom = () => {
-    // Agrandit l'écran de la borne jusqu'à couvrir la fenêtre, centré
+    // Approche l'écran dessiné jusqu'à l'écran de la borne de jeu, puis fondu : on reste devant la borne
     const r = screen.getBoundingClientRect();
-    const vw = window.innerWidth;
-    const vh = window.innerHeight;
-    const s = Math.max(vw / r.width, vh / r.height) * 1.04;
+    const t = document.querySelector<HTMLElement>("[data-world]")?.getBoundingClientRect()
+      ?? new DOMRect(0, 0, window.innerWidth, window.innerHeight);
+    const s = Math.max(t.width / r.width, t.height / r.height);
     const cx = r.left + r.width / 2;
     const cy = r.top + r.height / 2;
+    const tx = t.left + t.width / 2;
+    const ty = t.top + t.height / 2;
     zoomAnim = svg.animate(
-      [{ transform: "none" }, { transform: `translate(${vw / 2 - cx * s}px, ${vh / 2 - cy * s}px) scale(${s})` }],
+      [{ transform: "none" }, { transform: `translate(${tx - cx * s}px, ${ty - cy * s}px) scale(${s})` }],
       { duration: 1800, easing: "cubic-bezier(0.65, 0, 0.35, 1)", fill: "forwards" }
     );
     zoomAnim.finished.then(finish).catch(() => {});
