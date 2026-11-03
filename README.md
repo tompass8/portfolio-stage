@@ -62,12 +62,12 @@ site stage/
 ├── PRODUCT.md            # public, objectif, contraintes du site
 ├── DESIGN.md             # système visuel (tokens, règles)
 └── portfolio/            # application Astro
-    ├── public/           # assets statiques (pixel-art du CV, illustrations IoT, favicon)
+    ├── public/           # assets statiques (pixel-art du CV, favicon)
     ├── src/
     │   ├── components/   # sign/ (signalétique), governance/, game/ (CV)
     │   ├── data/         # contenu éditorial, data-driven
     │   ├── layouts/      # Layout.astro (site) et GameLayout.astro (CV)
-    │   ├── lib/          # motion.ts (prefersReducedMotion), utils.ts
+    │   ├── lib/          # motion.ts (prefersReducedMotion)
     │   ├── pages/        # index.astro, alpha-to-omega.astro, cv.astro
     │   ├── scripts/      # comportements : init*() en TypeScript
     │   └── styles/       # global.css (tokens @theme) + sprites.css (pixel-art)

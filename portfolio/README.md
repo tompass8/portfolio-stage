@@ -38,7 +38,7 @@ npm run generate-types   # wrangler types → types des bindings Cloudflare
 
 ```text
 portfolio/
-├── public/                  # pixel-art du CV (assets/), illustrations IoT, favicon
+├── public/                  # pixel-art du CV (assets/), favicon
 ├── src/
 │   ├── components/
 │   │   ├── sign/            # signalétique : SignBand, GateLink, SectionSign, ProjectGate,
@@ -47,7 +47,7 @@ portfolio/
 │   │   └── game/            # InteractiveWorld, HudNavigation (CV)
 │   ├── data/                # contenu éditable : projects, roles, network, resumeData
 │   ├── layouts/             # Layout.astro (site) et GameLayout.astro (CV)
-│   ├── lib/                 # motion.ts (prefersReducedMotion), utils.ts (cn)
+│   ├── lib/                 # motion.ts (prefersReducedMotion)
 │   ├── pages/               # index.astro, alpha-to-omega.astro, cv.astro
 │   ├── scripts/             # wayfinding, board, governance, roles, cv-world, cv-avatar
 │   └── styles/              # global.css (tokens @theme) + sprites.css (pixel-art)

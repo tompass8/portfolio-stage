@@ -12,7 +12,7 @@ export interface SkillGroup {
   title: string;
   level: "Débutant" | "Intermédiaire" | "Avancé" | "Avancé / Expert" | "Expert";
   pct: number;
-  items: { name: string; icon?: string }[];
+  items: { name: string }[];
 }
 
 export interface JobEntry {
@@ -178,13 +178,13 @@ export const resumeData: ResumeData = {
         level: "Débutant",
         pct: 20,
         items: [
-          { name: "C# (.NET 8)", icon: "csharp" },
-          { name: "Python", icon: "python" },
-          { name: "Java", icon: "java" },
-          { name: "PHP", icon: "php" },
-          { name: "TypeScript / JS", icon: "typescript" },
-          { name: "Astro", icon: "astro" },
-          { name: "Tailwind CSS", icon: "tailwindcss" },
+          { name: "C# (.NET 8)" },
+          { name: "Python" },
+          { name: "Java" },
+          { name: "PHP" },
+          { name: "TypeScript / JS" },
+          { name: "Astro" },
+          { name: "Tailwind CSS" },
         ],
       },
       {
@@ -193,7 +193,7 @@ export const resumeData: ResumeData = {
         level: "Intermédiaire",
         pct: 30,
         items: [
-          { name: "SQL (MySQL, SQLite)", icon: "mysql" },
+          { name: "SQL (MySQL, SQLite)" },
           { name: "InfluxDB (Time-Series)" },
           { name: "Entity Framework Core" },
           { name: "PDO" },
@@ -208,13 +208,13 @@ export const resumeData: ResumeData = {
         level: "Avancé",
         pct: 70,
         items: [
-          { name: "Docker & Docker Compose", icon: "docker" },
-          { name: "Linux (Bash, WSL2)", icon: "linux" },
+          { name: "Docker & Docker Compose" },
+          { name: "Linux (Bash, WSL2)" },
           { name: "Windows Server" },
           { name: "mTLS" },
           { name: "Mosquitto MQTT" },
           { name: "OpenLDAP" },
-          { name: "Git / GitHub", icon: "git" },
+          { name: "Git / GitHub" },
         ],
       },
       {
@@ -223,10 +223,10 @@ export const resumeData: ResumeData = {
         level: "Intermédiaire",
         pct: 50,
         items: [
-          { name: "ESP32", icon: "/assets/iot/esp32-chip.svg" },
+          { name: "ESP32" },
           { name: "ESP8266 (ESP-12F)" },
           { name: "Arduino" },
-          { name: "Magnétomètre 3 axes (PNI RM3100)", icon: "/assets/iot/rm3100-chip.svg" },
+          { name: "Magnétomètre 3 axes (PNI RM3100)" },
           { name: "Cellules de charge" },
           { name: "Infrarouge" },
           { name: "Optimisation Low-Power" },

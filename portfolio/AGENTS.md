@@ -107,7 +107,7 @@ Dégradation toujours dans le sens riche → sobre, **jamais** d'erreur affiché
 - Hydratation : aucun îlot actuellement (la matrice IAM est un composant Astro + `src/scripts/roles.ts`) ; si un îlot devient nécessaire, `client:visible` par défaut.
 - Nettoyage complet obligatoire : tweens et ScrollTriggers (`kill()`), listeners, observers.
 - Composants < 300 lignes ; scripts < ~120 lignes sinon découper.
-- Tout style nouveau = token `@theme` (pas de couleur/valeur en dur hors tokens) ; classes conditionnelles via `cn()` (`src/lib/utils.ts`).
+- Tout style nouveau = token `@theme` (pas de couleur/valeur en dur hors tokens) ; classes conditionnelles via `class:list` d'Astro.
 - Pas de commentaires de code superflus ; nommage FR/EN cohérent avec le fichier existant.
 
 ## 9. Assets & déploiement
