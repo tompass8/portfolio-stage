@@ -1,0 +1,73 @@
+---
+import { rolesMatrix, type RolePermission } from "../../data/roles";
+
+// Le niveau d'accès se lit au premier coup d'œil : plein = tout, pointillé = isolé
+const badgeStyles: Record<RolePermission["permissions"][number]["access"], string> = {
+  FULL: "bg-ink text-sign",
+  "READ/WRITE": "border-2 border-ink bg-sign text-ink",
+  "READ-ONLY": "border-2 border-ink bg-panel text-ink",
+  ISOLATED: "border-2 border-dashed border-ink bg-panel text-ink",
+};
+---
+<div data-roles class="rounded-[6px] bg-panel p-5 sm:p-8">
+  <div class="flex flex-wrap items-baseline justify-between gap-2">
+    <h3 class="text-3xl font-bold leading-tight tracking-[-0.015em]">
+      Gestion des comptes, authentifications &amp; moindre privilège
+    </h3>
+    <span class="font-mono text-sm text-muted">RBAC Policy v2.6</span>
+  </div>
+  <p class="mt-2 max-w-[40rem] text-lg text-muted">
+    Matrice IAM &amp; droits d'accès. Matrice cible proposée — le rôle « Développeur Web / Stagiaire » est ma future position, pas un poste occupé aujourd'hui.
+  </p>
+
+  <!-- Sans JS : les quatre rôles restent lisibles l'un sous l'autre -->
+  <div data-roles-tabs hidden class="mt-6 flex flex-wrap gap-2" role="group" aria-label="Choisir un rôle">
+    {rolesMatrix.map((item, idx) => (
+      <button
+        type="button"
+        data-role-tab={idx}
+        aria-pressed={idx === 0 ? "true" : "false"}
+        aria-controls={`role-${idx}`}
+        class="role-tab min-h-11 cursor-pointer rounded-[6px] border-2 border-ink bg-panel px-4 py-2 text-lg font-semibold text-ink transition-colors duration-150 hover:bg-sign"
+      >
+        {item.role}
+      </button>
+    ))}
+  </div>
+
+  <div aria-live="polite">
+    {rolesMatrix.map((current, idx) => (
+      <section id={`role-${idx}`} data-role-panel={idx} aria-label={current.role} class="mt-6">
+        <h4 data-role-heading class="text-2xl font-bold">{current.role}</h4>
+        <dl class="mt-4 grid gap-4 sm:grid-cols-2">
+          <div class="border-t-[3px] border-ink pt-2">
+            <dt class="text-base text-muted">Acteur / Périmètre</dt>
+            <dd class="text-xl font-semibold">{current.actor}</dd>
+          </div>
+          <div class="border-t-[3px] border-ink pt-2">
+            <dt class="text-base text-muted">Politique d'Authentification</dt>
+            <dd class="text-xl font-semibold">{current.authMethod}</dd>
+          </div>
+        </dl>
+
+        <ul class="mt-6 divide-y-2 divide-concrete border-y-2 border-concrete">
+          {current.permissions.map((perm) => (
+            <li class="flex flex-col justify-between gap-2 py-3 sm:flex-row sm:items-center">
+              <div>
+                <div class="text-lg font-semibold">{perm.resource}</div>
+                <div class="text-base text-muted">{perm.justification}</div>
+              </div>
+              <span class:list={["shrink-0 self-start rounded-[4px] px-2.5 py-0.5 font-mono text-sm font-semibold tracking-[0.06em] sm:self-center", badgeStyles[perm.access]]}>
+                {perm.access}
+              </span>
+            </li>
+          ))}
+        </ul>
+
+        <p class="mt-6 rounded-[6px] bg-concrete px-4 py-3 text-lg">
+          <strong>Processus Cycle de Vie :</strong> {current.lifecycleProcess}
+        </p>
+      </section>
+    ))}
+  </div>
+</div>

@@ -35,13 +35,13 @@ Consult these guides before working on related tasks:
 
 ## 2. Stack & dépendances
 
-**Verrouillées** : Astro 7 · React 19 · TypeScript strict · Tailwind v4 **CSS-first** (tokens dans `@theme` de `src/styles/global.css`, aucun `tailwind.config.*`) · GSAP 3.15 (`ScrollTrigger`, `SplitText`) · Lenis · fonts `@fontsource-variable/inter` et `jetbrains-mono`.
+**Verrouillées** : Astro 7 · React 19 · TypeScript strict · Tailwind v4 **CSS-first** (tokens dans `@theme` de `src/styles/global.css`, aucun `tailwind.config.*`) · GSAP 3.15 (`ScrollTrigger`, `SplitText`) · Lenis · fonts `@fontsource-variable/source-sans-3` et `jetbrains-mono`. GSAP, Lenis et React restent installés mais ne sont plus chargés par aucune page : n'en réimporter un que s'il est justifié (budget §4).
 
 **3D — seul ajout autorisé** : `three` + `@react-three/fiber` + `@react-three/drei` + `@types/three`. Toute autre dépendance doit être justifiée avant ajout.
 
 **Interdits** :
 - Une seule lib d'animation : **GSAP**. Ne jamais faire cohabiter `motion` (ou autre) pour des animations.
-- Une seule boucle `requestAnimationFrame` principale : `gsap.ticker` pilote Lenis (`src/scripts/smooth-scroll.ts`). Les canvas isolés (`Particles.tsx`, `PacketFirewallGame.tsx`) ont leur propre RAF uniquement tant qu'ils ne sont pas migrés — jamais de 4ᵉ boucle.
+- Aucune boucle `requestAnimationFrame` permanente aujourd'hui : le CV réagit à l'événement `scroll` et calcule les positions à partir de mesures mises en cache (`measure()` dans `cv-world.ts`), jamais de `getBoundingClientRect()` par frame.
 - Pas de scroll-hijacking (cf. §7).
 
 **Nettoyage effectué** : `motion` et `d3-force` ont été retirés de `package.json` (aucun import dans `src/`). Ne pas les réintroduire sans justification.
@@ -52,8 +52,8 @@ Consult these guides before working on related tasks:
 src/three/            # scène 3D (Experience, Scene, pièces) — à créer
 src/data/scene.ts     # registre des pièces → sections (à créer)
 src/lib/capabilities.ts  # détection GPU/tier/motion (à créer)
-src/scripts/          # orchestration : init*() GSAP appelés depuis Layout
-src/components/       # structure DOM (Astro) + widgets interactifs (React)
+src/scripts/          # comportements : init*() appelés depuis Layout (vanilla TS)
+src/components/       # structure DOM (Astro) ; sign/ = composants de signalétique
 src/data/             # contenu éditable (projects, stats, roles, network, scene)
 ```
 
@@ -96,7 +96,7 @@ Dégradation toujours dans le sens riche → sobre, **jamais** d'erreur affiché
 ## 7. Motion & scroll
 
 - Conventions existantes à respecter : `init*()` exportés par `src/scripts/*.ts` et appelés depuis `Layout.astro` ; cibles via attributs `data-*` (**jamais** une classe CSS comme sélecteur JS) ; `prefersReducedMotion()` importé de `src/lib/motion.ts` en early-return.
-- `gsap.registerPlugin(ScrollTrigger)` reste centralisé dans `src/lib/motion.ts`.
+- `src/lib/motion.ts` n'exporte que `prefersReducedMotion()` et n'importe aucune lib d'animation.
 - Un seul moment de motion par page : la mise à jour en volet du tableau des départs (`src/scripts/board.ts`). Le bandeau suit la section courante (`src/scripts/wayfinding.ts`). Pas de lueurs, fonds animés ni entrées répétées (voir `../DESIGN.md`).
 - Durées : micro-interactions 0.15–0.2 s ; easing `power3.out` par défaut ; **aucun scroll-hijacking** hors monde horizontal du CV.
 - Parallaxe CV : les calques `.world-layer` sont dimensionnés `calc(100% + var(--world-w))` (largeur du monde exposée par `InteractiveWorld.astro`) et déplacés par `transform` via `moveLayers()` (`cv-world.ts`). Ne jamais repasser à `background-position` (repaint par frame, §4) ni à une largeur auto (calque invisible) ; en `prefers-reduced-motion` la parallaxe est figée (`transform: none`).
@@ -104,7 +104,7 @@ Dégradation toujours dans le sens riche → sobre, **jamais** d'erreur affiché
 ## 8. Qualité de code
 
 - TypeScript strict, aucun `any` non justifié ; types de contenu partagés dans `src/data/*.ts`.
-- Hydatration : `client:visible` par défaut ; `client:load` réservé (Particles, scène 3D si ajoutée).
+- Hydratation : aucun îlot actuellement (la matrice IAM est un composant Astro + `src/scripts/roles.ts`) ; si un îlot devient nécessaire, `client:visible` par défaut.
 - Nettoyage complet obligatoire : tweens et ScrollTriggers (`kill()`), listeners, observers.
 - Composants < 300 lignes ; scripts < ~120 lignes sinon découper.
 - Tout style nouveau = token `@theme` (pas de couleur/valeur en dur hors tokens) ; classes conditionnelles via `cn()` (`src/lib/utils.ts`).

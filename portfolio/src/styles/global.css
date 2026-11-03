@@ -42,7 +42,7 @@ body { font-feature-settings: "tnum" 0; }
 input, textarea { caret-color: var(--color-ink); }
 a { text-underline-offset: 0.18em; text-decoration-thickness: 2px; }
 
-h1, h2, h3 { text-wrap: balance; }
+h1, h2, h3, h4 { text-wrap: balance; }
 p, li, dd { text-wrap: pretty; }
 
 /* Focus : cadre noir épais, comme la sélection d'un panneau */
@@ -52,15 +52,26 @@ p, li, dd { text-wrap: pretty; }
 }
 .on-dark :where(a, button, [tabindex]):focus-visible { outline-color: var(--color-sign); }
 
-/* ---- Bandeau d'orientation collant ---- */
-[data-sign-link][aria-current="true"] {
+/* ---- Destination suivie (bandeau, HUD du CV) et boutons bascule ---- */
+[data-sign-link][aria-current="true"],
+[data-teleport][aria-current="true"],
+.role-tab[aria-pressed="true"] {
   background: var(--color-ink);
+  border-color: var(--color-ink);
   color: var(--color-sign);
 }
 [data-sign-link][aria-current="true"] [data-picto] {
   background: var(--color-sign);
   color: var(--color-ink);
 }
+
+/* ---- Cartographie : nœud inspecté ---- */
+[data-node-ring] { fill: var(--color-panel); stroke: var(--color-ink); }
+[data-net-node][aria-pressed="true"] [data-node-ring] { fill: var(--color-sign); }
+
+/* ---- Cadenas RGPD : verrouillé par défaut, s'ouvre seulement si le JS l'anime ---- */
+[data-lock-shackle] { transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+[data-gdpr-card].is-open [data-lock-shackle] { transform: translateY(-7px); }
 
 /* ---- Tableau des départs : mise à jour en volet ---- */
 .flap { display: inline-block; transform-origin: 50% 0; }

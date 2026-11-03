@@ -1,5 +1,4 @@
 // src/scripts/cv-world.ts — moteur du CV gamifié (side-scrolling 2D, axe horizontal)
-import { gsap } from "gsap";
 import { createAvatar } from "./cv-avatar";
 import { prefersReducedMotion } from "../lib/motion";
 import type { SpriteState } from "../data/resumeData";
@@ -20,12 +19,14 @@ export function initCvWorld() {
   const world = worldEl;
 
   const scroller = world.querySelector<HTMLElement>("[data-hscroll]");
+  const viewport = world.querySelector<HTMLElement>("[data-viewport]");
   const container = world.querySelector<HTMLElement>("[data-world-container]")!;
   const avatarRoot = world.querySelector<HTMLElement>("[data-avatar]")!;
   const layers = Array.from(world.querySelectorAll<HTMLElement>("[data-layer]"));
   const progressBars = Array.from(document.querySelectorAll<HTMLElement>("[data-progress-bar]"));
   const progressLabel = document.querySelector<HTMLElement>("[data-progress-label]");
   const scrollHint = document.querySelector<HTMLElement>("[data-scroll-hint]");
+  const teleports = Array.from(document.querySelectorAll<HTMLElement>("[data-teleport]"));
   const checkpoints = Array.from(world.querySelectorAll<HTMLElement>("[data-checkpoint-dot]"));
   const projectCards = Array.from(world.querySelectorAll<HTMLElement>("[data-project]"));
   const avatar = createAvatar(avatarRoot);
@@ -45,15 +46,51 @@ export function initCvWorld() {
     if (progressLabel) progressLabel.textContent = `${Math.round(p * 100)}%`;
   }
 
+  // Translation courante du monde : les positions à l'écran s'en déduisent sans relire le layout
+  let currentX = 0;
+
   function moveWorld(x: number) {
-    gsap.set(container, { x });
+    currentX = x;
+    container.style.transform = `translate3d(${x}px, 0, 0)`;
   }
 
   function moveLayers(x: number) {
     layers.forEach((layer) => {
       const speed = LAYER_SPEED[layer.dataset.layer ?? ""] ?? 0.3;
-      gsap.set(layer, { x: x * speed });
+      layer.style.transform = `translate3d(${x * speed}px, 0, 0)`;
     });
+  }
+
+  // Zones déclenchant une action de l'avatar quand elles passent près de lui (left:20%)
+  const jumpProps = Array.from(world.querySelectorAll<HTMLElement>("[data-jump-prop], [data-jump-platform]"));
+  const useTargets = Array.from(world.querySelectorAll<HTMLElement>("[data-avatar-use-target]"));
+  const gauges = Array.from(world.querySelectorAll<HTMLElement>("[data-energy-gauge]"));
+
+  // Positions horizontales mesurées une fois par mise en page (setup, resize), relatives au monde
+  const boxes = new Map<HTMLElement, { left: number; width: number }>();
+  let viewportLeft = 0;
+
+  function measure() {
+    viewportLeft = viewport?.getBoundingClientRect().left ?? 0;
+    [...jumpProps, ...useTargets, ...gauges, ...checkpoints, ...projectCards].forEach((el) => {
+      const r = el.getBoundingClientRect();
+      boxes.set(el, { left: r.left - viewportLeft - currentX, width: r.width });
+    });
+  }
+
+  function screenBox(el: HTMLElement) {
+    const b = boxes.get(el) ?? { left: 0, width: 0 };
+    const left = viewportLeft + b.left + currentX;
+    return { left, right: left + b.width, center: left + b.width / 2 };
+  }
+
+  function nearAvatar(el: HTMLElement, tolerance = 80) {
+    return Math.abs(screenBox(el).center - window.innerWidth * 0.2) < tolerance;
+  }
+
+  function nearViewportCenter(el: HTMLElement) {
+    const r = screenBox(el);
+    return r.left < window.innerWidth / 2 && r.right > 0;
   }
 
   function applyAvatarFromVelocity(direction: number, velocity: number) {
@@ -63,16 +100,6 @@ export function initCvWorld() {
       avatar.setState(next);
       avatar.idleIn(150);
     }
-  }
-
-  // Zones déclenchant une action de l'avatar quand elles passent près de lui (left:20%)
-  const jumpProps = Array.from(world.querySelectorAll<HTMLElement>("[data-jump-prop], [data-jump-platform]"));
-  const useTargets = Array.from(world.querySelectorAll<HTMLElement>("[data-avatar-use-target]"));
-
-  function nearAvatar(el: HTMLElement, tolerance = 80) {
-    const r = el.getBoundingClientRect();
-    const avatarX = window.innerWidth * 0.2;
-    return Math.abs(r.left + r.width / 2 - avatarX) < tolerance;
   }
 
   let jumping = false;
@@ -96,72 +123,79 @@ export function initCvWorld() {
   }
 
   // Jauges d'énergie (zone compétences) : s'allument et comptent au passage
-  const gauges = Array.from(world.querySelectorAll<HTMLElement>("[data-energy-gauge]"));
   const gaugeActive = new Map<HTMLElement, boolean>();
 
   function updateGauges() {
     gauges.forEach((gauge) => {
-      const inView = nearViewportCenter(gauge);
-      const active = gaugeActive.get(gauge) ?? false;
-      if (inView && !active) {
-        gaugeActive.set(gauge, true);
-        const segs = Array.from(gauge.querySelectorAll<HTMLElement>("[data-seg]"));
-        segs.forEach((seg, i) => {
-          const lit = seg.dataset.lit === "1";
-          window.setTimeout(() => {
-            seg.style.background = lit ? "var(--color-sign)" : "var(--color-concrete)";
-            seg.style.outline = lit ? "2px solid var(--color-ink)" : "none";
-            seg.style.outlineOffset = "-2px";
-          }, i * 60);
-        });
-        const card = gauge.closest<HTMLElement>("[data-reveal]");
-        const valueEl = card?.querySelector<HTMLElement>("[data-energy-value]");
-        const target = Number(valueEl?.dataset.target ?? 0);
-        if (valueEl) {
-          let cur = 0;
-          const step = () => {
-            cur += Math.max(1, Math.round(target / 24));
-            if (cur >= target) {
-              valueEl.textContent = `${target}%`;
-              return;
-            }
-            valueEl.textContent = `${cur}%`;
-            window.setTimeout(step, 24);
-          };
-          step();
-        }
+      if (gaugeActive.get(gauge) || !nearViewportCenter(gauge)) return;
+      gaugeActive.set(gauge, true);
+      const segs = Array.from(gauge.querySelectorAll<HTMLElement>("[data-seg]"));
+      segs.forEach((seg, i) => {
+        const lit = seg.dataset.lit === "1";
+        window.setTimeout(() => {
+          seg.style.background = lit ? "var(--color-sign)" : "var(--color-concrete)";
+          seg.style.outline = lit ? "2px solid var(--color-ink)" : "none";
+          seg.style.outlineOffset = "-2px";
+        }, i * 60);
+      });
+      const card = gauge.closest<HTMLElement>("[data-reveal]");
+      const valueEl = card?.querySelector<HTMLElement>("[data-energy-value]");
+      const target = Number(valueEl?.dataset.target ?? 0);
+      if (valueEl) {
+        let cur = 0;
+        const step = () => {
+          cur += Math.max(1, Math.round(target / 24));
+          if (cur >= target) {
+            valueEl.textContent = `${target}%`;
+            return;
+          }
+          valueEl.textContent = `${cur}%`;
+          window.setTimeout(step, 24);
+        };
+        step();
       }
     });
   }
 
-  function nearViewportCenter(el: HTMLElement) {
-    const r = el.getBoundingClientRect();
-    const cx = window.innerWidth / 2;
-    return r.left < cx && r.right > 0;
-  }
-
-  // Position monde de chaque zone → utilisé par la téléportation
+  // Position monde de chaque zone → téléportation et zone courante du HUD
   const zoneOffsets: Record<string, number> = {};
+  const zoneOrder: { hash: string; start: number }[] = [];
   let acc = 0;
   world.querySelectorAll<HTMLElement>("[data-zone]").forEach((zone) => {
-    zoneOffsets[zone.dataset.zone ?? ""] = acc;
+    const hash = zone.dataset.zone ?? "";
+    zoneOffsets[hash] = acc;
+    zoneOrder.push({ hash, start: acc });
     acc += Number(zone.dataset.zoneWidth ?? 0);
   });
+
+  let currentZone = "";
+  function updateCurrentZone(x: number) {
+    // La zone courante est celle sous l'avatar (20 % de la largeur)
+    const probe = -x + viewportWidth() * 0.2;
+    const zone = [...zoneOrder].reverse().find((z) => z.start <= probe)?.hash ?? zoneOrder[0]?.hash ?? "";
+    if (zone === currentZone) return;
+    currentZone = zone;
+    teleports.forEach((btn) => {
+      if (btn.dataset.teleport === zone) btn.setAttribute("aria-current", "true");
+      else btn.removeAttribute("aria-current");
+    });
+  }
 
   function render(p: number, x = -p * distance()) {
     moveWorld(x);
     moveLayers(x);
     setProgress(p);
+    updateCurrentZone(x);
     updateProximityEffects();
     updateGauges();
     if (scrollHint) scrollHint.style.opacity = p > 0.02 ? "0" : "1";
     checkpoints.forEach((cp) => {
-      const r = cp.getBoundingClientRect();
+      const r = screenBox(cp);
       const on = r.left > 0 && r.left < window.innerWidth;
       cp.style.background = on ? "var(--color-sign)" : "rgb(255 255 255 / 0.2)";
     });
     projectCards.forEach((card) => {
-      const r = card.getBoundingClientRect();
+      const r = screenBox(card);
       const on = r.left < window.innerWidth && r.right > 0;
       const light = card.querySelector<HTMLElement>("[data-checkpoint-light]");
       if (!light) return;
@@ -232,7 +266,7 @@ export function initCvWorld() {
 
   // Téléportation (data-teleport="hash")
   const teleportHandlers: Array<[HTMLElement, () => void]> = [];
-  document.querySelectorAll<HTMLElement>("[data-teleport]").forEach((btn) => {
+  teleports.forEach((btn) => {
     const handler = () => {
       const hash = btn.dataset.teleport;
       if (!hash) return;
@@ -270,14 +304,20 @@ export function initCvWorld() {
     syncViewportWidth();
     if (staticMode()) {
       world.style.height = "auto";
+      moveWorld(0);
+      measure();
       buildNative();
       return;
     }
     world.style.height = "";
+    measure();
     buildHorizontal();
   }
 
   setup();
+  // Les polices et images peuvent décaler la mise en page après le premier rendu
+  window.addEventListener("load", measure, { once: true });
+  document.fonts?.ready.then(measure);
 
   let resizeTimer = 0;
   const onResize = () => {

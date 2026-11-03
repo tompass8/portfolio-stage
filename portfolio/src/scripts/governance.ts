@@ -1,4 +1,3 @@
-import { gsap } from "gsap";
 import { prefersReducedMotion } from "../lib/motion";
 import { networkNodes } from "../data/network";
 
@@ -26,11 +25,7 @@ export function initGovernanceSection() {
     if (fields.data) fields.data.textContent = found.dataTypes;
     if (fields.backup) fields.backup.textContent = found.backupPolicy;
     if (fields.gdpr) fields.gdpr.textContent = found.gdprStatus;
-    nodeEls.forEach((el) => {
-      const on = el.dataset.netNode === id;
-      el.setAttribute("aria-pressed", String(on));
-      el.querySelector("[data-node-ring]")?.setAttribute("fill", on ? "#ffcc00" : "#ffffff");
-    });
+    nodeEls.forEach((el) => el.setAttribute("aria-pressed", String(el.dataset.netNode === id)));
   };
 
   nodeEls.forEach((el) => {
@@ -43,17 +38,17 @@ export function initGovernanceSection() {
     });
   });
 
-  // Le cadenas RGPD se verrouille une fois, à la première vue
-  const shackle = section.querySelector<SVGPathElement>("[data-lock-shackle]");
-  if (!shackle) return;
-  if (prefersReducedMotion()) {
-    shackle.style.transform = "translateY(0)";
-    return;
-  }
-  gsap.to(shackle, {
-    y: 0,
-    duration: 0.5,
-    ease: "power3.out",
-    scrollTrigger: { trigger: "[data-gdpr-card]", start: "top 75%", once: true },
-  });
+  // Le cadenas RGPD (verrouillé par défaut) s'ouvre puis se verrouille à la première vue
+  const card = section.querySelector<HTMLElement>("[data-gdpr-card]");
+  if (!card || prefersReducedMotion()) return;
+  card.classList.add("is-open");
+  const observer = new IntersectionObserver(
+    (entries) => {
+      if (!entries.some((e) => e.isIntersecting)) return;
+      card.classList.remove("is-open");
+      observer.disconnect();
+    },
+    { rootMargin: "0px 0px -25% 0px" }
+  );
+  observer.observe(card);
 }

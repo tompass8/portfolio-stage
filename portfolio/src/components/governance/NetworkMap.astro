@@ -14,7 +14,7 @@ import { networkNodes } from "../../data/network";
     <div class="lg:col-span-3">
       <svg viewBox="0 0 580 260" class="w-full select-none" aria-labelledby="netmap-title">
         <title id="netmap-title">Cartographie réseau entre Cloudflare Edge, Astro, API IAM et Base de données</title>
-        <g stroke="#0b0b0b" stroke-width="3" fill="none">
+        <g class="stroke-ink" stroke-width="3" fill="none">
           <path d="M 90 130 L 290 70" />
           <path d="M 90 130 L 290 190" />
           <path d="M 290 70 L 290 190" stroke-dasharray="8 6" />
@@ -31,9 +31,9 @@ import { networkNodes } from "../../data/network";
             aria-label={`Inspecter ${node.label}`}
             class="cursor-pointer"
           >
-            <circle data-node-ring cx={node.x} cy={node.y} r="30" fill={index === 0 ? "#ffcc00" : "#ffffff"} stroke="#0b0b0b" stroke-width="5" />
-            <circle cx={node.x} cy={node.y} r="7" fill="#0b0b0b" />
-            <text x={node.x} y={node.y < 130 ? node.y - 42 : node.y + 54} text-anchor="middle" fill="#0b0b0b" font-size="15" font-weight="600" font-family="Source Sans 3 Variable, sans-serif">
+            <circle data-node-ring cx={node.x} cy={node.y} r="30" stroke-width="5" />
+            <circle cx={node.x} cy={node.y} r="7" class="fill-ink" />
+            <text x={node.x} y={node.y < 130 ? node.y - 42 : node.y + 54} text-anchor="middle" class="fill-ink font-sans" font-size="15" font-weight="600">
               {node.label}
             </text>
           </g>

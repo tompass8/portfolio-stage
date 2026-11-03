@@ -7,13 +7,13 @@ import ContactPanel from "../components/sign/ContactPanel.astro";
 import SiteFooter from "../components/sign/SiteFooter.astro";
 import NetworkMap from "../components/governance/NetworkMap.astro";
 import GdprLock from "../components/governance/GdprLock.astro";
-import RolesMatrix from "../components/governance/RolesMatrix";
+import RolesMatrix from "../components/governance/RolesMatrix.astro";
 import { projects } from "../data/projects";
 
 const nav = [
-  { href: "#web", label: "Web 75 %", picto: "code" as const },
+  { href: "#web", label: "Web 75 %", short: "Web", picto: "code" as const },
   { href: "#methode", label: "Méthode", picto: "right" as const },
-  { href: "#gouvernance", label: "Gouvernance 25 %", picto: "shield" as const },
+  { href: "#gouvernance", label: "Gouvernance 25 %", short: "Gouvernance", picto: "shield" as const },
   { href: "#contact", label: "Contact", picto: "mail" as const },
 ];
 
@@ -188,7 +188,7 @@ remote: [CI/CD] Building multi-tier containers &amp; Edge bundles...
       <div class="mt-10"><NetworkMap /></div>
       <div class="mt-4 grid gap-4 lg:grid-cols-3">
         <GdprLock />
-        <div class="lg:col-span-2"><RolesMatrix client:visible /></div>
+        <div class="lg:col-span-2"><RolesMatrix /></div>
       </div>
     </div>
   </section>
