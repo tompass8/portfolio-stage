@@ -1,0 +1,80 @@
+---
+// Borne d'arcade autour du CV jeu : la page (slot) s'affiche dans l'écran de la borne.
+// Dessin en CSS/SVG (styles dans sprites.css), sans logo existant ; caméra d'intro et
+// mise à l'échelle de la page dans cv-arcade.ts. Les deux boutons du panneau portent
+// data-cv-step : ils passent par la même logique que les boutons de la page.
+
+// Lettres pixel art du fronton, grille 5 × 7
+const glyphs: Record<string, string[]> = {
+  C: [".###.", "#...#", "#....", "#....", "#....", "#...#", ".###."],
+  V: ["#...#", "#...#", "#...#", "#...#", "#...#", ".#.#.", "..#.."],
+  J: ["..###", "...#.", "...#.", "...#.", "#..#.", "#..#.", ".##.."],
+  E: ["#####", "#....", "#....", "####.", "#....", "#....", "#####"],
+  U: ["#...#", "#...#", "#...#", "#...#", "#...#", "#...#", ".###."],
+};
+const pixels: { x: number; y: number }[] = [];
+let col = 0;
+for (const ch of "CV JEU") {
+  if (ch === " ") {
+    col += 2;
+    continue;
+  }
+  glyphs[ch].forEach((row, y) => [...row].forEach((c, x) => c === "#" && pixels.push({ x: col + x, y })));
+  col += 6;
+}
+const marqueeW = col - 1;
+---
+<div class="arcade-room" data-arcade-room>
+  <div class="arcade-stage" data-arcade-stage>
+    <span class="arcade-neon arcade-neon--pink" aria-hidden="true"></span>
+    <span class="arcade-neon arcade-neon--cyan" aria-hidden="true"></span>
+    <div class="arcade-floor" aria-hidden="true"></div>
+
+    <div class="cab">
+      <div class="cab-marquee" aria-hidden="true">
+        <svg viewBox={`-1 -1 ${marqueeW + 2} 9`} role="presentation">
+          {pixels.map((p) => <rect x={p.x} y={p.y} width="1" height="1" />)}
+        </svg>
+      </div>
+
+      <div class="cab-body">
+        <div class="cab-niche">
+          <div class="cab-glass" data-cab-glass>
+            <div class="cab-fit" data-cab-fit>
+              <div class="cab-scroll" data-cab-scroll tabindex="-1">
+                <slot />
+              </div>
+            </div>
+            <div class="cab-crt" aria-hidden="true"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="cab-panel">
+        <button type="button" class="cab-btn cab-btn--back" data-cv-step="-1" aria-label="Reculer">
+          <span class="cab-btn-cap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="square" aria-hidden="true"><path d="M20 12H5M11 5l-7 7 7 7" /></svg>
+          </span>
+          <span class="cab-btn-label" aria-hidden="true">RECULER</span>
+        </button>
+        <button type="button" class="cab-btn cab-btn--next" data-cv-step="1" aria-label="Avancer">
+          <span class="cab-btn-cap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="square" aria-hidden="true"><path d="M4 12h15M13 5l7 7-7 7" /></svg>
+          </span>
+          <span class="cab-btn-label" aria-hidden="true">AVANCER</span>
+        </button>
+      </div>
+      <div class="cab-band" aria-hidden="true"></div>
+      <div class="cab-lower" aria-hidden="true">
+        <div class="cab-door">
+          <div class="cab-plate">
+            <span class="cab-slots"><span class="cab-slot"></span><span class="cab-slot"></span></span>
+            <span class="cab-price">1 PIECE = 1 CV</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <a href="/" class="arcade-exit">Quitter la salle</a>
+</div>

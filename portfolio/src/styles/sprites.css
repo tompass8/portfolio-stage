@@ -135,71 +135,299 @@
 .arcade-btn:active,
 .arcade-btn.is-held { transform: translateY(3px) scale(0.96); box-shadow: inset 0 -2px 0 rgb(0 0 0 / 0.35); }
 
-/* ---------- Intro : la borne d'arcade, puis le zoom jusqu'à l'écran de la borne de jeu ---------- */
-[data-arcade] { position: fixed; inset: 0; z-index: 70; overflow: hidden; }
-[data-arcade] svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; transform-origin: 0 0; }
-.arcade-attract { animation: arcade-attract 1.1s steps(2, end) infinite; }
-@keyframes arcade-attract { 50% { opacity: 0; } }
+/* ---------- Borne d'arcade autour du CV jeu (ArcadeCabinet.astro, cv-arcade.ts) ----------
+   Cadrage final = position de repos (sans transform) : l'écran, le panneau et le haut de la
+   porte remplissent la fenêtre ; le fronton est au-dessus, le bas de la borne et le sol en dessous.
+   L'intro part d'un plan large (transform posée par cv-arcade.ts) et revient à ce repos.
+   data-ready est posé par le script : sans JS, la borne s'efface et la page reste lisible. */
+.arcade-room:not([data-ready]) :is(.arcade-neon, .arcade-floor, .cab-marquee, .cab-crt, .cab-panel, .cab-band, .cab-lower, .arcade-exit) {
+  display: none;
+}
 
-/* ---------- La borne reste à l'écran : le HUD sert de fronton, le jeu tourne dans l'écran,
-   les boutons sont sur le pupitre. data-cabinet est posé par cv-arcade.ts (mode horizontal). ---------- */
+html:has(.arcade-room[data-ready]),
+body:has(.arcade-room[data-ready]) { height: 100%; overflow: hidden; }
+
+.arcade-room[data-ready] {
+  --side: clamp(8px, 4vw, 140px);
+  --flare: clamp(6px, 2.2vw, 44px);
+  --wall: clamp(8px, 1.4vw, 22px);
+  --top: clamp(8px, 1.6svh, 20px);
+  --bezel: clamp(6px, 1.2vw, 18px);
+  --marquee-h: clamp(60px, 12svh, 140px);
+  --panel-h: clamp(84px, 19svh, 200px);
+  --band-h: clamp(8px, 1.4svh, 16px);
+  --door-vis: clamp(36px, 9svh, 96px);
+  --body-h: calc(100svh - var(--panel-h) - var(--band-h) - var(--door-vis));
+  --lower-h: calc(var(--door-vis) + 34svh);
+  --floor-h: 26svh;
+  --btn: clamp(42px, 8.5svh, 92px);
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background: #08070d;
+}
+
+.arcade-room[data-ready] .arcade-stage {
+  position: absolute;
+  top: calc(-1 * var(--marquee-h));
+  left: 0;
+  width: 100%;
+  height: calc(var(--marquee-h) + 100svh + var(--lower-h) - var(--door-vis) + var(--floor-h));
+  transform-origin: 0 0;
+  /* Lueur des néons sur le mur */
+  background:
+    radial-gradient(40% 55% at 0% 38%, rgb(255 47 168 / 0.22), transparent 70%),
+    radial-gradient(40% 55% at 100% 38%, rgb(34 229 255 / 0.2), transparent 70%);
+}
+
+/* Néons : rose à gauche, cyan à droite */
+.arcade-neon {
+  position: absolute;
+  top: calc(var(--marquee-h) * 0.4);
+  width: 6px;
+  height: 75svh;
+  border-radius: 3px;
+}
+.arcade-neon--pink {
+  left: calc(var(--side) * 0.3);
+  background: #ff7ccc;
+  box-shadow: 0 0 6px #ff4fb8, 0 0 22px #ff2fa8, 0 0 60px rgb(255 47 168 / 0.7);
+}
+.arcade-neon--cyan {
+  right: calc(var(--side) * 0.3);
+  background: #8ff3ff;
+  box-shadow: 0 0 6px #4fe9ff, 0 0 22px #22e5ff, 0 0 60px rgb(34 229 255 / 0.7);
+}
+
+/* Sol en damier, en perspective ; il déborde des côtés pour couvrir le plan large */
+.arcade-floor {
+  position: absolute;
+  bottom: 0;
+  left: -100%;
+  right: -100%;
+  height: var(--floor-h);
+  background: repeating-conic-gradient(#ededed 0 25%, #111 0 50%) 0 0 / 56px 56px;
+  transform: perspective(420px) rotateX(48deg);
+  transform-origin: 50% 0;
+  box-shadow: inset 0 24px 40px rgb(0 0 0 / 0.75);
+}
+
+/* La borne : colonne centrée */
+.arcade-room[data-ready] .cab {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: min(100% - 2 * (var(--side) + var(--flare)), var(--body-h) * 2.1);
+  margin-inline: auto;
+  display: flex;
+  flex-direction: column;
+  filter: drop-shadow(0 2rem 2.5rem rgb(0 0 0 / 0.7));
+}
+
+/* Fronton clair rétroéclairé, CV JEU en pixels rouges */
+.cab-marquee {
+  display: grid;
+  place-items: center;
+  height: var(--marquee-h);
+  border: 6px solid #0a0a0a;
+  border-bottom-width: 4px;
+  border-radius: 10px 10px 0 0;
+  background: radial-gradient(120% 140% at 50% 50%, #fffdf2 0%, #fff1c2 55%, #f3d98a 100%);
+  box-shadow: inset 0 0 28px rgb(255 255 255 / 0.9), 0 0 36px rgb(255 236 170 / 0.45);
+}
+.cab-marquee svg { height: 62%; fill: #e0182d; filter: drop-shadow(0 2px 0 #7a0712); }
+
+/* Caisson noir et niche de l'écran */
+.arcade-room[data-ready] .cab-body {
+  height: var(--body-h);
+  padding: var(--top) var(--wall) calc(var(--top) * 0.8);
+  background: linear-gradient(90deg, #050505, #121212 8%, #0b0b0b 50%, #121212 92%, #050505);
+}
+.arcade-room[data-ready] .cab-niche {
+  height: 100%;
+  padding: var(--bezel);
+  border-radius: 22px;
+  background: #040404;
+  box-shadow: inset 0 0 0 2px #1d1d1d, inset 0 12px 26px rgb(0 0 0 / 0.95);
+}
+.arcade-room[data-ready] .cab-glass {
+  position: relative;
+  height: 100%;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #000;
+  box-shadow: 0 0 18px rgb(140 200 255 / 0.18);
+}
+/* La page est mise à l'échelle de l'écran par cv-arcade.ts. Le transform contient aussi
+   les éléments fixes de la page (HUD) : ils restent dans l'écran. */
+.arcade-room[data-ready] .cab-fit { position: absolute; top: 0; left: 0; transform-origin: 0 0; }
+.arcade-room[data-ready] .cab-scroll { width: 100%; height: 100%; overflow: hidden; }
+.arcade-room[data-ready] .cab-scroll:focus { outline: none; }
+/* Mode horizontal : la page occupe la hauteur de l'écran, pas celle de la fenêtre */
 @media (min-height: 641px) and (prefers-reduced-motion: no-preference) {
-  html:has(main[data-cabinet]),
-  body:has(main[data-cabinet]) { background: #0d0d0d; overflow: hidden; }
-  body:has(main[data-cabinet]) {
-    --cab-w: min(100vw - 2 * clamp(0.75rem, 3vw, 3rem), 110rem);
-    --deck-h: 6.75rem;
-  }
-  main[data-cabinet] {
-    position: fixed;
-    top: var(--hud-h, 4.5rem);
-    bottom: var(--deck-h);
-    left: 0;
-    right: 0;
-    width: var(--cab-w);
-    margin-inline: auto;
-    padding: 1.75rem;
-    background: #0b0b0b;
-    border-inline: 16px solid #ffcc00;
-  }
-  main[data-cabinet] [data-world] {
-    height: 100%;
-    border-radius: 18px;
-    overflow: hidden;
-    /* Cadre de l'écran : joint noir puis bezel gris, comme le dessin de l'intro */
-    box-shadow: 0 0 0 8px #000, 0 0 0 22px #232323;
-  }
-  main[data-cabinet] [data-hscroll],
-  main[data-cabinet] [data-hscroll-inner],
-  main[data-cabinet] [data-viewport] { height: 100%; }
-  /* Plus de HUD par-dessus le monde : les panneaux remontent */
-  main[data-cabinet] [data-zone] .zone-sign { top: 1.25rem; }
+  .arcade-room[data-ready] .cab-scroll > main,
+  .arcade-room[data-ready] [data-world],
+  .arcade-room[data-ready] [data-hscroll],
+  .arcade-room[data-ready] [data-hscroll-inner],
+  .arcade-room[data-ready] [data-viewport] { height: 100%; }
+}
+/* Mode empilé (fenêtre courte, mouvement réduit) : la page défile dans l'écran */
+@media (max-height: 640px), (prefers-reduced-motion: reduce) {
+  .arcade-room[data-ready] .cab-scroll { overflow-y: auto; overscroll-behavior: contain; }
+}
+/* Seuls les boutons de la borne sont visibles ; ceux de la page restent branchés */
+.arcade-room[data-ready] [data-arcade-controls] { display: none !important; }
 
-  body:has(main[data-cabinet]) [data-arcade-controls] {
-    bottom: 0;
-    left: 0;
-    right: 0;
-    width: var(--cab-w);
-    height: var(--deck-h);
-    margin: 0 auto !important;
-    padding-bottom: env(safe-area-inset-bottom, 0px);
-    translate: none;
-    transform: none;
-    align-items: center;
-    justify-content: center;
-    gap: 2.5rem;
-    background: #232323;
-    border-top: 4px solid #ffcc00;
-    border-inline: 16px solid #ffcc00;
-  }
+/* Scanlines et lueur discrètes, sans bloquer les clics */
+.cab-crt {
+  position: absolute;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  border-radius: inherit;
+  background:
+    repeating-linear-gradient(to bottom, rgb(0 0 0 / 0.07) 0 1px, transparent 1px 3px),
+    radial-gradient(ellipse at center, transparent 64%, rgb(0 0 0 / 0.32) 100%);
+  box-shadow: inset 0 0 2.5rem rgb(0 0 0 / 0.5), inset 0 0 0.6rem rgb(140 200 255 / 0.1);
 }
-/* Téléphone : cadre fin pour laisser la largeur au jeu */
-@media (min-height: 641px) and (prefers-reduced-motion: no-preference) and (max-width: 639px) {
-  body:has(main[data-cabinet]) { --cab-w: 100vw; }
-  main[data-cabinet] { padding: 0.625rem; border-inline-width: 6px; }
-  main[data-cabinet] [data-world] { border-radius: 10px; box-shadow: 0 0 0 3px #000, 0 0 0 8px #232323; }
-  body:has(main[data-cabinet]) [data-arcade-controls] { border-inline-width: 6px; }
+
+/* Panneau de commande bleu en perspective, côtés évasés */
+.cab-panel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(2.5rem, 12vw, 9rem);
+  height: var(--panel-h);
+  margin-inline: calc(-1 * var(--flare));
+  padding-bottom: calc(var(--panel-h) * 0.08);
+  clip-path: polygon(var(--flare) 0, calc(100% - var(--flare)) 0, 100% 100%, 0 100%);
+  background:
+    linear-gradient(to bottom, rgb(255 255 255 / 0.14), transparent 22%),
+    linear-gradient(to bottom, #1c3f9a 0%, #2d61d2 62%, #2a58bf 86%, #142c6b 86%, #10235a 100%);
 }
+.cab-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(0.35rem, 1.2svh, 0.7rem);
+  padding: 0.25rem;
+  border: 0;
+  border-radius: 12px;
+  background: none;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+.cab-btn:focus-visible { outline: 3px solid #fff; outline-offset: 4px; }
+/* Bouton vu de trois quarts : dôme coloré, bague blanche, flanc de la bague dessous */
+.cab-btn-cap {
+  display: grid;
+  place-items: center;
+  width: var(--btn);
+  height: calc(var(--btn) * 0.78);
+  border-radius: 50%;
+  color: #141414;
+  background: radial-gradient(60% 55% at 42% 32%, var(--cap-hi), var(--cap) 60%, var(--cap-lo));
+  box-shadow:
+    0 0 0 calc(var(--btn) * 0.09) #f4f4f4,
+    0 calc(var(--btn) * 0.12) 0 calc(var(--btn) * 0.09) #9aa3b5,
+    0 calc(var(--btn) * 0.2) calc(var(--btn) * 0.12) calc(var(--btn) * 0.06) rgb(0 0 0 / 0.45);
+  transition: transform 90ms ease-out, box-shadow 90ms ease-out;
+}
+.cab-btn-cap svg { width: 44%; height: 44%; }
+.cab-btn--back .cab-btn-cap { --cap-hi: #fff3a6; --cap: #ffd21a; --cap-lo: #c99a00; }
+.cab-btn--next .cab-btn-cap { --cap-hi: #b7f7c9; --cap: #22c55e; --cap-lo: #12803a; }
+/* S'enfonce au clic (et pendant l'appui long, classe posée par initArcadeControls) */
+.cab-btn:active .cab-btn-cap,
+.cab-btn.is-held .cab-btn-cap {
+  transform: translateY(calc(var(--btn) * 0.08));
+  box-shadow:
+    0 0 0 calc(var(--btn) * 0.09) #f4f4f4,
+    0 calc(var(--btn) * 0.04) 0 calc(var(--btn) * 0.09) #9aa3b5,
+    0 calc(var(--btn) * 0.08) calc(var(--btn) * 0.08) calc(var(--btn) * 0.04) rgb(0 0 0 / 0.45);
+}
+.cab-btn-label {
+  margin-top: calc(var(--btn) * 0.14);
+  font-family: var(--font-mono, "JetBrains Mono Variable", monospace);
+  font-size: clamp(0.75rem, 1.7svh, 1.05rem);
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  color: #fff;
+  text-shadow: 0 2px 0 #10235a;
+}
+
+/* Bande noire, puis porte bleue à plaque métallique */
+.cab-band { height: var(--band-h); margin-inline: calc(-1 * var(--flare)); background: #050505; }
+.cab-lower {
+  display: flex;
+  justify-content: center;
+  height: var(--lower-h);
+  margin-inline: calc(-1 * var(--flare));
+  padding-top: calc(var(--door-vis) * 0.14);
+  background: linear-gradient(90deg, #050505, #111 8%, #0b0b0b 50%, #111 92%, #050505);
+}
+.cab-door {
+  width: clamp(140px, 36%, 380px);
+  padding-top: calc(var(--door-vis) * 0.1);
+  border: 4px solid #0f2259;
+  border-bottom: 0;
+  border-radius: 6px 6px 0 0;
+  background: linear-gradient(180deg, #2b5ad6, #1d3f9e);
+}
+.cab-plate {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  width: max-content;
+  margin-inline: auto;
+  padding: 0.3rem 0.8rem 0.25rem;
+  border-radius: 4px;
+  background: linear-gradient(180deg, #f1f3f6, #b4bac4 60%, #8d95a2);
+  box-shadow: inset 0 1px 0 #fff, 0 2px 0 rgb(0 0 0 / 0.4);
+}
+.cab-slots { display: flex; gap: 0.9rem; }
+.cab-slot {
+  display: grid;
+  place-items: center;
+  width: clamp(0.85rem, 2svh, 1.15rem);
+  height: clamp(1.05rem, 2.6svh, 1.6rem);
+  border-radius: 3px;
+  background: linear-gradient(180deg, #f04444, #b91c1c);
+}
+.cab-slot::after { content: ""; width: 3px; height: 62%; border-radius: 2px; background: #1a0505; }
+.cab-price {
+  font-family: var(--font-mono, "JetBrains Mono Variable", monospace);
+  font-size: clamp(0.55rem, 1.15svh, 0.75rem);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: #1f2937;
+}
+
+/* Sortie discrète */
+.arcade-exit {
+  position: fixed;
+  left: 0.5rem;
+  bottom: calc(0.5rem + env(safe-area-inset-bottom, 0px));
+  z-index: 80;
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  background: rgb(0 0 0 / 0.55);
+  color: rgb(255 255 255 / 0.78);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+.arcade-exit:hover { color: #fff; background: rgb(0 0 0 / 0.75); }
+.arcade-exit:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
+
+/* ---------- Zone projets : les cartes commencent après le panneau du titre, qu'on voit d'abord seul.
+   Décalage calé sur la largeur du panneau (titre en 2,25 rem dès 1024 px, badge de niveau dès 768 px). ---------- */
+[data-project-row] { margin-left: 58rem; }
+@media (max-width: 1023px) { [data-project-row] { margin-left: 47rem; } }
+@media (max-width: 767px) { [data-project-row] { margin-left: 28rem; } }
 
 /* ---------- Scroller horizontal natif du monde (/cv) ---------- */
 [data-hscroll] {
@@ -256,14 +484,14 @@
     scroll-margin-top: 5rem;
   }
   [data-zone] > .zone-body { padding-bottom: 6rem; }
-  /* Les consignes du monde horizontal (molette, flèches, progression) n'ont plus de sens ici */
-  [data-control-hint],
+  /* Les consignes du monde horizontal (progression, boutons) n'ont plus de sens ici */
   [data-scroll-hint],
   [data-arcade-controls],
   [data-progress-wrap] { display: none !important; }
   [data-avatar],
   [data-decor] { display: none; }
   [data-project-row] {
+    margin-left: 0;
     flex-direction: column;
     max-width: none !important;
   }
@@ -327,11 +555,6 @@
     gap: 0.85rem;
   }
   [data-zone="intro"] .zone-body p { font-size: 1rem; }
-}
-
-/* ---------- Écran tactile : ni molette ni flèches clavier, ces consignes ne s'appliquent pas ---------- */
-@media (pointer: coarse) {
-  [data-control-hint] { display: none; }
 }
 
 /* ---------- Téléphone : le panneau d'accueil tient dans l'écran, texte à 16 px ---------- */

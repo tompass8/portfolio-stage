@@ -1,85 +1,86 @@
-// src/scripts/cv-arcade.ts — la borne (cadre du jeu), son intro et les boutons Reculer / Avancer
+// src/scripts/cv-arcade.ts — la borne d'arcade autour du CV jeu (mise à l'échelle, caméra d'intro)
+// et les boutons Reculer / Avancer
 import { prefersReducedMotion } from "../lib/motion";
 
-const isStacked = () =>
-  prefersReducedMotion() || window.matchMedia("(max-height: 640px)").matches;
+// Hauteur minimale de la page dans l'écran : en dessous, elle est réduite pour tenir sans déborder.
+// En mode empilé (mêmes conditions que la page), elle défile à la verticale dans l'écran, sans réduction.
+const PAGE_MIN_H = 680;
+const stackedMode = window.matchMedia("(max-height: 640px), (prefers-reduced-motion: reduce)");
+// Intro : plan large ~1 s, puis zoom ~1,5 s vers le cadrage final
+const HOLD_MS = 1000;
+const ZOOM_MS = 1500;
 
-// Met le jeu dans la borne (styles dans sprites.css). À appeler avant initCvWorld, qui mesure le monde.
+// À appeler avant initCvWorld, qui mesure le monde.
 export function initCabinet() {
-  const main = document.querySelector<HTMLElement>("main");
-  const hud = document.querySelector<HTMLElement>("[data-hud]");
-  if (!main || !hud) return;
-  main.dataset.cabinet = "";
-  const syncHud = () => document.body.style.setProperty("--hud-h", `${hud.offsetHeight}px`);
-  syncHud();
-  new ResizeObserver(syncHud).observe(hud);
-}
+  const room = document.querySelector<HTMLElement>("[data-arcade-room]");
+  const stage = room?.querySelector<HTMLElement>("[data-arcade-stage]");
+  const glass = room?.querySelector<HTMLElement>("[data-cab-glass]");
+  const fit = room?.querySelector<HTMLElement>("[data-cab-fit]");
+  if (!room || !stage || !glass || !fit) return;
+  room.dataset.ready = "";
 
-export function initArcadeIntro() {
-  const root = document.querySelector<HTMLElement>("[data-arcade]");
-  if (!root) return;
-  if (isStacked()) {
-    root.remove();
+  // La page garde au moins PAGE_MIN_H de haut et est réduite d'autant pour remplir l'écran.
+  // Le transform reste posé même à l'échelle 1 : il contient les éléments fixes de la page.
+  const syncFit = () => {
+    const w = glass.clientWidth;
+    const h = glass.clientHeight;
+    const scale = stackedMode.matches ? 1 : Math.min(1, h / PAGE_MIN_H);
+    fit.style.width = `${w / scale}px`;
+    fit.style.height = `${h / scale}px`;
+    fit.style.transform = `scale(${scale})`;
+  };
+  syncFit();
+  new ResizeObserver(syncFit).observe(glass);
+  stackedMode.addEventListener("change", syncFit);
+
+  const focusPage = () => {
+    const scroller = room.querySelector<HTMLElement>("[data-hscroll]");
+    const horizontal = scroller && scroller.scrollWidth > scroller.clientWidth;
+    (horizontal ? scroller : room.querySelector<HTMLElement>("[data-cab-scroll]"))?.focus({ preventScroll: true });
+  };
+  if (prefersReducedMotion()) {
+    focusPage();
     return;
   }
-  const svg = root.querySelector<SVGSVGElement>("svg");
-  const screen = root.querySelector<SVGGraphicsElement>("[data-arcade-screen]");
-  const skip = root.querySelector<HTMLButtonElement>("[data-arcade-skip]");
-  if (!svg || !screen) return;
 
-  // Écran en portrait : on cadre la borne entière (la salle déborde du cadre, sans bande vide)
-  if (window.innerWidth / window.innerHeight < 1) {
-    svg.setAttribute("viewBox", "460 40 680 900");
-    svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
-  }
-  root.hidden = false;
-  skip?.focus({ preventScroll: true });
-
-  let done = false;
-  let zoomAnim: Animation | null = null;
-  let startTimer = 0;
-
-  const finish = () => {
-    if (done) return;
-    done = true;
-    window.clearTimeout(startTimer);
-    window.removeEventListener("keydown", onKey);
-    zoomAnim?.pause();
-    root.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 260, easing: "ease-out", fill: "forwards" })
-      .finished.then(() => {
-        root.remove();
-        document.querySelector<HTMLElement>("[data-hscroll]")?.focus({ preventScroll: true });
-      });
-  };
-
-  const zoom = () => {
-    // Approche l'écran dessiné jusqu'à l'écran de la borne de jeu, puis fondu : on reste devant la borne
-    const r = screen.getBoundingClientRect();
-    const t = document.querySelector<HTMLElement>("[data-world]")?.getBoundingClientRect()
-      ?? new DOMRect(0, 0, window.innerWidth, window.innerHeight);
-    const s = Math.max(t.width / r.width, t.height / r.height);
-    const cx = r.left + r.width / 2;
-    const cy = r.top + r.height / 2;
-    const tx = t.left + t.width / 2;
-    const ty = t.top + t.height / 2;
-    zoomAnim = svg.animate(
-      [{ transform: "none" }, { transform: `translate(${tx - cx * s}px, ${ty - cy * s}px) scale(${s})` }],
-      { duration: 1800, easing: "cubic-bezier(0.65, 0, 0.35, 1)", fill: "forwards" }
-    );
-    zoomAnim.finished.then(finish).catch(() => {});
-  };
-
-  const onKey = (e: KeyboardEvent) => {
-    if (e.key === "Escape" || e.key === "Enter" || e.key === " ") finish();
-  };
-  window.addEventListener("keydown", onKey);
-  root.addEventListener("click", finish);
-  startTimer = window.setTimeout(zoom, 1100);
+  // Caméra : on part du plan large (toute la scène, borne et salle, dans la fenêtre) et on
+  // revient au repos, qui est le cadrage final. Origine du transform : coin haut gauche de la scène.
+  const r = stage.getBoundingClientRect();
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+  const k = Math.min((vw * 0.94) / r.width, (vh * 0.94) / r.height);
+  const tx = vw / 2 - r.left - (k * r.width) / 2;
+  const ty = vh / 2 - r.top - (k * r.height) / 2;
+  const wide = `translate(${tx}px, ${ty}px) scale(${k})`;
+  const camera = stage.animate(
+    [
+      { transform: wide },
+      { transform: wide, offset: HOLD_MS / (HOLD_MS + ZOOM_MS), easing: "cubic-bezier(0.65, 0, 0.35, 1)" },
+      { transform: "none" },
+    ],
+    { duration: HOLD_MS + ZOOM_MS }
+  );
+  // Une touche ou un clic passe directement au cadrage final
+  const skip = () => camera.finish();
+  window.addEventListener("keydown", skip, { once: true });
+  window.addEventListener("pointerdown", skip, { once: true });
+  camera.finished
+    .then(() => {
+      window.removeEventListener("keydown", skip);
+      window.removeEventListener("pointerdown", skip);
+      focusPage();
+    })
+    .catch(() => {});
 }
 
 export function initArcadeControls() {
   const scroller = document.querySelector<HTMLElement>("[data-hscroll]");
   if (!scroller) return;
+
+  // Mode empilé (la piste ne défile plus à l'horizontale) : on fait défiler la page à la verticale,
+  // dans l'écran de la borne s'il y en a une
+  const pane = document.querySelector<HTMLElement>("[data-cab-scroll]") ?? document.scrollingElement;
+  const vertical = () => scroller.scrollWidth <= scroller.clientWidth && pane;
 
   document.querySelectorAll<HTMLButtonElement>("[data-cv-step]").forEach((btn) => {
     const dir = Number(btn.dataset.cvStep) || 1;
@@ -100,7 +101,9 @@ export function initArcadeControls() {
       holdTimer = window.setTimeout(() => {
         held = true;
         const walk = () => {
-          scroller.scrollLeft += dir * 12;
+          const v = vertical();
+          if (v) v.scrollTop += dir * 12;
+          else scroller.scrollLeft += dir * 12;
           raf = requestAnimationFrame(walk);
         };
         walk();
@@ -114,10 +117,10 @@ export function initArcadeControls() {
         held = false;
         return;
       }
-      scroller.scrollBy({
-        left: dir * Math.round(scroller.clientWidth * 0.6),
-        behavior: prefersReducedMotion() ? "auto" : "smooth",
-      });
+      const behavior: ScrollBehavior = prefersReducedMotion() ? "auto" : "smooth";
+      const v = vertical();
+      if (v) v.scrollBy({ top: dir * Math.round(v.clientHeight * 0.6), behavior });
+      else scroller.scrollBy({ left: dir * Math.round(scroller.clientWidth * 0.6), behavior });
     });
   });
 }

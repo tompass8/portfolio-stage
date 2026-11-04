@@ -66,35 +66,35 @@ export function initCvWorld() {
   const useTargets = Array.from(world.querySelectorAll<HTMLElement>("[data-avatar-use-target]"));
   const gauges = Array.from(world.querySelectorAll<HTMLElement>("[data-energy-gauge]"));
 
-  // Positions horizontales mesurées une fois par mise en page (setup, resize), relatives au monde
+  // Positions horizontales mesurées une fois par mise en page (setup, resize), relatives au monde.
+  // Tout est en px du monde, relatif au viewport : le monde peut être réduit (écran de la borne).
   const boxes = new Map<HTMLElement, { left: number; width: number }>();
-  let viewportLeft = 0;
 
   function measure() {
-    viewportLeft = viewport?.getBoundingClientRect().left ?? 0;
+    const vp = viewport?.getBoundingClientRect();
+    const vpLeft = vp?.left ?? 0;
+    const scale = vp && viewport!.offsetWidth ? vp.width / viewport!.offsetWidth : 1;
     [...jumpProps, ...useTargets, ...gauges, ...checkpoints, ...projectCards].forEach((el) => {
       const r = el.getBoundingClientRect();
-      boxes.set(el, { left: r.left - viewportLeft - currentX, width: r.width });
+      boxes.set(el, { left: (r.left - vpLeft) / scale - currentX, width: r.width / scale });
     });
   }
 
   function screenBox(el: HTMLElement) {
     const b = boxes.get(el) ?? { left: 0, width: 0 };
-    const left = viewportLeft + b.left + currentX;
+    const left = b.left + currentX;
     return { left, right: left + b.width, center: left + b.width / 2 };
   }
 
-  // Le monde peut être plus petit que la fenêtre (écran de la borne) : tout se mesure par rapport à lui
-  const onScreen = (r: { left: number; right: number }) =>
-    r.left < viewportLeft + viewportWidth() && r.right > viewportLeft;
+  const onScreen = (r: { left: number; right: number }) => r.left < viewportWidth() && r.right > 0;
 
   function nearAvatar(el: HTMLElement, tolerance = 80) {
-    return Math.abs(screenBox(el).center - (viewportLeft + viewportWidth() * 0.2)) < tolerance;
+    return Math.abs(screenBox(el).center - viewportWidth() * 0.2) < tolerance;
   }
 
   function nearViewportCenter(el: HTMLElement) {
     const r = screenBox(el);
-    return r.left < viewportLeft + viewportWidth() / 2 && r.right > viewportLeft;
+    return r.left < viewportWidth() / 2 && r.right > 0;
   }
 
   function applyAvatarFromVelocity(direction: number, velocity: number) {
@@ -128,6 +128,13 @@ export function initCvWorld() {
 
   // Jauges d'énergie (zone compétences) : s'allument et comptent au passage
   const gaugeActive = new Map<HTMLElement, boolean>();
+
+  // Le HTML les livre pleines (lisibles sans JS) : on les vide pour qu'elles se chargent au passage
+  gauges.forEach((gauge) => {
+    gauge.querySelectorAll<HTMLElement>("[data-seg]").forEach((seg) => (seg.style.background = "rgb(255 255 255 / 0.15)"));
+    const valueEl = gauge.closest<HTMLElement>("[data-reveal]")?.querySelector<HTMLElement>("[data-energy-value]");
+    if (valueEl) valueEl.textContent = "0%";
+  });
 
   function updateGauges() {
     gauges.forEach((gauge) => {

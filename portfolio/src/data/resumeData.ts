@@ -2,11 +2,6 @@
 
 export type SpriteState = "idle" | "run-left" | "run-right" | "jump" | "use";
 
-export interface ZoneControlHint {
-  icon: "mouse-scroll" | "arrow-keys";
-  label: string;
-}
-
 export interface SkillGroup {
   id: string;
   title: string;
@@ -68,7 +63,6 @@ export interface ResumeData {
   spawn: {
     bio: string;
     highlights: string[];
-    controls: ZoneControlHint[];
   };
   skills: {
     intro: string;
@@ -139,7 +133,7 @@ export const resumeData: ResumeData = {
       short: "Projets",
       subtitle: "Hardware, Cloud et systèmes embarqués",
       kind: "projects",
-      width: 2200,
+      width: 2800,
     },
     {
       id: "zone-contact",
@@ -161,10 +155,6 @@ export const resumeData: ResumeData = {
       "B.Sc. Informatique, Ynov Campus Toulouse",
       "Bilingue Français / Anglais (anglais technique courant)",
       "Full-Stack · Systèmes & Réseaux · Data · IoT",
-    ],
-    controls: [
-      { icon: "mouse-scroll", label: "Molette pour avancer dans le monde" },
-      { icon: "arrow-keys", label: "Flèches clavier : le héros suit ton scroll" },
     ],
   },
 

@@ -2,18 +2,19 @@
 import GameLayout from "../layouts/GameLayout.astro";
 import HudNavigation from "../components/game/HudNavigation.astro";
 import InteractiveWorld from "../components/game/InteractiveWorld.astro";
-import ArcadeIntro from "../components/game/ArcadeIntro.astro";
+import ArcadeCabinet from "../components/game/ArcadeCabinet.astro";
 import { resumeData } from "../data/resumeData";
 
 const { spawn, skills, experience, projects, contact } = resumeData;
 ---
 <GameLayout title="CV interactif · Tom Passerman">
-  <HudNavigation />
-  <ArcadeIntro />
-  <main class="relative">
-    <h1 class="sr-only">CV interactif de Tom Passerman, développeur web, IA et gouvernance numérique</h1>
-    <InteractiveWorld />
-  </main>
+  <ArcadeCabinet>
+    <HudNavigation />
+    <main class="relative">
+      <h1 class="sr-only">CV interactif de Tom Passerman, développeur web, IA et gouvernance numérique</h1>
+      <InteractiveWorld />
+    </main>
+  </ArcadeCabinet>
 
   <noscript>
     <section class="mx-auto max-w-4xl bg-concrete px-6 py-16 text-ink">
@@ -61,11 +62,10 @@ const { spawn, skills, experience, projects, contact } = resumeData;
 
   <script>
     import { initCvWorld } from "../scripts/cv-world";
-    import { initCabinet, initArcadeIntro, initArcadeControls } from "../scripts/cv-arcade";
+    import { initCabinet, initArcadeControls } from "../scripts/cv-arcade";
     initCabinet();
     const disposeCvWorld = initCvWorld();
     initArcadeControls();
-    initArcadeIntro();
     window.addEventListener("pagehide", () => disposeCvWorld?.());
   </script>
 </GameLayout>

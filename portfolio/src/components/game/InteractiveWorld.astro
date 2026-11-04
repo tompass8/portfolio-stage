@@ -5,6 +5,49 @@ import Picto, { type PictoName } from "../sign/Picto.astro";
 const { zones, spawn, skills, experience, projects, contact } = resumeData;
 const worldWidth = zones.reduce((s, z) => s + z.width, 0);
 
+// Illustration pixel art de la carte « échecs et football » : un cavalier, un ballon, un bout d'échiquier
+const hobbyArt = (() => {
+  const palette: Record<string, string> = { y: "#ffcc00", o: "#b38f00", w: "#f2f2f2", s: "#bdbdbd", k: "#141414", g: "#6b6b6b" };
+  const knight = [
+    "...yy.....",
+    "..yyyy....",
+    ".yyyyyy...",
+    "yy.yyyyy..",
+    "yyyyyyyyo.",
+    "...yyyyyo.",
+    "....yyyyo.",
+    "...yyyyyo.",
+    "..yyyyyyo.",
+    ".yyyyyyyo.",
+    "yyyyyyyyyo",
+    "oooooooooo",
+  ];
+  // Ballon : pentagone noir au centre, pentagones coupés sur les bords, ombre en bas à droite
+  const ball = [
+    "....gggg....",
+    "..ggwwwwgg..",
+    ".gwwwkkwwwg.",
+    ".gwwkkkkwwg.",
+    "gkwwkkkkwwkg",
+    "gkkwwkkwwkkg",
+    "gkwwwwwwwskg",
+    "gwwwwwwwwssg",
+    ".gwkkwwkksg.",
+    ".gwkkwwkksg.",
+    "..ggwwssgg..",
+    "....gggg....",
+  ];
+  const w = 26;
+  const h = 14;
+  const rects: { x: number; y: number; fill: string }[] = [];
+  const draw = (rows: string[], ox: number, oy: number) =>
+    rows.forEach((row, y) => [...row].forEach((c, x) => palette[c] && rects.push({ x: ox + x, y: oy + y, fill: palette[c] })));
+  draw(knight, 2, 0);
+  draw(ball, 13, 0);
+  for (let x = 0; x < w; x++) for (let y = 12; y < h; y++) rects.push({ x, y, fill: (Math.floor(x / 2) + y) % 2 ? "#141414" : "#ededed" });
+  return { w, h, rects };
+})();
+
 const zonePicto: Record<string, PictoName> = {
   spawn: "pin",
   skills: "grid",
@@ -113,17 +156,12 @@ const zonePicto: Record<string, PictoName> = {
                         ))}
                       </ul>
                     </div>
-                    <div class="flex flex-col gap-3">
-                      {spawn.controls.map((c) => (
-                        <div data-control-hint class="cv-card flex items-center gap-3 rounded-[6px] px-4 py-3">
-                          <span class="grid size-12 shrink-0 place-items-center rounded-[6px] bg-ink">
-                            <img src={`/assets/ui/${c.icon}.png`} alt="" width="40" height="40" class="pixelated" />
-                          </span>
-                          <span class="text-lg font-semibold">{c.label}</span>
-                        </div>
-                      ))}
-                      <p class="cv-card rounded-[6px] px-4 py-3 text-lg font-semibold">J'adore les échecs et le football !</p>
-                    </div>
+                    <figure class="cv-card flex flex-col items-center justify-center gap-4 rounded-[6px] p-5">
+                      <svg viewBox={`0 0 ${hobbyArt.w} ${hobbyArt.h}`} class="pixelated h-28 w-auto max-w-full" shape-rendering="crispEdges" aria-hidden="true">
+                        {hobbyArt.rects.map((r) => <rect x={r.x} y={r.y} width="1" height="1" fill={r.fill} />)}
+                      </svg>
+                      <figcaption class="text-lg font-semibold">J'adore les échecs et le football !</figcaption>
+                    </figure>
                   </div>
                 )}
 
