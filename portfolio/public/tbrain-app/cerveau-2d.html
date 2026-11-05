@@ -1,0 +1,564 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TBRAIN</title>
+<style>
+:root{
+  --bg:#0e0e13; --bg2:#15151c; --panel:#17171f; --line:#2a2a36;
+  --txt:#e6e4ee; --muted:#8c8a9b; --accent:#9d7bff;
+  --font: "Inter","Segoe UI",system-ui,-apple-system,sans-serif;
+  --mono: "JetBrains Mono","Cascadia Code",Consolas,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--txt);font-family:var(--font);overflow:hidden}
+#graph{position:fixed;inset:0;width:100%;height:100%;cursor:grab;touch-action:none}
+#graph.dragging{cursor:grabbing}
+#graph.hovering{cursor:pointer}
+
+/* ---- barre du haut ---- */
+.top{position:fixed;top:16px;left:16px;right:16px;display:flex;gap:12px;align-items:flex-start;pointer-events:none;z-index:5}
+.brand{pointer-events:auto;background:rgba(23,23,31,.85);backdrop-filter:blur(8px);border:1px solid var(--line);border-radius:12px;padding:10px 14px;min-width:0}
+.brand h1{margin:0;font-size:16px;letter-spacing:.18em;font-weight:700}
+.brand h1 span{color:var(--accent)}
+.brand .stats{font-size:12px;color:var(--muted);margin-top:2px;white-space:nowrap}
+.search{pointer-events:auto;position:relative;flex:0 1 340px}
+.search input{width:100%;background:rgba(23,23,31,.9);backdrop-filter:blur(8px);border:1px solid var(--line);border-radius:12px;padding:12px 14px 12px 38px;color:var(--txt);font:14px var(--font);outline:none}
+.search input:focus{border-color:var(--accent)}
+.search svg{position:absolute;z-index:1;pointer-events:none;left:12px;top:13px;width:16px;height:16px;stroke:var(--muted)}
+.results{position:absolute;top:calc(100% + 6px);left:0;right:0;background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden;display:none;max-height:50vh;overflow-y:auto}
+.results.show{display:block}
+.results button{display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:none;border:0;color:var(--txt);padding:9px 12px;font:13px var(--font);cursor:pointer}
+.results button:hover,.results button.sel{background:#22222d}
+.results .dot{width:8px;height:8px;border-radius:50%;flex:none}
+.results small{color:var(--muted);margin-left:auto}
+.tools{pointer-events:auto;margin-left:auto;display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.btn{background:rgba(23,23,31,.85);backdrop-filter:blur(8px);border:1px solid var(--line);color:var(--txt);border-radius:10px;padding:9px 12px;font:12px var(--font);cursor:pointer;white-space:nowrap}
+.btn:hover{border-color:#44445a}
+.btn.on{border-color:var(--accent);color:#fff;background:rgba(157,123,255,.15)}
+
+/* ---- legende lobes ---- */
+.lobes{position:fixed;left:16px;bottom:16px;display:flex;flex-wrap:wrap;gap:6px;max-width:calc(100% - 32px);z-index:5}
+.chip{display:flex;align-items:center;gap:7px;background:rgba(23,23,31,.85);backdrop-filter:blur(8px);border:1px solid var(--line);border-radius:999px;padding:6px 11px;font:12px var(--font);color:var(--txt);cursor:pointer;user-select:none}
+.chip i{width:9px;height:9px;border-radius:50%;display:block}
+.chip b{font-weight:500;color:var(--muted)}
+.chip.off{opacity:.35}
+
+/* ---- panneau note ---- */
+.panel{position:fixed;top:0;right:0;bottom:0;width:min(460px,100%);background:var(--panel);border-left:1px solid var(--line);transform:translateX(100%);transition:transform .25s ease;z-index:10;display:flex;flex-direction:column}
+.panel.open{transform:none}
+.panel header{padding:18px 20px 12px;border-bottom:1px solid var(--line)}
+.panel .close{float:right;background:none;border:0;color:var(--muted);font-size:22px;cursor:pointer;line-height:1;padding:0 4px}
+.panel .close:hover{color:var(--txt)}
+.panel .lobe{display:inline-flex;align-items:center;gap:6px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.panel .lobe i{width:8px;height:8px;border-radius:50%}
+.panel h2{margin:8px 0 6px;font-size:21px;line-height:1.25}
+.meta{font-size:12px;color:var(--muted);display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.tag{display:inline-block;background:#24242f;color:#c9c3ff;border-radius:6px;padding:2px 7px;font-size:11px;cursor:pointer;margin:2px 4px 2px 0}
+.tag:hover{background:#2f2f3d}
+.content{padding:6px 20px 30px;overflow-y:auto;flex:1;font-size:14px;line-height:1.65}
+.content h1{display:none}
+.content h2{font-size:15px;margin:22px 0 6px;color:#fff}
+.content h3{font-size:14px;margin:18px 0 4px}
+.content p{margin:8px 0}
+.content ul,.content ol{padding-left:20px;margin:8px 0}
+.content li{margin:3px 0}
+.content code{font-family:var(--mono);background:#22222d;padding:1px 5px;border-radius:4px;font-size:12.5px}
+.content pre{background:#101016;border:1px solid var(--line);padding:12px;border-radius:8px;overflow-x:auto}
+.content pre code{background:none;padding:0}
+.content table{border-collapse:collapse;width:100%;font-size:12.5px;margin:10px 0;display:block;overflow-x:auto}
+.content th,.content td{border:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+.content th{background:#1e1e28}
+.content a{color:#8ab4ff}
+.content blockquote{border-left:3px solid var(--accent);margin:10px 0;padding:2px 12px;color:#c8c6d4}
+.wl{color:#b89cff;cursor:pointer;border-bottom:1px dashed rgba(184,156,255,.5);text-decoration:none}
+.wl:hover{color:#fff}
+.wl.missing{color:var(--muted);border-bottom-color:#555}
+.section-t{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:26px 0 8px;padding-top:14px;border-top:1px solid var(--line)}
+.backs a{display:block;padding:4px 0}
+.path{font-family:var(--mono);font-size:11px;color:#5f5d6e;margin-top:20px;word-break:break-all}
+
+.empty{position:fixed;inset:0;display:none;align-items:center;justify-content:center;text-align:center;padding:24px;color:var(--muted);z-index:4}
+.empty.show{display:flex}
+.empty b{color:var(--txt)}
+
+.hint{position:fixed;right:16px;bottom:16px;font-size:11px;color:#5f5d6e;z-index:4;text-align:right}
+
+@media (max-width:720px){
+  .top{flex-wrap:wrap}
+  .search{flex:1 1 100%;order:3}
+  .tools{margin-left:0}
+  .hint{display:none}
+  .lobes{bottom:12px;left:12px}
+}
+</style>
+</head>
+<body>
+<canvas id="graph"></canvas>
+
+<div class="top">
+  <div class="brand"><h1>T<span>BRAIN</span></h1><div class="stats" id="stats"></div></div>
+  <div class="search">
+    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+    <input id="q" type="search" placeholder="Rechercher une note, un tag…  ( / )" autocomplete="off">
+    <div class="results" id="results"></div>
+  </div>
+  <div class="tools">
+    <a class="btn tbrain-back" href="/tbrain" target="_top" style="text-decoration:none" title="Retour au portfolio">← Portfolio</a>
+    <button class="btn" id="bTags" title="Afficher les tags comme nœuds">#&nbsp;Tags</button>
+    <button class="btn on" id="bLabels" title="Afficher les noms">Noms</button>
+    <button class="btn" id="bFit" title="Recentrer la vue">Recentrer</button>
+    <a class="btn" href="github.html" title="Catalogue des dépôts GitHub" style="text-decoration:none">GitHub</a>
+    <a class="btn on" href="cerveau.html" title="Système solaire 3D" style="text-decoration:none">3D</a>
+  </div>
+</div>
+
+<div class="lobes" id="lobes"></div>
+<div class="hint">Molette : zoom · Glisser : déplacer · Clic : ouvrir une note</div>
+
+<aside class="panel" id="panel">
+  <header>
+    <button class="close" id="close" aria-label="Fermer">×</button>
+    <div class="lobe" id="pLobe"></div>
+    <h2 id="pTitle"></h2>
+    <div class="meta" id="pMeta"></div>
+  </header>
+  <div class="content" id="pBody"></div>
+</aside>
+
+<div class="empty" id="empty"><div><b>Aucune note trouvée.</b><br><br>Ajoute des fichiers .md dans le dossier <b>notes</b>,<br>puis double-clique sur <b>actualiser.bat</b>.</div></div>
+
+<script src="data/brain.js"></script>
+<script>
+(() => {
+"use strict";
+const BRAIN = window.BRAIN || {notes:[], lobes:{}};
+const LOBES = BRAIN.lobes || {};
+const store = {
+  get(k, d){ try{ const v = localStorage.getItem("tbrain:"+k); return v===null?d:JSON.parse(v);}catch(e){return d;} },
+  set(k, v){ try{ localStorage.setItem("tbrain:"+k, JSON.stringify(v)); }catch(e){} }
+};
+
+/* ================= Données ================= */
+const notesById = new Map(BRAIN.notes.map(n => [n.id, n]));
+const lowerIds = new Map(BRAIN.notes.map(n => [n.id.toLowerCase(), n.id]));
+const resolve = id => lowerIds.get(String(id).toLowerCase()) || null;
+const backlinks = new Map();
+BRAIN.notes.forEach(n => n.links.forEach(l => {
+  const t = resolve(l); if(!t) return;
+  if(!backlinks.has(t)) backlinks.set(t, new Set());
+  backlinks.get(t).add(n.id);
+}));
+const lobeColor = l => (LOBES[l] && LOBES[l].couleur) || "#9aa0a6";
+const lobeName  = l => (LOBES[l] && LOBES[l].nom) || l;
+
+let showTags = store.get("tags", false);
+let showLabels = store.get("labels", true);
+let hiddenLobes = new Set(store.get("hidden", []));
+
+let nodes = [], edges = [], nodeMap = new Map(), adj = new Map();
+const prevPos = new Map();
+
+function lobeCenters(){
+  const ls = Object.keys(LOBES).filter(l => l !== "centre");
+  BRAIN.notes.forEach(n => { if(n.lobe!=="centre" && !ls.includes(n.lobe)) ls.push(n.lobe); });
+  const c = {centre:{x:0,y:0}}, R = 260 + ls.length*18;
+  ls.forEach((l,i) => { const a = -Math.PI/2 + i/ls.length*Math.PI*2; c[l] = {x:Math.cos(a)*R*1.25, y:Math.sin(a)*R}; });
+  return c;
+}
+let centers = lobeCenters();
+
+function build(){
+  nodes.forEach(n => prevPos.set(n.id, {x:n.x,y:n.y}));
+  nodes = []; edges = []; nodeMap = new Map(); adj = new Map();
+  const add = (id, o) => {
+    const p = prevPos.get(id), c = centers[o.lobe] || {x:0,y:0};
+    const n = Object.assign({id, x: p? p.x : c.x + (Math.random()-.5)*120, y: p? p.y : c.y + (Math.random()-.5)*120, vx:0, vy:0, deg:0}, o);
+    nodes.push(n); nodeMap.set(id, n); adj.set(id, new Set()); return n;
+  };
+  const link = (a,b) => {
+    if(a===b || !nodeMap.has(a) || !nodeMap.has(b) || adj.get(a).has(b)) return;
+    adj.get(a).add(b); adj.get(b).add(a); edges.push([nodeMap.get(a), nodeMap.get(b)]);
+  };
+  const visible = BRAIN.notes.filter(n => !hiddenLobes.has(n.lobe));
+  visible.forEach(n => add(n.id, {kind:"note", lobe:n.lobe, label:n.title, note:n, hub:(n.tags||[]).includes("hub")}));
+  visible.forEach(n => n.links.forEach(l => {
+    const t = resolve(l);
+    if(t){ link(n.id, t); }
+    else { const gid = "?"+l; if(!nodeMap.has(gid)) add(gid,{kind:"ghost", lobe:null, label:l}); link(n.id, gid); }
+  }));
+  if(showTags){
+    visible.forEach(n => (n.tags||[]).filter(t => t!=="hub").forEach(t => {
+      const tid = "#"+t; if(!nodeMap.has(tid)) add(tid,{kind:"tag", lobe:null, label:"#"+t}); link(n.id, tid);
+    }));
+  }
+  nodes.forEach(n => n.deg = adj.get(n.id).size);
+  nodes.forEach(n => n.r = n.kind==="note" ? (n.hub ? 9 : 5) + Math.sqrt(n.deg)*1.8 : (n.kind==="tag" ? 3.5 : 3.5));
+  const nNotes = BRAIN.notes.length, nLinks = BRAIN.notes.reduce((s,n)=>s+n.links.filter(resolve).length,0);
+  document.getElementById("stats").textContent = `${nNotes} notes · ${nLinks} liens · maj ${BRAIN.genere||"—"}`;
+  document.getElementById("empty").classList.toggle("show", nNotes===0);
+}
+
+/* ================= Simulation ================= */
+let alpha = 1;
+function tick(){
+  const N = nodes.length;
+  for(let i=0;i<N;i++){
+    const a = nodes[i];
+    for(let j=i+1;j<N;j++){
+      const b = nodes[j];
+      let dx = b.x-a.x, dy = b.y-a.y, d2 = dx*dx+dy*dy;
+      if(d2 > 250000) continue;
+      if(d2 < 1){ dx = Math.random()-.5; dy = Math.random()-.5; d2 = 1; }
+      const f = 1400*alpha/d2;
+      a.vx -= dx*f; a.vy -= dy*f; b.vx += dx*f; b.vy += dy*f;
+    }
+  }
+  for(const [a,b] of edges){
+    const dx = b.x-a.x, dy = b.y-a.y, d = Math.sqrt(dx*dx+dy*dy)||1;
+    const same = a.lobe && a.lobe===b.lobe;
+    const L = same ? ((a.hub||b.hub) ? 70 : 55) : 140;
+    const f = (d-L)/d*(same ? 0.06 : 0.008)*alpha;
+    const wa = b.deg/(a.deg+b.deg), wb = 1-wa;
+    a.vx += dx*f*wa; a.vy += dy*f*wa; b.vx -= dx*f*wb; b.vy -= dy*f*wb;
+  }
+  for(const n of nodes){
+    if(n.kind==="note"){ const c = centers[n.lobe] || {x:0,y:0}, g = n.hub ? 0.09 : 0.035; n.vx += (c.x-n.x)*g*alpha; n.vy += (c.y-n.y)*g*alpha; }
+    const cg = n.kind==="note" ? 0.002 : 0.012;
+    n.vx += -n.x*cg*alpha; n.vy += -n.y*cg*alpha;
+    if(n.fixed){ n.vx = n.vy = 0; continue; }
+    n.vx *= 0.6; n.vy *= 0.6;
+    n.x += n.vx; n.y += n.vy;
+  }
+  alpha = Math.max(alpha*0.99, 0);
+}
+
+/* ================= Rendu ================= */
+const cv = document.getElementById("graph"), ctx = cv.getContext("2d");
+let W=0,H=0,DPR=1;
+const cam = {x:0,y:0,k:1}, camT = {x:0,y:0,k:1};
+function resize(){
+  DPR = Math.min(window.devicePixelRatio||1, 2);
+  W = cv.clientWidth; H = cv.clientHeight;
+  cv.width = W*DPR; cv.height = H*DPR;
+}
+window.addEventListener("resize", resize);
+const toWorld = (sx,sy) => ({x:(sx-W/2)/cam.k+cam.x, y:(sy-H/2)/cam.k+cam.y});
+
+let hover = null, selected = null, matches = null, focusSet = null;
+
+function hexA(hex, a){
+  const h = hex.replace("#",""); const v = parseInt(h.length===3? h.split("").map(c=>c+c).join(""):h,16);
+  return `rgba(${v>>16&255},${v>>8&255},${v&255},${a})`;
+}
+
+function draw(){
+  ctx.setTransform(DPR,0,0,DPR,0,0);
+  ctx.fillStyle = "#0e0e13"; ctx.fillRect(0,0,W,H);
+  ctx.save();
+  ctx.translate(W/2,H/2); ctx.scale(cam.k,cam.k); ctx.translate(-cam.x,-cam.y);
+
+  // halos des lobes
+  const groups = {};
+  nodes.forEach(n => { if(n.kind!=="note"||n.lobe==="centre") return; (groups[n.lobe] ||= []).push(n); });
+  for(const l in groups){
+    const g = groups[l]; let cx=0, cy=0; g.forEach(n=>{cx+=n.x;cy+=n.y}); cx/=g.length; cy/=g.length;
+    let r = 60; g.forEach(n => r = Math.max(r, Math.hypot(n.x-cx,n.y-cy)+50));
+    const grd = ctx.createRadialGradient(cx,cy,0,cx,cy,r);
+    grd.addColorStop(0, hexA(lobeColor(l), .10)); grd.addColorStop(1, hexA(lobeColor(l), 0));
+    ctx.fillStyle = grd; ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2); ctx.fill();
+    ctx.font = `600 ${Math.max(11, 13/cam.k)}px ${getComputedStyle(document.body).fontFamily}`;
+    ctx.textAlign = "center"; ctx.fillStyle = hexA(lobeColor(l), .35);
+    ctx.fillText(lobeName(l).toUpperCase(), cx, cy - r + 18/cam.k + 6);
+  }
+
+  const active = hover || selected;
+  const near = active ? adj.get(active.id) : null;
+  const dim = n => {
+    if(matches) return !matches.has(n.id);
+    if(active) return n!==active && !near.has(n.id);
+    return false;
+  };
+
+  // liens
+  ctx.lineWidth = 1/cam.k;
+  for(const [a,b] of edges){
+    const hl = active && (a===active || b===active);
+    const faded = (matches && !(matches.has(a.id)&&matches.has(b.id))) || (active && !hl);
+    ctx.strokeStyle = hl ? hexA(nodeColor(active), .85) : faded ? "rgba(140,138,155,.06)" : "rgba(140,138,155,.28)";
+    ctx.lineWidth = (hl? 1.6 : 1)/cam.k;
+    ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke();
+  }
+
+  // noeuds
+  for(const n of nodes){
+    const d = dim(n), col = nodeColor(n);
+    ctx.globalAlpha = d ? .15 : 1;
+    if(n===active || (selected===n)){
+      ctx.shadowColor = col; ctx.shadowBlur = 22;
+    }
+    ctx.fillStyle = n.kind==="ghost" ? "#0e0e13" : col;
+    ctx.beginPath(); ctx.arc(n.x,n.y,n.r,0,Math.PI*2); ctx.fill();
+    ctx.shadowBlur = 0;
+    if(n.kind==="ghost"){ ctx.strokeStyle = "#5f5d6e"; ctx.lineWidth = 1.2/cam.k; ctx.setLineDash([3/cam.k,2/cam.k]); ctx.stroke(); ctx.setLineDash([]); }
+    if(n===selected){ ctx.strokeStyle="#fff"; ctx.lineWidth=2/cam.k; ctx.beginPath(); ctx.arc(n.x,n.y,n.r+4/cam.k,0,Math.PI*2); ctx.stroke(); }
+  }
+  ctx.globalAlpha = 1;
+
+  // noms
+  const fs = 12/cam.k;
+  ctx.font = `${fs}px ${getComputedStyle(document.body).fontFamily}`;
+  ctx.textAlign = "center"; ctx.textBaseline = "top";
+  for(const n of nodes){
+    const important = n===active || (near && near.has(n.id)) || (matches && matches.has(n.id));
+    const show = important || (showLabels && (cam.k > .45 || n.hub || n.deg >= 5));
+    if(!show) continue;
+    if(dim(n) && !important) continue;
+    ctx.fillStyle = n===active ? "#fff" : n.kind==="tag" ? "rgba(201,195,255,.75)" : n.kind==="ghost" ? "rgba(140,138,155,.8)" : "rgba(230,228,238,.82)";
+    ctx.font = `${n.hub? "600 ":""}${n.hub? fs*1.12: fs}px ${getComputedStyle(document.body).fontFamily}`;
+    ctx.fillText(n.label, n.x, n.y + n.r + 4/cam.k);
+  }
+  ctx.restore();
+}
+function nodeColor(n){
+  if(n.kind==="tag") return "#c9c3ff";
+  if(n.kind==="ghost") return "#5f5d6e";
+  return lobeColor(n.lobe);
+}
+
+function loop(){
+  if(alpha > 0.003) tick();
+  const e = 0.18;
+  cam.x += (camT.x-cam.x)*e; cam.y += (camT.y-cam.y)*e; cam.k += (camT.k-cam.k)*e;
+  draw();
+  requestAnimationFrame(loop);
+}
+
+function fit(instant, subset){
+  const list = subset && subset.length ? subset : nodes;
+  if(!list.length) return;
+  let x0=Infinity,y0=Infinity,x1=-Infinity,y1=-Infinity;
+  list.forEach(n=>{x0=Math.min(x0,n.x);y0=Math.min(y0,n.y);x1=Math.max(x1,n.x);y1=Math.max(y1,n.y);});
+  const pad = 90, panelW = selected && W>720 ? 460 : 0;
+  const k = Math.min((W-panelW-pad*2)/(x1-x0||1), (H-pad*2-60)/(y1-y0||1), 1.6);
+  camT.k = Math.max(.2,k); camT.x = (x0+x1)/2 + panelW/2/camT.k; camT.y = (y0+y1)/2 - 20/camT.k;
+  if(instant){ Object.assign(cam, camT); }
+}
+function focusNode(n){
+  const panelW = W>720 ? 460 : 0;
+  camT.k = Math.max(cam.k, 1.1);
+  camT.x = n.x + panelW/2/camT.k; camT.y = n.y;
+}
+
+/* ================= Interaction ================= */
+let drag = null, pan = null, moved = false;
+const pointers = new Map(); let pinch = null;
+function pick(sx,sy){
+  const p = toWorld(sx,sy); let best=null, bd=Infinity;
+  for(const n of nodes){ const d = Math.hypot(n.x-p.x,n.y-p.y); if(d < n.r + 6/cam.k && d < bd){ bd=d; best=n; } }
+  return best;
+}
+cv.addEventListener("pointerdown", e => {
+  cv.setPointerCapture(e.pointerId);
+  pointers.set(e.pointerId, {x:e.offsetX,y:e.offsetY});
+  if(pointers.size===2){
+    const [a,b] = [...pointers.values()];
+    pinch = {d:Math.hypot(a.x-b.x,a.y-b.y), k:camT.k}; drag = pan = null; return;
+  }
+  moved = false;
+  const n = pick(e.offsetX,e.offsetY);
+  if(n){ drag = n; n.fixed = true; }
+  else { pan = {sx:e.offsetX, sy:e.offsetY, cx:camT.x, cy:camT.y}; cv.classList.add("dragging"); }
+});
+cv.addEventListener("pointermove", e => {
+  if(pointers.has(e.pointerId)) pointers.set(e.pointerId, {x:e.offsetX,y:e.offsetY});
+  if(pinch && pointers.size===2){
+    const [a,b] = [...pointers.values()];
+    camT.k = Math.min(4, Math.max(.15, pinch.k * Math.hypot(a.x-b.x,a.y-b.y)/pinch.d)); cam.k = camT.k; return;
+  }
+  if(drag){
+    const p = toWorld(e.offsetX,e.offsetY); drag.x = p.x; drag.y = p.y; moved = true; alpha = Math.max(alpha,.25); return;
+  }
+  if(pan){
+    const dx = e.offsetX-pan.sx, dy = e.offsetY-pan.sy;
+    if(Math.abs(dx)+Math.abs(dy) > 3) moved = true;
+    camT.x = pan.cx - dx/cam.k; camT.y = pan.cy - dy/cam.k; cam.x = camT.x; cam.y = camT.y; return;
+  }
+  const n = pick(e.offsetX,e.offsetY);
+  if(n!==hover){ hover = n; cv.classList.toggle("hovering", !!n); }
+});
+const up = e => {
+  pointers.delete(e.pointerId);
+  if(pointers.size<2) pinch = null;
+  cv.classList.remove("dragging");
+  if(drag){ drag.fixed = false; if(!moved) clickNode(drag); drag = null; }
+  else if(pan){ if(!moved){ selected = null; closePanel(); } pan = null; }
+};
+cv.addEventListener("pointerup", up); cv.addEventListener("pointercancel", up);
+cv.addEventListener("pointerleave", () => { if(!drag) hover = null; });
+cv.addEventListener("wheel", e => {
+  e.preventDefault();
+  const before = toWorld(e.offsetX,e.offsetY);
+  const k = Math.min(4, Math.max(.15, camT.k * Math.exp(-e.deltaY*0.0015)));
+  camT.k = k; cam.k = k;
+  const after = toWorld(e.offsetX,e.offsetY);
+  camT.x += before.x-after.x; camT.y += before.y-after.y; cam.x = camT.x; cam.y = camT.y;
+},{passive:false});
+
+function clickNode(n){
+  if(n.kind==="note") openNote(n.id);
+  else if(n.kind==="tag"){ q.value = n.label; runSearch(); }
+  else { selected = n; closePanel(); }
+}
+
+/* ================= Panneau ================= */
+const panel = document.getElementById("panel");
+function esc(s){ return String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+function inline(s){
+  s = esc(s);
+  const codes = [];
+  s = s.replace(/`([^`]+)`/g, (_,c) => { codes.push(c); return `\u0000${codes.length-1}\u0000`; });
+  s = s.replace(/\[\[([^\]|#]+)(?:#[^\]|]*)?(?:\|([^\]]+))?\]\]/g, (_,id,alias) => {
+    const t = resolve(id.trim());
+    return `<a class="wl${t?"":" missing"}" data-id="${esc(t||id.trim())}">${alias || (t ? esc(notesById.get(t).title) : id)}</a>`;
+  });
+  s = s.replace(/\[([^\]]+)\]\((https?:[^)\s]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+  s = s.replace(/(^|[\s(])(https?:\/\/[^\s<)]+)/g, '$1<a href="$2" target="_blank" rel="noopener">$2</a>');
+  s = s.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+  s = s.replace(/(^|[^*])\*([^*\s][^*]*)\*/g, "$1<em>$2</em>");
+  s = s.replace(/(^|\s)#([A-Za-zÀ-ÿ0-9_\-]+)/g, '$1<span class="tag" data-tag="$2">#$2</span>');
+  s = s.replace(/\u0000(\d+)\u0000/g, (_,i) => `<code>${codes[+i]}</code>`);
+  return s;
+}
+function md(src){
+  const lines = src.replace(/\r/g,"").split("\n"); let out = "", i = 0;
+  while(i < lines.length){
+    let l = lines[i];
+    if(/^```/.test(l)){ let buf=[]; i++; while(i<lines.length && !/^```/.test(lines[i])) buf.push(lines[i++]); i++; out += `<pre><code>${esc(buf.join("\n"))}</code></pre>`; continue; }
+    let m;
+    if((m = l.match(/^(#{1,6})\s+(.*)$/))){ const h = Math.min(m[1].length,4); out += `<h${h}>${inline(m[2])}</h${h}>`; i++; continue; }
+    if(/^\s*\|.*\|\s*$/.test(l) && i+1<lines.length && /^\s*\|?\s*:?-{2,}/.test(lines[i+1])){
+      const row = r => r.trim().replace(/^\||\|$/g,"").split("|").map(c=>c.trim());
+      out += "<table><thead><tr>" + row(l).map(c=>`<th>${inline(c)}</th>`).join("") + "</tr></thead><tbody>";
+      i += 2; while(i<lines.length && /^\s*\|/.test(lines[i])){ out += "<tr>"+row(lines[i]).map(c=>`<td>${inline(c)}</td>`).join("")+"</tr>"; i++; }
+      out += "</tbody></table>"; continue;
+    }
+    if(/^\s*([-*+]|\d+\.)\s+/.test(l)){
+      const ordered = /^\s*\d+\./.test(l); out += ordered?"<ol>":"<ul>";
+      while(i<lines.length && /^\s*([-*+]|\d+\.)\s+/.test(lines[i])){ out += `<li>${inline(lines[i].replace(/^\s*([-*+]|\d+\.)\s+/,"").replace(/^\[ \]\s*/,"☐ ").replace(/^\[x\]\s*/i,"☑ "))}</li>`; i++; }
+      out += ordered?"</ol>":"</ul>"; continue;
+    }
+    if(/^>\s?/.test(l)){ let buf=[]; while(i<lines.length && /^>\s?/.test(lines[i])) buf.push(lines[i++].replace(/^>\s?/,"")); out += `<blockquote>${inline(buf.join(" "))}</blockquote>`; continue; }
+    if(!l.trim()){ i++; continue; }
+    let buf=[]; while(i<lines.length && lines[i].trim() && !/^(#{1,6}\s|```|>|\s*([-*+]|\d+\.)\s|\s*\|)/.test(lines[i])) buf.push(lines[i++]);
+    if(!buf.length){ buf.push(lines[i++]); }
+    out += `<p>${inline(buf.join(" "))}</p>`;
+  }
+  return out;
+}
+function openNote(id){
+  const n = notesById.get(id); if(!n) return;
+  if(hiddenLobes.has(n.lobe)){ hiddenLobes.delete(n.lobe); store.set("hidden",[...hiddenLobes]); build(); renderLobes(); alpha = .5; }
+  selected = nodeMap.get(id);
+  document.getElementById("pLobe").innerHTML = `<i style="background:${lobeColor(n.lobe)}"></i>${esc(lobeName(n.lobe))}`;
+  document.getElementById("pTitle").textContent = n.title;
+  document.getElementById("pMeta").innerHTML = (n.date? `<span>${esc(n.date)}</span>`:"") + (n.meta && n.meta.repo ? `<span style="color:#ffcf5a">★ ${(+n.meta.etoiles||0).toLocaleString("fr-FR")}</span>${n.meta.langage?`<span>${esc(n.meta.langage)}</span>`:""}<a class="tag" href="${esc(n.meta.url||("https://github.com/"+n.meta.repo))}" target="_blank" rel="noopener" style="text-decoration:none">GitHub ↗</a>` : "") + 
+    (n.tags||[]).filter(t=>t!=="hub").map(t=>`<span class="tag" data-tag="${esc(t)}">#${esc(t)}</span>`).join("");
+  let h = md(n.body);
+  if(n.sources && n.sources.length){
+    h += `<div class="section-t">Sources</div><ul>` + n.sources.map(s => `<li>${inline(s)}</li>`).join("") + "</ul>";
+  }
+  const bl = [...(backlinks.get(id)||[])];
+  if(bl.length){
+    h += `<div class="section-t">Mentionnée dans (${bl.length})</div><div class="backs">` +
+      bl.map(b => `<a class="wl" data-id="${esc(b)}">${esc(notesById.get(b).title)}</a>`).join("") + "</div>";
+  }
+  h += `<div class="path">${esc(n.path)}</div>`;
+  const body = document.getElementById("pBody"); body.innerHTML = h; body.scrollTop = 0;
+  panel.classList.add("open");
+  if(selected) focusNode(selected);
+  try{ history.replaceState(null,"","#"+encodeURIComponent(id)); }catch(e){}
+}
+function closePanel(){ panel.classList.remove("open"); try{ history.replaceState(null,"",location.pathname); }catch(e){} }
+document.getElementById("close").onclick = () => { selected = null; closePanel(); };
+panel.addEventListener("click", e => {
+  const a = e.target.closest(".wl"); if(a){ e.preventDefault(); if(notesById.has(a.dataset.id)) openNote(a.dataset.id); return; }
+  const t = e.target.closest(".tag"); if(t){ q.value = "#"+t.dataset.tag; runSearch(); }
+});
+
+/* ================= Recherche ================= */
+const q = document.getElementById("q"), res = document.getElementById("results");
+let sel = 0, hits = [];
+function runSearch(){
+  const v = q.value.trim().toLowerCase();
+  if(!v){ if(matches){ matches = null; fit(false); } res.classList.remove("show"); return; }
+  const isTag = v.startsWith("#"), term = isTag ? v.slice(1) : v;
+  hits = BRAIN.notes.map(n => {
+    let s = 0;
+    if((n.tags||[]).some(t => t.toLowerCase()===term)) s += 5;
+    else if((n.tags||[]).some(t => t.toLowerCase().includes(term))) s += 3;
+    if(!isTag){
+      if(n.title.toLowerCase().includes(term)) s += 6;
+      if(n.id.toLowerCase().includes(term)) s += 2;
+      if(n.body.toLowerCase().includes(term)) s += 1;
+    }
+    return {n, s};
+  }).filter(h => h.s>0).sort((a,b) => b.s-a.s).map(h => h.n);
+  matches = new Set(hits.map(n => n.id));
+  if(isTag && nodeMap.has("#"+term)) matches.add("#"+term);
+  sel = 0; renderResults();
+  if(hits.length && !selected) fit(false, [...matches].map(id => nodeMap.get(id)).filter(Boolean));
+}
+function renderResults(){
+  if(!hits.length){ res.innerHTML = `<button disabled><span style="color:var(--muted)">Aucun résultat</span></button>`; res.classList.add("show"); return; }
+  res.innerHTML = hits.slice(0,12).map((n,i) => `<button data-id="${esc(n.id)}" class="${i===sel?"sel":""}"><span class="dot" style="background:${lobeColor(n.lobe)}"></span>${esc(n.title)}<small>${esc(lobeName(n.lobe))}</small></button>`).join("");
+  res.classList.add("show");
+}
+q.addEventListener("input", runSearch);
+q.addEventListener("keydown", e => {
+  if(e.key==="ArrowDown"){ sel = Math.min(sel+1, Math.min(hits.length,12)-1); renderResults(); e.preventDefault(); }
+  else if(e.key==="ArrowUp"){ sel = Math.max(sel-1,0); renderResults(); e.preventDefault(); }
+  else if(e.key==="Enter" && hits[sel]){ openNote(hits[sel].id); res.classList.remove("show"); }
+  else if(e.key==="Escape"){ q.value=""; runSearch(); q.blur(); }
+});
+res.addEventListener("click", e => { const b = e.target.closest("button[data-id]"); if(b){ openNote(b.dataset.id); res.classList.remove("show"); } });
+q.addEventListener("focus", () => { if(q.value.trim()) runSearch(); });
+document.addEventListener("click", e => { if(!e.target.closest(".search")) res.classList.remove("show"); });
+document.addEventListener("keydown", e => {
+  if(e.key==="/" && document.activeElement!==q){ e.preventDefault(); q.focus(); }
+  if(e.key==="Escape" && document.activeElement!==q){ selected=null; closePanel(); q.value=""; runSearch(); }
+});
+
+/* ================= Boutons & lobes ================= */
+const bTags = document.getElementById("bTags"), bLabels = document.getElementById("bLabels");
+function syncBtns(){ bTags.classList.toggle("on", showTags); bLabels.classList.toggle("on", showLabels); }
+bTags.onclick = () => { showTags = !showTags; store.set("tags",showTags); syncBtns(); build(); for(let i=0;i<200;i++) tick(); alpha = .05; fit(false); };
+bLabels.onclick = () => { showLabels = !showLabels; store.set("labels",showLabels); syncBtns(); };
+document.getElementById("bFit").onclick = () => fit(false);
+function renderLobes(){
+  const counts = {}; BRAIN.notes.forEach(n => counts[n.lobe] = (counts[n.lobe]||0)+1);
+  const el = document.getElementById("lobes");
+  el.innerHTML = Object.keys(counts).sort((a,b)=> a==="centre"?-1: b==="centre"?1: lobeName(a).localeCompare(lobeName(b)))
+    .map(l => `<div class="chip${hiddenLobes.has(l)?" off":""}" data-l="${esc(l)}"><i style="background:${lobeColor(l)}"></i>${esc(lobeName(l))} <b>${counts[l]}</b></div>`).join("");
+}
+document.getElementById("lobes").addEventListener("click", e => {
+  const c = e.target.closest(".chip"); if(!c) return;
+  const l = c.dataset.l; hiddenLobes.has(l) ? hiddenLobes.delete(l) : hiddenLobes.add(l);
+  store.set("hidden",[...hiddenLobes]); renderLobes(); build(); alpha = .6;
+  if(selected && !nodeMap.has(selected.id)){ selected = null; closePanel(); }
+});
+
+/* ================= Démarrage ================= */
+resize(); syncBtns(); renderLobes(); build();
+for(let i=0;i<350;i++) tick();
+alpha = 0.05;
+fit(true);
+const start = decodeURIComponent(location.hash.slice(1));
+if(start && notesById.has(start)) openNote(start);
+requestAnimationFrame(loop);
+})();
+</script>
+<script>if(window.self!==window.top){document.querySelectorAll(".tbrain-back").forEach(function(b){b.remove();});}</script>
+</body>
+</html>
