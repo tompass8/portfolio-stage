@@ -52,6 +52,7 @@ const {
       import { initRolesMatrix } from "../scripts/roles";
       import { initCopyEmail } from "../scripts/copy-email";
       import { initReveal } from "../scripts/reveal";
+      import { initTbrainViewer } from "../scripts/tbrain-viewer";
 
       (window as Window & { __revealReady?: boolean }).__revealReady = true;
       initReveal();
@@ -61,6 +62,7 @@ const {
       initGovernanceSection();
       initRolesMatrix();
       initCopyEmail();
+      initTbrainViewer();
     </script>
   </body>
 </html>

@@ -10,6 +10,8 @@ export interface SignItem {
   /** Libellé affiché sous 1024 px quand le libellé complet ne tient pas */
   short?: string;
   picto: PictoName;
+  /** Page en cours : l'entrée reste en noir sur jaune */
+  current?: boolean;
 }
 interface Props {
   items: SignItem[];
@@ -28,9 +30,13 @@ const { items, home = "/" } = Astro.props;
         <a
           href={item.href}
           data-sign-link={item.href.startsWith("#") ? item.href.slice(1) : undefined}
-          class="press flex min-w-0 flex-1 flex-col items-center justify-center gap-1 rounded-[6px] px-1 py-1.5 text-[0.8125rem] font-semibold leading-none no-underline hover:bg-sign-press sm:flex-none sm:px-3 sm:text-[0.9375rem] lg:flex-row lg:gap-3 lg:py-2 lg:text-xl"
+          aria-current={item.current ? "page" : undefined}
+          class:list={[
+            "press flex min-w-0 flex-1 flex-col items-center justify-center gap-1 rounded-[6px] px-1 py-1.5 text-[0.8125rem] font-semibold leading-none no-underline sm:flex-none sm:px-3 sm:text-[0.9375rem] lg:flex-row lg:gap-3 lg:py-2 lg:text-xl",
+            item.current ? "bg-ink text-sign" : "hover:bg-sign-press",
+          ]}
         >
-          <Picto name={item.picto} size="sm" class="max-lg:size-8" />
+          <Picto name={item.picto} size="sm" class:list={["max-lg:size-8", item.current && "bg-sign! text-ink!"]} />
           {item.short ? (
             <>
               <span class="truncate lg:hidden">{item.short}</span>

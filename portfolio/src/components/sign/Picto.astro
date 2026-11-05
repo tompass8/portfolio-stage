@@ -3,7 +3,7 @@
 export type PictoName =
   | "left" | "right" | "up" | "down" | "up-right"
   | "gate" | "briefcase" | "grid" | "play" | "mail"
-  | "shield" | "pin" | "code" | "github" | "linkedin" | "clock";
+  | "shield" | "pin" | "code" | "github" | "linkedin" | "clock" | "orbit";
 
 interface Props {
   name: PictoName;
@@ -36,5 +36,6 @@ const box = { sm: "size-9", md: "size-12", lg: "size-16 sm:size-20" }[size];
     {name === "github" && <path d="M12 2.5a9.5 9.5 0 0 0-3 18.5c.5.1.7-.2.7-.5v-1.8c-2.7.6-3.3-1.2-3.3-1.2-.4-1.1-1.1-1.4-1.1-1.4-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.4 1.1 3 .8.1-.6.3-1.1.6-1.3-2.1-.2-4.4-1.1-4.4-4.8 0-1 .4-1.9 1-2.6-.1-.3-.4-1.2.1-2.6 0 0 .8-.3 2.6 1a9 9 0 0 1 4.8 0c1.8-1.3 2.6-1 2.6-1 .5 1.4.2 2.3.1 2.6.6.7 1 1.6 1 2.6 0 3.7-2.3 4.6-4.4 4.8.3.3.6.9.6 1.8v2.7c0 .3.2.6.7.5A9.5 9.5 0 0 0 12 2.5z" fill="currentColor" stroke="none" />}
     {name === "linkedin" && <><path d="M6 10v9M6 6v.5M10.5 19v-9M10.5 13.5c0-2 1.3-3.5 3.3-3.5s3.2 1.4 3.2 3.6V19" /></>}
     {name === "clock" && <><circle cx="12" cy="12" r="8.5" /><path d="M12 7v5l3.5 2" /></>}
+    {name === "orbit" && <><circle cx="12" cy="12" r="3" /><ellipse cx="12" cy="12" rx="9.5" ry="4.5" transform="rotate(-25 12 12)" /></>}
   </svg>
 </span>

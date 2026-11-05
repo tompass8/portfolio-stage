@@ -1,0 +1,151 @@
+---
+import Layout from "../layouts/Layout.astro";
+import SectionSign from "../components/sign/SectionSign.astro";
+import SiteFooter from "../components/sign/SiteFooter.astro";
+import Picto, { type PictoName } from "../components/sign/Picto.astro";
+
+interface BrainNote {
+  lobe: string;
+  links: string[];
+  meta?: { repo?: string };
+}
+interface Brain {
+  genere: string;
+  lobes: Record<string, { nom: string; couleur: string }>;
+  notes: BrainNote[];
+}
+
+// Copie publique (notes privées retirées) écrite par TBRAIN\outils\publier_portfolio.py, lue au build.
+// Le pré-rendu tourne dans workerd (pas de node:fs) : c'est Vite qui embarque le fichier.
+const brainFiles = import.meta.glob<string>("/public/tbrain-app/data/brain.js", { query: "?raw", import: "default", eager: true });
+const source = Object.values(brainFiles)[0];
+if (!source) {
+  throw new Error(
+    'TBRAIN : public/tbrain-app/data/brain.js est introuvable. Lance d\'abord TBRAIN\\outils\\publier_portfolio.py --dest "<portfolio>\\public" --dossier tbrain-app.'
+  );
+}
+const brain: Brain = JSON.parse(source.slice(source.indexOf("{"), source.lastIndexOf("}") + 1));
+
+const themes = Object.entries(brain.lobes)
+  .filter(([id]) => id !== "centre")
+  .map(([, lobe]) => lobe);
+const [day] = brain.genere.split(" ");
+const updated = day.split("-").reverse().join("/");
+
+const figures = [
+  { value: brain.notes.length, label: "notes" },
+  { value: brain.notes.reduce((sum, n) => sum + n.links.length, 0), label: "liens entre notes" },
+  { value: themes.length, label: "thèmes" },
+  { value: brain.notes.filter((n) => n.lobe === "github" && n.meta?.repo).length, label: "dépôts GitHub suivis" },
+];
+
+const views: { href: string; label: string; picto: PictoName }[] = [
+  { href: "/tbrain-app/cerveau.html", label: "Ouvrir en plein écran", picto: "up-right" },
+  { href: "/tbrain-app/cerveau-2d.html", label: "Vue 2D", picto: "grid" },
+  { href: "/tbrain-app/github.html", label: "Catalogue GitHub", picto: "github" },
+];
+
+const steps = [
+  { title: "Rechercher", body: "Je demande une recherche à Claude ; il lit les sources et écrit une note en Markdown." },
+  { title: "Relier", body: "Chaque note est reliée aux autres par des liens [[…]], comme dans Obsidian." },
+  { title: "Explorer", body: "Un script Python régénère l'index, et le système solaire se met à jour." },
+];
+
+const stack = ["HTML / CSS / JS", "three.js", "Python", "Markdown"];
+
+const nav = [
+  { href: "/", label: "Portfolio", picto: "left" as const },
+  { href: "/tbrain", label: "TBRAIN", picto: "orbit" as const, current: true },
+  { href: "#vue", label: "Vue 3D", short: "3D", picto: "down" as const },
+  { href: "#fonctionnement", label: "Fonctionnement", short: "Méthode", picto: "right" as const },
+  { href: "/#contact", label: "Contact", picto: "mail" as const },
+];
+---
+<Layout
+  title="TBRAIN · Le second cerveau de Tom Passerman"
+  description="TBRAIN, la base de connaissances de Tom Passerman : chaque recherche devient une note, et les notes reliées forment un système solaire en 3D (three.js, Python, Markdown)."
+  nav={nav}
+>
+  <section aria-labelledby="tbrain" class="mx-auto max-w-[90rem] px-4 pb-12 pt-10 sm:px-6 sm:pt-14">
+    <h1 id="tbrain" class="text-display font-bold tracking-[-0.03em]">TBRAIN</h1>
+    <p class="mt-3 flex flex-wrap gap-2">
+      <span class="rounded-[4px] bg-ink px-3 py-1 text-base font-semibold text-sign">Second cerveau</span>
+      <span class="rounded-[4px] border-2 border-ink px-3 py-1 text-base font-semibold">Index du {updated}</span>
+    </p>
+    <p class="mt-6 max-w-[40rem] text-2xl leading-snug sm:text-[1.75rem]">
+      Chaque recherche que je fais devient une note. Les notes sont reliées entre elles et forment un système solaire :
+      le soleil au centre, une planète par thème, une étoile par note.
+    </p>
+
+    <dl class="mt-10 grid grid-cols-2 gap-4 lg:grid-cols-4">
+      {figures.map((f, i) => (
+        <div data-rise style={`--d:${i}`} class="flex flex-col-reverse rounded-[6px] bg-panel p-5 sm:p-7">
+          <dt class="mt-1 text-lg font-semibold text-muted">{f.label}</dt>
+          <dd class="text-5xl font-bold leading-none tracking-[-0.02em] tabular-nums sm:text-6xl">{f.value}</dd>
+        </div>
+      ))}
+    </dl>
+
+    <h2 class="mt-10 text-2xl font-bold">Thèmes publics</h2>
+    <ul class="mt-4 flex flex-wrap gap-2">
+      {themes.map((t) => (
+        <li class="flex items-center gap-2 rounded-[4px] border-2 border-ink bg-panel px-3 py-1 text-base font-semibold">
+          <span aria-hidden="true" class="size-3 rounded-full" style={`background:${t.couleur}`}></span>
+          {t.nom}
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <section id="vue" aria-label="Vue 3D">
+    <SectionSign title="Vue 3D" picto="orbit" aside="Système solaire des notes" />
+    <div class="mx-auto max-w-[90rem] px-4 py-12 sm:px-6 sm:py-16">
+      <p class="mb-6 max-w-[40rem] text-xl">
+        Cliquez une planète pour lire la note. La vue s'ouvre aussi en plein écran, en 2D ou sous forme de catalogue.
+      </p>
+      <div data-tbrain-viewer class="relative h-[70vh] overflow-hidden rounded-[6px] border-[6px] border-ink bg-board lg:h-[min(80vh,760px)]">
+        <iframe
+          data-tbrain-frame
+          src="/tbrain-app/cerveau.html"
+          title="TBRAIN : système solaire 3D des notes"
+          loading="lazy"
+          allow="fullscreen"
+          class="block size-full border-0"
+        ></iframe>
+      </div>
+      <ul class="mt-6 flex flex-wrap gap-3">
+        {views.map((v) => (
+          <li>
+            <a href={v.href} class="press inline-flex min-h-12 items-center gap-3 rounded-[6px] bg-ink py-2 pl-2 pr-5 text-xl font-semibold text-sign no-underline">
+              <Picto name={v.picto} size="sm" class="bg-sign! text-ink!" />
+              {v.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section id="fonctionnement" aria-label="Comment ça marche">
+    <SectionSign title="Comment ça marche" picto="right" aside={`${steps.length} étapes`} />
+    <div class="mx-auto max-w-[90rem] px-4 py-12 sm:px-6 sm:py-16">
+      <ol class="grid gap-4 md:grid-cols-3">
+        {steps.map((s, i) => (
+          <li data-rise style={`--d:${i}`} class="rounded-[6px] bg-panel p-6 sm:p-8">
+            <p class="text-5xl font-bold leading-none tabular-nums" aria-hidden="true">{String(i + 1).padStart(2, "0")}</p>
+            <h3 class="mt-4 text-2xl font-bold">{s.title}</h3>
+            <p class="mt-2 text-lg leading-relaxed">{s.body}</p>
+          </li>
+        ))}
+      </ol>
+      <h3 class="mt-10 text-2xl font-bold">Stack</h3>
+      <ul class="mt-4 flex flex-wrap gap-2">
+        {stack.map((s) => (
+          <li class="rounded-[4px] border-2 border-ink px-3 py-1 text-base font-semibold">{s}</li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <SiteFooter slot="footer" />
+</Layout>
