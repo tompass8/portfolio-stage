@@ -1,6 +1,6 @@
 # Portfolio — Tom Passerman
 
-Site portfolio / CV de Tom Passerman (étudiant B.Sc. Informatique, Ynov Toulouse — Full-Stack, Systèmes & Réseaux, Data & IoT), construit avec **Astro 7** et **Tailwind v4** (CSS-first), déployé sur **Cloudflare Workers** via l'adaptateur `@astrojs/cloudflare`.
+Site portfolio / CV de Tom Passerman (étudiant en Bachelor Informatique, Ynov Toulouse — Full-Stack, Systèmes & Réseaux, Data & IoT), construit avec **Astro 7** et **Tailwind v4** (CSS-first), déployé sur **Cloudflare Workers** via l'adaptateur `@astrojs/cloudflare`.
 
 | Route | Page | Description |
 | :--- | :--- | :--- |

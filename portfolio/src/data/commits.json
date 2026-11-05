@@ -1,5 +1,15 @@
 [
   {
+    "hash": "74b6526",
+    "date": "2026-11-03",
+    "subject": "feat(cv): le jeu reste dans la borne d'arcade au lieu de zoomer dans l'écran"
+  },
+  {
+    "hash": "76b57f6",
+    "date": "2026-11-03",
+    "subject": "feat(motion): animations, borne d'arcade du CV et cartes translucides"
+  },
+  {
     "hash": "3add3ec",
     "date": "2026-11-03",
     "subject": "feat(projets): plans illustres pour SPARK, Le Gourmand et YMMO"
@@ -18,15 +28,5 @@
     "hash": "5385cf9",
     "date": "2026-11-03",
     "subject": "chore: retrait du code et des assets inutilises"
-  },
-  {
-    "hash": "17f8a44",
-    "date": "2026-11-03",
-    "subject": "fix(cv): HUD en barre d'onglets sur mobile et retrait des dependances inutilisees"
-  },
-  {
-    "hash": "0152f55",
-    "date": "2026-11-03",
-    "subject": "perf(a11y): corrections de l'audit Impeccable post-refonte"
   }
 ]

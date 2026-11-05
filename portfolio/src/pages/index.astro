@@ -25,7 +25,7 @@ const nav = [
 
 const boardRows = [
   ...experience.jobs.map((j) => ({ when: j.period, where: j.company, what: j.role })),
-  { when: "En cours", where: "Ynov Campus Toulouse", what: "B.Sc. Informatique" },
+  { when: "En cours", where: "Ynov Campus Toulouse", what: "Bachelor Informatique" },
 ];
 ---
 <Layout title="Tom Passerman · Développement web, systèmes & réseaux, IoT" nav={nav}>
@@ -35,7 +35,7 @@ const boardRows = [
       <div>
         <h1 id="identite" class="text-display font-bold tracking-[-0.03em]">Tom Passerman</h1>
         <p class="mt-4 max-w-[40rem] text-2xl leading-snug sm:text-[1.75rem]">
-          Étudiant B.Sc. Informatique à Ynov Campus Toulouse. {meta.headline.replace("Passionné d'IT : ", "")}.
+          Étudiant en Bachelor Informatique à Ynov Campus Toulouse. {meta.headline.replace("Passionné d'IT : ", "")}.
         </p>
       </div>
       <div class="flex flex-col items-start gap-4 lg:items-end">

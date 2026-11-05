@@ -13,7 +13,7 @@ web
 
 ## Product Purpose
 
-Portfolio personnel de Tom Passerman, étudiant B.Sc. Informatique à Ynov Campus Toulouse. Le site sert à la fois de portfolio général réutilisable pour d'autres candidatures (stage, alternance) et de candidature dédiée à Alpha to Omega (stage 2 à 6 mois, dispo immédiate). Succès : le visiteur comprend en quelques secondes qui est Tom et ce qu'il sait faire, voit des preuves concrètes, et le contacte.
+Portfolio personnel de Tom Passerman, étudiant en Bachelor Informatique à Ynov Campus Toulouse. Le site sert à la fois de portfolio général réutilisable pour d'autres candidatures (stage, alternance) et de candidature dédiée à Alpha to Omega (stage 2 à 6 mois, dispo immédiate). Succès : le visiteur comprend en quelques secondes qui est Tom et ce qu'il sait faire, voit des preuves concrètes, et le contacte.
 
 ## Positioning
 

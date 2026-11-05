@@ -150,9 +150,9 @@ export const resumeData: ResumeData = {
   ],
 
   spawn: {
-    bio: "Étudiant en informatique et passionné d'IT, je m'intéresse au développement Full-Stack, aux systèmes & réseaux, à la data et à l'IoT. B.Sc. Informatique à Ynov Campus Toulouse. J'apprends en construisant : des applications web & mobiles, du prototype au déploiement, et l'infrastructure qui les fait tourner.",
+    bio: "Étudiant en informatique et passionné d'IT, je m'intéresse au développement Full-Stack, aux systèmes & réseaux, à la data et à l'IoT. Bachelor Informatique à Ynov Campus Toulouse. J'apprends en construisant : des applications web & mobiles, du prototype au déploiement, et l'infrastructure qui les fait tourner.",
     highlights: [
-      "B.Sc. Informatique, Ynov Campus Toulouse",
+      "Bachelor Informatique, Ynov Campus Toulouse",
       "Bilingue Français / Anglais (anglais technique courant)",
       "Full-Stack · Systèmes & Réseaux · Data · IoT",
     ],

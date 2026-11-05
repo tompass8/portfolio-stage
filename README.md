@@ -1,6 +1,6 @@
 # Portfolio & CV interactif — Tom Passerman
 
-Dépôt GitHub du portfolio / CV de **Tom Passerman** (étudiant B.Sc. Informatique, Ynov Toulouse — Full-Stack, Systèmes & Réseaux, Data & IoT).
+Dépôt GitHub du portfolio / CV de **Tom Passerman** (étudiant en Bachelor Informatique, Ynov Toulouse — Full-Stack, Systèmes & Réseaux, Data & IoT).
 
 Trois pages, une même identité visuelle de **signalétique d'aérogare** (jaune balise, noir signalétique, pictogrammes, tableau des départs) :
 
